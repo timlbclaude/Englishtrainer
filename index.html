@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Trainer 🇬🇧</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────
+   Theme variables (Notion / Linear-Stil)
+   ─────────────────────────────────────────────*/
+:root {
+  --primary: #4f46e5;
+  --primary2: #6366f1;
+  --primary-soft: #818cf8;
+  --primary-bg: #eef2ff;
+  --ok: #059669;
+  --ok-bg: #d1fae5;
+  --ok-text: #065f46;
+  --err: #dc2626;
+  --err-bg: #fee2e2;
+  --err-text: #991b1b;
+  --warn: #f59e0b;
+  --warn-bg: #fef3c7;
+  --warn-text: #92400e;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --card-hover: #fafbff;
+  --text: #0f172a;
+  --text-soft: #334155;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --border-strong: #cbd5e1;
+  --header-bg: rgba(255,255,255,.85);
+  --nav-bg: rgba(255,255,255,.9);
+  --sh-sm: 0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.05);
+  --sh: 0 1px 2px rgba(15,23,42,.04), 0 4px 12px rgba(15,23,42,.06);
+  --sh-lg: 0 10px 30px rgba(15,23,42,.10), 0 4px 10px rgba(15,23,42,.04);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+}
+body.dark {
+  --primary: #818cf8;
+  --primary2: #a5b4fc;
+  --primary-soft: #6366f1;
+  --primary-bg: rgba(129,140,248,.12);
+  --ok: #34d399;
+  --ok-bg: rgba(52,211,153,.14);
+  --ok-text: #a7f3d0;
+  --err: #f87171;
+  --err-bg: rgba(248,113,113,.14);
+  --err-text: #fecaca;
+  --warn: #fbbf24;
+  --warn-bg: rgba(251,191,36,.14);
+  --warn-text: #fde68a;
+  --bg: #0b1220;
+  --card: #111a2e;
+  --card-hover: #15203a;
+  --text: #e2e8f0;
+  --text-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --border: #1f2a44;
+  --border-strong: #334155;
+  --header-bg: rgba(13,21,38,.85);
+  --nav-bg: rgba(13,21,38,.9);
+  --sh-sm: 0 1px 2px rgba(0,0,0,.4);
+  --sh: 0 2px 6px rgba(0,0,0,.35), 0 8px 20px rgba(0,0,0,.25);
+  --sh-lg: 0 16px 40px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100vh;}
+body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background-color .3s ease, color .3s ease;font-feature-settings:'cv02','cv03','cv04','cv11';}
+
+/* ── Header ── */
+header{background:var(--header-bg);backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);color:var(--text);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.hd-left{display:flex;align-items:center;gap:12px;}
+.logo{font-size:28px;line-height:1;}
+.hd-title h1{font-size:17px;font-weight:700;line-height:1.1;letter-spacing:-.01em;color:var(--text);}
+.hd-title small{font-size:12px;color:var(--muted);letter-spacing:.01em;}
+.hd-stats{display:flex;gap:8px;align-items:center;}
+.stat{padding:5px 12px;border-radius:var(--radius-full);font-weight:600;font-size:12px;letter-spacing:.01em;border:1px solid var(--border);background:var(--card);}
+.stat-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 25%,var(--border));background:var(--ok-bg);}
+.stat-err{color:var(--err);border-color:color-mix(in srgb,var(--err) 25%,var(--border));background:var(--err-bg);}
+.theme-toggle{margin-left:4px;width:36px;height:36px;border-radius:var(--radius-full);border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;transition:all .2s ease;}
+.theme-toggle:hover{border-color:var(--border-strong);background:var(--card-hover);transform:translateY(-1px);}
+
+/* ── Tabs ── */
+nav{background:var(--nav-bg);backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);display:flex;border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:0;z-index:10;}
+.tab{padding:12px 18px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .18s ease, border-color .18s ease, background .18s ease;}
+.tab:hover{color:var(--text);background:var(--primary-bg);}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600;}
+
+/* ── Main ── */
+main{padding:28px 24px 60px;max-width:820px;margin:0 auto;}
+
+/* ── Progress bar ── */
+.progress-wrap{margin-bottom:20px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;letter-spacing:.02em;font-weight:500;}
+.progress-bar{height:5px;background:var(--border);border-radius:var(--radius-full);overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-soft),var(--primary));border-radius:var(--radius-full);transition:width .45s cubic-bezier(.4,0,.2,1);}
+
+/* ── Flashcard ── */
+.scene{perspective:1400px;height:540px;margin-bottom:20px;}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius-lg);background:var(--card);box-shadow:var(--sh-lg);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow:hidden;}
+.face-back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;overflow-y:auto;}
+
+.fc-image{width:100%;max-height:220px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:18px;box-shadow:var(--sh-sm);}
+.fc-img-placeholder{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:18px;background:var(--primary-bg);color:var(--primary);}
+.fc-word{font-size:34px;font-weight:800;color:var(--text);text-align:center;line-height:1.15;margin-bottom:8px;letter-spacing:-.02em;}
+.fc-pronunciation{font-size:15px;color:var(--muted);margin-bottom:14px;font-family:'Inter',sans-serif;letter-spacing:.01em;}
+.fc-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+.fc-hint{font-size:12px;color:var(--muted);opacity:.7;position:absolute;bottom:18px;letter-spacing:.02em;}
+
+.back-translation{font-size:24px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-.01em;}
+.back-def{font-size:14px;line-height:1.65;color:var(--text-soft);margin-bottom:16px;border-left:3px solid var(--primary);padding-left:12px;}
+.back-ex{font-size:13px;color:var(--text-soft);line-height:1.6;background:var(--primary-bg);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;}
+.back-ex strong{color:var(--primary);font-size:11px;display:block;margin-bottom:4px;letter-spacing:.04em;font-weight:600;}
+.fc-front-example{font-size:13px;color:var(--text-soft);font-style:italic;line-height:1.6;background:var(--primary-bg);border-radius:var(--radius-sm);padding:10px 14px;text-align:center;margin-top:10px;width:100%;}
+.back-translation-small{font-size:13px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.back-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;}
+
+.fc-actions{display:flex;gap:12px;justify-content:center;margin-top:4px;}
+
+/* ── Quiz ── */
+.quiz-question{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:18px;text-align:center;}
+.quiz-word{font-size:32px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.02em;}
+.quiz-sub{font-size:13px;color:var(--muted);letter-spacing:.02em;text-transform:uppercase;font-weight:500;}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.choice{padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;transition:all .18s ease;text-align:left;color:var(--text);}
+.choice:hover:not(:disabled){border-color:var(--primary);background:var(--primary-bg);transform:translateY(-1px);box-shadow:var(--sh-sm);}
+.choice.correct{border-color:var(--ok);background:var(--ok-bg);color:var(--ok-text);animation:pulseOk .6s ease;}
+.choice.wrong{border-color:var(--err);background:var(--err-bg);color:var(--err-text);}
+.choice:disabled{cursor:default;}
+@keyframes pulseOk{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 45%,transparent);}70%{box-shadow:0 0 0 12px transparent;}100%{box-shadow:0 0 0 0 transparent;}}
+.quiz-feedback{text-align:center;font-size:14px;font-weight:600;padding:12px;border-radius:var(--radius-sm);margin-bottom:12px;}
+.quiz-feedback.ok{background:var(--ok-bg);color:var(--ok-text);}
+.quiz-feedback.err{background:var(--err-bg);color:var(--err-text);}
+
+/* ── Fill-in-the-blank ── */
+.fill-card{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:18px;}
+.fill-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
+.fill-sentence{font-size:19px;line-height:1.8;color:var(--text);margin-bottom:20px;}
+.blank{display:inline-block;min-width:120px;border-bottom:2.5px solid var(--primary);color:var(--primary);font-weight:700;padding:0 4px;}
+.fill-input-row{display:flex;gap:10px;align-items:center;}
+.fill-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:15px;outline:none;background:var(--card);color:var(--text);transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;}
+.fill-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 20%,transparent);}
+.fill-input.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok-text);}
+.fill-input.err{border-color:var(--err);background:var(--err-bg);color:var(--err-text);}
+.fill-input.live-ok{border-color:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 18%,transparent);}
+.fill-result{margin-top:14px;padding:12px 16px;border-radius:var(--radius-sm);font-size:14px;line-height:1.6;}
+.fill-result.ok{background:var(--ok-bg);color:var(--ok-text);}
+.fill-result.err{background:var(--err-bg);color:var(--err-text);}
+
+/* ── Word List ── */
+.list-header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.list-header h2{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.search-bar{position:relative;margin-bottom:14px;}
+.search-bar input{width:100%;padding:11px 14px 11px 38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;outline:none;background:var(--card);color:var(--text);transition:border-color .18s ease, box-shadow .18s ease;}
+.search-bar input:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 18%,transparent);}
+.search-bar::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.7;pointer-events:none;}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;line-height:1;border-radius:var(--radius-full);display:none;}
+.search-clear:hover{color:var(--text);background:var(--border);}
+.search-bar.has-value .search-clear{display:inline-block;}
+.list-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.filter-btn{padding:5px 12px;border-radius:var(--radius-full);border:1px solid var(--border);background:var(--card);cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:500;color:var(--muted);transition:all .18s ease;display:inline-flex;align-items:center;gap:4px;}
+.filter-btn:hover{border-color:var(--primary);color:var(--text);background:var(--primary-bg);}
+.filter-btn.active{border-color:var(--primary);color:var(--primary);background:var(--primary-bg);font-weight:600;}
+.word-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+.word-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;}
+.word-card:hover{transform:translateY(-1px);box-shadow:var(--sh);border-color:var(--border-strong);}
+.wc-top{display:flex;align-items:center;gap:12px;}
+.wc-thumb{width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;box-shadow:var(--sh-sm);}
+.wc-thumb-fallback{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.wc-body{flex:1;min-width:0;}
+.wc-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.wc-word{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.wc-pron{font-size:12.5px;color:var(--muted);}
+.wc-translation{font-size:13.5px;color:var(--text-soft);margin-top:3px;}
+.wc-meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-left:auto;}
+.wc-chev{color:var(--muted);font-size:14px;transition:transform .2s ease;margin-left:4px;}
+.word-card.open .wc-chev{transform:rotate(180deg);}
+.wc-detail{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;display:none;}
+.wc-detail.open{display:block;}
+.wc-detail p{font-size:13px;line-height:1.65;color:var(--text-soft);margin-bottom:8px;}
+.wc-detail-img{width:100%;max-height:180px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:10px;box-shadow:var(--sh-sm);}
+.wc-ex{background:var(--primary-bg);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;line-height:1.55;margin-bottom:6px;color:var(--text-soft);}
+
+/* ── Empty / summary ── */
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:44px 36px;box-shadow:var(--sh);text-align:center;}
+.summary-emoji{font-size:54px;margin-bottom:14px;}
+.summary-card h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.01em;}
+.summary-card p{color:var(--muted);font-size:14.5px;margin-bottom:22px;}
+.summary-stats{display:flex;gap:28px;justify-content:center;margin-bottom:24px;}
+.ss{text-align:center;}
+.ss-num{font-size:38px;font-weight:800;letter-spacing:-.02em;}
+.ss-ok .ss-num{color:var(--ok);}
+.ss-err .ss-num{color:var(--err);}
+.ss-label{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:500;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:var(--radius-full);font-size:11px;font-weight:600;line-height:1.5;letter-spacing:.01em;border:1px solid transparent;}
+.badge-A1,.badge-A2{background:var(--ok-bg);color:var(--ok-text);}
+.badge-B1,.badge-B2{background:var(--warn-bg);color:var(--warn-text);}
+.badge-C1,.badge-C2{background:var(--err-bg);color:var(--err-text);}
+.badge-type{background:var(--primary-bg);color:var(--primary);}
+.badge-cat-TV{background:#FEF3C7;color:#92400E;}
+.badge-cat-Books{background:#EDE9FE;color:#5B21B6;}
+.badge-cat-Kitchen{background:#D1FAE5;color:#065F46;}
+.badge-cat-none{background:var(--border);color:var(--muted);}
+body.dark .badge-cat-TV{background:rgba(252,211,77,.18);color:#fde68a;}
+body.dark .badge-cat-Books{background:rgba(167,139,250,.18);color:#ddd6fe;}
+body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
+.filter-group-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;margin-top:10px;}
+
+/* ── Buttons ── */
+.btn{padding:10px 18px;border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;transition:transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;display:inline-flex;align-items:center;gap:7px;letter-spacing:.01em;}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--sh-sm);}
+.btn:active{transform:translateY(0);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-ok{background:var(--ok);color:#fff;}
+.btn-ok:hover{filter:brightness(1.05);}
+.btn-err{background:var(--err);color:#fff;}
+.btn-err:hover{filter:brightness(1.05);}
+.btn-outline{border-color:var(--primary);color:var(--primary);background:transparent;}
+.btn-outline:hover{background:var(--primary-bg);}
+.btn-ghost{background:var(--card);color:var(--text);border-color:var(--border);}
+.btn-ghost:hover{background:var(--card-hover);border-color:var(--border-strong);}
+.btn-sm{padding:7px 14px;font-size:12.5px;}
+
+/* ── Nav buttons row ── */
+.nav-row{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:6px;}
+.nav-pos{font-size:13px;color:var(--muted);font-weight:500;}
+
+/* ── Responsive ── */
+@media(min-width:768px){
+  .quiz-choices{grid-template-columns:1fr 1fr;}
+  .word-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:540px){
+  .quiz-choices{grid-template-columns:1fr;}
+  .fc-word{font-size:28px;}
+  main{padding:18px 14px 40px;}
+  header{padding:12px 16px;}
+  .hd-title h1{font-size:15px;}
+  .hd-title small{font-size:11px;}
+  .theme-toggle{width:32px;height:32px;font-size:15px;}
+  .scene{height:500px;}
+}
+
+/* ── Subtle focus ring for accessibility ── */
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-left">
+    <span class="logo">🇬🇧</span>
+    <div class="hd-title">
+      <h1>English Trainer</h1>
+      <small id="wordCountLabel">5 Wörter gespeichert</small>
+    </div>
+  </div>
+  <div class="hd-stats">
+    <span class="stat stat-ok" id="statOk">✓ 0</span>
+    <span class="stat stat-err" id="statErr">✗ 0</span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Theme umschalten" title="Hell / Dunkel umschalten">☀️</button>
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="setMode('flash',this)">🃏 Karteikarten</button>
+  <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
+  <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
+  <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
+</nav>
+
+<main id="app"></main>
+
+<script>
+/* ═══════════════════════════════════════════════
+   WORTLISTE – hier werden neue Wörter eingefügt
+   ═══════════════════════════════════════════════ */
+const WORDS = [
+  {
+    id: 1,
+    word: "ambitious",
+    translation: "ehrgeizig, ambitioniert",
+    pronunciation: "/æmˈbɪʃəs/",
+    wordType: "Adjektiv",
+    definition: "Having a strong desire and determination to succeed.",
+    examples: [
+      "She is very ambitious and plans to become a CEO before turning 30.",
+      "His ambitious goals inspired everyone on the team."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 2,
+    word: "resilient",
+    translation: "widerstandsfähig, belastbar",
+    pronunciation: "/rɪˈzɪliənt/",
+    wordType: "Adjektiv",
+    definition: "Able to recover quickly from difficulties; tough and flexible.",
+    examples: [
+      "She is incredibly resilient and bounced back after losing her job within weeks.",
+      "The resilient material can withstand extreme temperatures without breaking."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 3,
+    word: "Threshold",
+    translation: "Schwelle, Grenzwert",
+    pronunciation: "/ˈθreʃhoʊld/",
+    wordType: "Nomen",
+    definition: "The level or point at which something starts or changes; also the strip at the bottom of a doorway.",
+    examples: [
+      "The threshold for pain varies greatly between individuals.",
+      "She stood at the threshold of the doorway, hesitating before stepping inside."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 4,
+    word: "to procrastinate",
+    translation: "aufschieben, trödeln",
+    pronunciation: "/prəˈkræstɪneɪt/",
+    wordType: "Verb",
+    definition: "To delay or postpone doing something, especially out of habit or laziness.",
+    examples: [
+      "I tend to procrastinate when I have difficult tasks to complete.",
+      "Stop procrastinating and start working on your project now!"
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 5,
+    word: "Serendipity",
+    translation: "glücklicher Zufall, Serendipität",
+    pronunciation: "/ˌserənˈdɪpɪti/",
+    wordType: "Nomen",
+    definition: "The occurrence of events by chance in a happy or beneficial way.",
+    examples: [
+      "Meeting my best friend at that coffee shop was pure serendipity.",
+      "The discovery of penicillin was a remarkable act of serendipity."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 6,
+    word: "to refine",
+    translation: "verfeinern, verbessern",
+    pronunciation: "/rɪˈfaɪn/",
+    wordType: "Verb",
+    definition: "To improve something by making small changes; to remove impurities and make something purer or more precise.",
+    examples: [
+      "We need to refine our strategy before presenting it to the board.",
+      "The chef constantly refines his recipes to achieve the perfect balance of flavors."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 7,
+    word: "inevitable",
+    translation: "unvermeidlich, unausweichlich",
+    pronunciation: "/ɪˈnevɪtəbl/",
+    wordType: "Adjektiv",
+    definition: "Certain to happen and impossible to avoid or prevent.",
+    examples: [
+      "Change is inevitable — you cannot stop progress from happening.",
+      "Conflict seemed inevitable as both sides refused to compromise."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 8,
+    word: "to struggle",
+    translation: "kämpfen, sich abmühen, ringen",
+    pronunciation: "/ˈstrʌɡl/",
+    wordType: "Verb",
+    definition: "To make great efforts to do something difficult; to fight against obstacles or resistance.",
+    examples: [
+      "She struggled to stay awake during the long, boring meeting.",
+      "Many small businesses struggle to survive during their first year."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 9,
+    word: "Breakthrough",
+    translation: "Durchbruch",
+    pronunciation: "/ˈbreɪkθruː/",
+    wordType: "Nomen",
+    definition: "A sudden and important development or discovery, especially in science or negotiations.",
+    examples: [
+      "Scientists made a major breakthrough in cancer research last year.",
+      "The peace talks finally led to a breakthrough after weeks of difficult negotiations."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-04-02",
+    category: "—"
+  },
+  {
+    id: 10,
+    word: "Fridge",
+    translation: "Kühlschrank",
+    pronunciation: "/frɪdʒ/",
+    wordType: "Nomen",
+    definition: "A household appliance used to keep food and drinks cold.",
+    examples: [
+      "Put the milk back in the fridge after you've used it.",
+      "The fridge is nearly empty — we need to go shopping."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Fridge.jpg?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 11,
+    word: "Refrigerator",
+    translation: "Kühlschrank (formell)",
+    pronunciation: "/rɪˈfrɪdʒəreɪtər/",
+    wordType: "Nomen",
+    definition: "The formal word for a fridge; an electrical appliance that keeps food cold.",
+    examples: [
+      "The refrigerator in the kitchen has been making a strange noise.",
+      "Always store dairy products in the refrigerator to keep them fresh."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Fridge.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 12,
+    word: "Coffee pot",
+    translation: "Kaffeekanne",
+    pronunciation: "/ˈkɒfi pɒt/",
+    wordType: "Nomen",
+    definition: "A pot used for brewing or serving coffee.",
+    examples: [
+      "She filled the coffee pot and switched it on before breakfast.",
+      "There's a full coffee pot on the counter — help yourself."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bedford_coffee_pot.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 13,
+    word: "Cooker",
+    translation: "Herd",
+    pronunciation: "/ˈkʊkər/",
+    wordType: "Nomen",
+    definition: "A large kitchen appliance used for cooking food, consisting of an oven and hob.",
+    examples: [
+      "The cooker has four hobs and a large oven underneath.",
+      "Be careful — the cooker is still hot from making dinner."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/4_plate_stove.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 14,
+    word: "Dishwasher",
+    translation: "Spülmaschine",
+    pronunciation: "/ˈdɪʃwɒʃər/",
+    wordType: "Nomen",
+    definition: "An electrical machine that washes dishes, glasses and cutlery automatically.",
+    examples: [
+      "Stack the dirty plates in the dishwasher after the meal.",
+      "The dishwasher saves a lot of time compared to washing up by hand."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Dishwasher_with_dishes.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 15,
+    word: "Freezer",
+    translation: "Gefrierschrank, Tiefkühltruhe",
+    pronunciation: "/ˈfriːzər/",
+    wordType: "Nomen",
+    definition: "An appliance that stores food at a temperature below freezing.",
+    examples: [
+      "I keep a bag of frozen peas in the freezer for emergencies.",
+      "Take the chicken out of the freezer the night before to defrost it."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Iced_freezer,_defrosting.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 16,
+    word: "Kettle",
+    translation: "Wasserkocher",
+    pronunciation: "/ˈketl/",
+    wordType: "Nomen",
+    definition: "An appliance used to boil water quickly, typically for making tea or coffee.",
+    examples: [
+      "Put the kettle on — I'll make us both a cup of tea.",
+      "The kettle boiled in under two minutes."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/White_electric_kettle.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 17,
+    word: "Oven",
+    translation: "Backofen, Ofen",
+    pronunciation: "/ˈʌvən/",
+    wordType: "Nomen",
+    definition: "An enclosed compartment used for baking, roasting or heating food.",
+    examples: [
+      "Preheat the oven to 200°C before putting the bread in.",
+      "The pizza came out of the oven perfectly golden and crispy."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Industrial_hearth_deck_oven_and_rotary_rack_oven.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 18,
+    word: "Stove",
+    translation: "Herd, Kochstelle",
+    pronunciation: "/stəʊv/",
+    wordType: "Nomen",
+    definition: "A cooking appliance with burners or hotplates on top; mainly used in American English.",
+    examples: [
+      "She stood at the stove stirring the soup carefully.",
+      "Turn off the stove when you leave the kitchen."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/4_plate_stove.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 19,
+    word: "Toaster",
+    translation: "Toaster",
+    pronunciation: "/ˈtəʊstər/",
+    wordType: "Nomen",
+    definition: "A small electrical appliance used to toast bread.",
+    examples: [
+      "I put two slices of bread in the toaster for breakfast.",
+      "The toaster is broken — the bread just stays pale no matter what."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Dualit_toaster.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 20,
+    word: "Washing machine",
+    translation: "Waschmaschine",
+    pronunciation: "/ˈwɒʃɪŋ məˈʃiːn/",
+    wordType: "Nomen",
+    definition: "An electrical machine used to wash clothes and textiles.",
+    examples: [
+      "I put a full load of clothes into the washing machine.",
+      "The washing machine takes about an hour per cycle."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Beko_Washing_Machine.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 21,
+    word: "Grill",
+    translation: "Grill, Grillrost",
+    pronunciation: "/ɡrɪl/",
+    wordType: "Nomen",
+    definition: "A device used for cooking food over high heat; in British English also the overhead heating element inside an oven.",
+    examples: [
+      "Cook the sausages under the grill for ten minutes.",
+      "We set up the grill in the garden and barbecued all afternoon."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gasbbq.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 22,
+    word: "Bottle opener",
+    translation: "Flaschenöffner",
+    pronunciation: "/ˈbɒtl ˌəʊpənər/",
+    wordType: "Nomen",
+    definition: "A small tool used to remove the cap from a bottle.",
+    examples: [
+      "Use the bottle opener on the fridge door to open your beer.",
+      "I can't find the bottle opener — has anyone seen it?"
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_opener.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 23,
+    word: "Chopping board",
+    translation: "Schneidebrett",
+    pronunciation: "/ˈtʃɒpɪŋ bɔːd/",
+    wordType: "Nomen",
+    definition: "A flat board used as a surface for cutting food.",
+    examples: [
+      "Always use a chopping board to protect the counter when cutting vegetables.",
+      "We have separate chopping boards for meat and vegetables."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Chopping_Board.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 24,
+    word: "Colander",
+    translation: "Nudelsieb, Abtropfsieb",
+    pronunciation: "/ˈkɒləndər/",
+    wordType: "Nomen",
+    definition: "A bowl-shaped kitchen utensil with holes, used to drain water from cooked food.",
+    examples: [
+      "Pour the cooked pasta into the colander to drain off the water.",
+      "Rinse the salad leaves in the colander under cold running water."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Blue_colander.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 25,
+    word: "Corkscrew",
+    translation: "Korkenzieher",
+    pronunciation: "/ˈkɔːkskruː/",
+    wordType: "Nomen",
+    definition: "A tool with a spiral metal rod used for pulling corks out of bottles.",
+    examples: [
+      "Do you have a corkscrew? I'd like to open this bottle of wine.",
+      "He twisted the corkscrew and pulled out the cork with a gentle pop."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Cavatappi_antichi_antique_corkscrew_002.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 26,
+    word: "Frying pan",
+    translation: "Bratpfanne",
+    pronunciation: "/ˈfraɪɪŋ pæn/",
+    wordType: "Nomen",
+    definition: "A flat-bottomed pan with a long handle, used for frying food.",
+    examples: [
+      "Heat a little oil in the frying pan before adding the onions.",
+      "She scrambled the eggs in a non-stick frying pan."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Teflon_frying_pan.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 27,
+    word: "Grater",
+    translation: "Reibe, Raspel",
+    pronunciation: "/ˈɡreɪtər/",
+    wordType: "Nomen",
+    definition: "A kitchen tool with a rough surface used to shred food into small pieces.",
+    examples: [
+      "Use the grater to grate the carrot finely for the salad.",
+      "Be careful with the grater — the edges are very sharp."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Kitchen_grater.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 28,
+    word: "Cheese grater",
+    translation: "Käsereibe",
+    pronunciation: "/tʃiːz ˈɡreɪtər/",
+    wordType: "Nomen",
+    definition: "A grater specifically designed for grating cheese.",
+    examples: [
+      "Grate some Parmesan over the pasta with the cheese grater.",
+      "The cheese grater has four different sides for different textures."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Kitchen_grater.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 29,
+    word: "Juicer",
+    translation: "Entsafter, Saftpresse",
+    pronunciation: "/ˈdʒuːsər/",
+    wordType: "Nomen",
+    definition: "An appliance or tool used to extract juice from fruits or vegetables.",
+    examples: [
+      "She uses an electric juicer every morning to make fresh orange juice.",
+      "A manual juicer is fine for lemons, but an electric one is better for larger quantities."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Orange_juicer.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 30,
+    word: "Kitchen foil",
+    translation: "Alufolie, Aluminiumfolie",
+    pronunciation: "/ˈkɪtʃɪn fɔɪl/",
+    wordType: "Nomen",
+    definition: "Thin aluminium sheet used for wrapping food or covering dishes in the oven.",
+    examples: [
+      "Cover the roast with kitchen foil for the first hour of cooking.",
+      "Wrap the leftover bread in kitchen foil to keep it fresh."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 31,
+    word: "Kitchen scales",
+    translation: "Küchenwaage",
+    pronunciation: "/ˈkɪtʃɪn skeɪlz/",
+    wordType: "Nomen",
+    definition: "A device used to weigh ingredients accurately when cooking or baking.",
+    examples: [
+      "You need kitchen scales to measure out the flour precisely.",
+      "The recipe calls for 250g of sugar, so check the kitchen scales carefully."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Kitchenscale.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 32,
+    word: "Ladle",
+    translation: "Schöpfkelle, Suppenkelle",
+    pronunciation: "/ˈleɪdl/",
+    wordType: "Nomen",
+    definition: "A large, deep spoon with a long handle, used for serving soups or stews.",
+    examples: [
+      "She used a ladle to serve the soup into each bowl.",
+      "Give the stew a good stir with the ladle before serving."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Aluminium_ladle.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 33,
+    word: "Mixing bowl",
+    translation: "Rührschüssel",
+    pronunciation: "/ˈmɪksɪŋ bəʊl/",
+    wordType: "Nomen",
+    definition: "A large bowl used for mixing ingredients when cooking or baking.",
+    examples: [
+      "Combine the flour, eggs and milk in a large mixing bowl.",
+      "She whisked the cream in a chilled mixing bowl until it was stiff."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Pour_Molasses_into_a_Mixing_Bowl.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 34,
+    word: "Oven cloth",
+    translation: "Ofentuch, Topflappen",
+    pronunciation: "/ˈʌvən klɒθ/",
+    wordType: "Nomen",
+    definition: "A thick cloth used to protect hands when handling hot dishes from the oven.",
+    examples: [
+      "Use the oven cloth when taking the casserole dish out of the oven.",
+      "The oven cloth was scorched from years of heavy use."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 35,
+    word: "Oven gloves",
+    translation: "Ofenhandschuhe",
+    pronunciation: "/ˈʌvən ɡlʌvz/",
+    wordType: "Nomen",
+    definition: "Thick, heat-resistant gloves worn to protect hands and wrists when handling hot pans or dishes.",
+    examples: [
+      "Always put on the oven gloves before reaching into a hot oven.",
+      "She grabbed the baking tray with her oven gloves and set it on the counter."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 36,
+    word: "Rolling pin",
+    translation: "Nudelholz, Teigrolle",
+    pronunciation: "/ˈrəʊlɪŋ pɪn/",
+    wordType: "Nomen",
+    definition: "A cylindrical tool used to flatten dough when baking.",
+    examples: [
+      "Roll out the pastry with a rolling pin until it's about 3mm thick.",
+      "Dust the rolling pin with flour to stop the dough from sticking."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Lefse_rolling_pin.jpg?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 37,
+    word: "Saucepan",
+    translation: "Kochtopf, Stieltopf",
+    pronunciation: "/ˈsɔːspən/",
+    wordType: "Nomen",
+    definition: "A deep cooking pot with a handle and usually a lid, used on the hob.",
+    examples: [
+      "Bring the water to the boil in a large saucepan.",
+      "She melted the butter in a small saucepan over low heat."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Non-stick_20cm_saucepan.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 38,
+    word: "Scouring pad",
+    translation: "Scheuerschwamm, Topfreiniger",
+    pronunciation: "/ˈskaʊərɪŋ pæd/",
+    wordType: "Nomen",
+    definition: "A rough pad used for scrubbing pots, pans and surfaces to remove stubborn dirt.",
+    examples: [
+      "You'll need a scouring pad to get that burnt food off the pan.",
+      "Don't use a scouring pad on non-stick surfaces — it will scratch them."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    difficulty: "B2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 39,
+    word: "Scourer",
+    translation: "Scheuerschwamm",
+    pronunciation: "/ˈskaʊərər/",
+    wordType: "Nomen",
+    definition: "A rough pad or ball of wire used to scrub pots and pans clean.",
+    examples: [
+      "The scourer removed the burnt residue from the bottom of the pan.",
+      "A steel scourer is perfect for cast iron pans but too harsh for coated ones."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    difficulty: "B2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 40,
+    word: "Sieve",
+    translation: "Sieb",
+    pronunciation: "/sɪv/",
+    wordType: "Nomen",
+    definition: "A utensil with a mesh bottom used to separate fine particles from coarser ones, or to drain liquids.",
+    examples: [
+      "Sift the flour through a sieve to remove any lumps before baking.",
+      "He rinsed the rice through a fine sieve under cold water."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Sieve_texture.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 41,
+    word: "Tin opener",
+    translation: "Dosenöffner",
+    pronunciation: "/tɪn ˈəʊpənər/",
+    wordType: "Nomen",
+    definition: "A tool used to open metal cans or tins of food.",
+    examples: [
+      "I need the tin opener to open this can of tomatoes.",
+      "The electric tin opener makes it much easier to open large cans."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Proctor_Silex_Electric_Can_Opener.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 42,
+    word: "Tongs",
+    translation: "Zange, Grillzange",
+    pronunciation: "/tɒŋz/",
+    wordType: "Nomen",
+    definition: "A tool with two arms joined at one end, used to grip and lift food.",
+    examples: [
+      "Use the tongs to turn the steaks on the grill.",
+      "She picked up the salad with tongs and placed it neatly on the plate."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Tongs1.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 43,
+    word: "Tray",
+    translation: "Tablett",
+    pronunciation: "/treɪ/",
+    wordType: "Nomen",
+    definition: "A flat, shallow container used for carrying food and drinks or baking.",
+    examples: [
+      "She carried the mugs of coffee through on a tray.",
+      "Line the baking tray with greaseproof paper before putting the biscuits on it."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Making_Mmnce_pies_-_tarts_in_baking_tray.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 44,
+    word: "Whisk",
+    translation: "Schneebesen",
+    pronunciation: "/wɪsk/",
+    wordType: "Nomen",
+    definition: "A kitchen tool with loops of wire used for beating or mixing ingredients.",
+    examples: [
+      "Whisk the eggs until they are light and frothy.",
+      "Use a hand whisk or an electric mixer to beat the cream."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 45,
+    word: "Wooden spoon",
+    translation: "Holzlöffel",
+    pronunciation: "/ˌwʊdən ˈspuːn/",
+    wordType: "Nomen",
+    definition: "A large spoon made of wood, used for stirring food while cooking.",
+    examples: [
+      "Stir the sauce slowly with a wooden spoon to prevent it from burning.",
+      "A wooden spoon won't scratch non-stick pans, unlike metal ones."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Wooden_Spoon.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 46,
+    word: "Knife",
+    translation: "Messer",
+    pronunciation: "/naɪf/",
+    wordType: "Nomen",
+    definition: "A blade with a handle used for cutting food.",
+    examples: [
+      "Use a sharp knife to cut the vegetables into even pieces.",
+      "Always keep your knives clean and store them safely."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Kitchen_Knife_03_Stainless_steel_Cutting_edge.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 47,
+    word: "Fork",
+    translation: "Gabel",
+    pronunciation: "/fɔːk/",
+    wordType: "Nomen",
+    definition: "A utensil with prongs used for picking up food.",
+    examples: [
+      "She twirled the spaghetti around her fork.",
+      "Set a knife and fork on each side of the plate."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/African_Fork,_spoon_and_knife.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 48,
+    word: "Spoon",
+    translation: "Löffel",
+    pronunciation: "/spuːn/",
+    wordType: "Nomen",
+    definition: "A utensil with a round bowl and a handle, used for eating or stirring.",
+    examples: [
+      "Stir your coffee with a spoon to dissolve the sugar.",
+      "He ate the soup slowly with a large spoon."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Spoon.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 49,
+    word: "Dessert spoon",
+    translation: "Dessertlöffel",
+    pronunciation: "/dɪˈzɜːt spuːn/",
+    wordType: "Nomen",
+    definition: "A medium-sized spoon, larger than a teaspoon but smaller than a tablespoon, used for eating dessert.",
+    examples: [
+      "She ate the mousse with a small dessert spoon.",
+      "A dessert spoon holds about 10ml — halfway between a teaspoon and tablespoon."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 50,
+    word: "Soup spoon",
+    translation: "Suppenlöffel",
+    pronunciation: "/suːp spuːn/",
+    wordType: "Nomen",
+    definition: "A large, round spoon used for eating soup.",
+    examples: [
+      "The soup spoon is placed to the right of the other cutlery.",
+      "He dipped his soup spoon into the bowl carefully to avoid spilling."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 51,
+    word: "Tablespoon",
+    translation: "Esslöffel",
+    pronunciation: "/ˈteɪblspuːn/",
+    wordType: "Nomen",
+    definition: "A large spoon used for serving food or as a unit of measurement in cooking (approx. 15ml).",
+    examples: [
+      "Add two tablespoons of olive oil to the pan.",
+      "The recipe says one tablespoon of soy sauce — don't add more."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Teaspoon_&_tablespoon.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 52,
+    word: "Teaspoon",
+    translation: "Teelöffel",
+    pronunciation: "/ˈtiːspuːn/",
+    wordType: "Nomen",
+    definition: "A small spoon used for stirring tea or coffee, or as a unit of measurement (approx. 5ml).",
+    examples: [
+      "Add half a teaspoon of salt to the dough.",
+      "She stirred her tea with a teaspoon before taking a sip."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/2teaspoons.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 53,
+    word: "Carving knife",
+    translation: "Tranchiermesser",
+    pronunciation: "/ˈkɑːvɪŋ naɪf/",
+    wordType: "Nomen",
+    definition: "A long, sharp knife used for slicing cooked meat.",
+    examples: [
+      "He used the carving knife to slice the roast chicken at the table.",
+      "A sharp carving knife makes cutting large joints of meat much easier."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Carvingknives.JPG?width=400",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 54,
+    word: "Chopsticks",
+    translation: "Essstäbchen",
+    pronunciation: "/ˈtʃɒpstɪks/",
+    wordType: "Nomen",
+    definition: "A pair of thin sticks used as eating utensils, common in East Asian cuisine.",
+    examples: [
+      "She learned to eat sushi with chopsticks during her trip to Japan.",
+      "It takes some practice to pick up food with chopsticks."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Chopstick.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 55,
+    word: "Cup",
+    translation: "Tasse",
+    pronunciation: "/kʌp/",
+    wordType: "Nomen",
+    definition: "A small container with a handle, used for drinking hot beverages.",
+    examples: [
+      "She made herself a cup of tea and sat down by the window.",
+      "Could you pass me a clean cup from the cupboard, please?"
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A_small_cup_of_coffee.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 56,
+    word: "Bowl",
+    translation: "Schüssel, Schale",
+    pronunciation: "/bəʊl/",
+    wordType: "Nomen",
+    definition: "A round, deep dish used for serving or eating food, especially soups or cereals.",
+    examples: [
+      "She poured the cereal into a bowl and added some milk.",
+      "He filled a large bowl with fresh salad leaves."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Fufu_with_light_soup_and_chicken_in_a_ceramic_bowl.jpg?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 57,
+    word: "Crockery",
+    translation: "Geschirr (Sammelbegriff)",
+    pronunciation: "/ˈkrɒkəri/",
+    wordType: "Nomen",
+    definition: "Plates, bowls, cups and other ceramic dishes used for eating and serving food (collective noun).",
+    examples: [
+      "We bought a new set of crockery for the dining room.",
+      "All the crockery is in the dishwasher — we'll need to wait before setting the table."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 58,
+    word: "Glass",
+    translation: "Glas (Trinkglas)",
+    pronunciation: "/ɡlɑːs/",
+    wordType: "Nomen",
+    definition: "A container made of glass, used for drinking cold beverages.",
+    examples: [
+      "He poured the orange juice into a tall glass.",
+      "There's a glass of water on the bedside table for you."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Carlsberg_beer_glass.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 59,
+    word: "Jar",
+    translation: "Einmachglas, Marmeladenglas",
+    pronunciation: "/dʒɑːr/",
+    wordType: "Nomen",
+    definition: "A glass container with a wide mouth and a lid, used for storing food such as jam or pickles.",
+    examples: [
+      "She opened a new jar of peanut butter.",
+      "There's a jar of strawberry jam in the cupboard."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Egyptian_glass_jar.jpg?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 60,
+    word: "Jug",
+    translation: "Krug, Karaffe",
+    pronunciation: "/dʒʌɡ/",
+    wordType: "Nomen",
+    definition: "A container with a handle and a lip, used for pouring liquids.",
+    examples: [
+      "She brought a jug of cold water to the table.",
+      "He poured the lemonade from a large jug into everyone's glasses."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Water_jug.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 61,
+    word: "Mug",
+    translation: "Becher, Kaffeebecher",
+    pronunciation: "/mʌɡ/",
+    wordType: "Nomen",
+    definition: "A large cup without a saucer, typically used for hot drinks.",
+    examples: [
+      "He wrapped both hands around his mug of hot chocolate.",
+      "I always drink my morning coffee from my favourite blue mug."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Vintage_VICTOR_Coffee_Mug.jpg?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 62,
+    word: "Plate",
+    translation: "Teller",
+    pronunciation: "/pleɪt/",
+    wordType: "Nomen",
+    definition: "A flat dish used for serving or eating food.",
+    examples: [
+      "She placed a warm plate in front of each guest.",
+      "Pile the pasta high on the plate and add some grated cheese on top."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Dinner_plates.jpg?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 63,
+    word: "Saucer",
+    translation: "Untertasse",
+    pronunciation: "/ˈsɔːsər/",
+    wordType: "Nomen",
+    definition: "A small, shallow dish on which a cup is placed.",
+    examples: [
+      "She set the teacup back carefully on its saucer.",
+      "The saucer caught the drips from the overfilled cup."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 64,
+    word: "Sugar bowl",
+    translation: "Zuckerdose",
+    pronunciation: "/ˈʃʊɡər bəʊl/",
+    wordType: "Nomen",
+    definition: "A small bowl used to hold sugar, often placed on the table at mealtimes.",
+    examples: [
+      "Could you pass the sugar bowl? I'd like one spoonful.",
+      "The sugar bowl is on the table next to the teapot."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Studio_Ceramics_sugar_bowl_by_Bernard_Leach_(YORYM-2004.1.2022.3).JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 65,
+    word: "Teapot",
+    translation: "Teekanne",
+    pronunciation: "/ˈtiːpɒt/",
+    wordType: "Nomen",
+    definition: "A pot with a spout and handle used for brewing and pouring tea.",
+    examples: [
+      "She let the tea steep in the teapot for five minutes before pouring.",
+      "Would you like another cup? There's plenty left in the teapot."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Chinese_teapot.JPG?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 66,
+    word: "Wine glass",
+    translation: "Weinglas",
+    pronunciation: "/waɪn ɡlɑːs/",
+    wordType: "Nomen",
+    definition: "A glass with a stem and a wide bowl, designed for drinking wine.",
+    examples: [
+      "He poured the red wine into a large wine glass.",
+      "Polish the wine glasses before the guests arrive so they shine."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Wine_Glass.jpg?width=400",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 67,
+    word: "Bin",
+    translation: "Mülleimer, Abfalleimer",
+    pronunciation: "/bɪn/",
+    wordType: "Nomen",
+    definition: "A container used for throwing away rubbish or food waste.",
+    examples: [
+      "Scrape the leftovers into the bin and rinse the plate.",
+      "Don't forget to take the bin out — it's collection day tomorrow."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Garbage_Bin.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 68,
+    word: "Cling film",
+    translation: "Frischhaltefolie",
+    pronunciation: "/klɪŋ fɪlm/",
+    wordType: "Nomen",
+    definition: "Thin transparent plastic used to wrap and seal food to keep it fresh.",
+    examples: [
+      "Cover the bowl with cling film and put it in the fridge overnight.",
+      "Wrap the leftover cheese tightly in cling film to stop it drying out."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 69,
+    word: "Plastic wrap",
+    translation: "Frischhaltefolie",
+    pronunciation: "/ˈplæstɪk ræp/",
+    wordType: "Nomen",
+    definition: "Thin transparent plastic used to seal food and keep it fresh; the American term for cling film.",
+    examples: [
+      "Cover the salad with plastic wrap before putting it in the fridge.",
+      "Stretch a layer of plastic wrap over the bowl to keep it airtight."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 70,
+    word: "Cookery book",
+    translation: "Kochbuch",
+    pronunciation: "/ˈkʊkəri bʊk/",
+    wordType: "Nomen",
+    definition: "A book containing recipes and instructions for preparing food.",
+    examples: [
+      "She followed the recipe step by step from her favourite cookery book.",
+      "He bought a new cookery book about Italian cuisine as a birthday gift."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 71,
+    word: "Dishcloth",
+    translation: "Spüllappen, Spültuch",
+    pronunciation: "/ˈdɪʃklɒθ/",
+    wordType: "Nomen",
+    definition: "A cloth used for washing dishes or wiping kitchen surfaces.",
+    examples: [
+      "Wipe the counter down with a damp dishcloth after cooking.",
+      "Replace the dishcloth regularly to prevent bacteria from building up."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 72,
+    word: "Draining board",
+    translation: "Abtropfbrett, Abtropffläche",
+    pronunciation: "/ˈdreɪnɪŋ bɔːd/",
+    wordType: "Nomen",
+    definition: "A grooved board or surface next to a sink where washed dishes are left to dry.",
+    examples: [
+      "Stack the clean dishes on the draining board to dry.",
+      "The draining board was full of pots and pans from last night's cooking."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 73,
+    word: "Kitchen roll",
+    translation: "Küchenrolle, Küchenpapier",
+    pronunciation: "/ˈkɪtʃɪn rəʊl/",
+    wordType: "Nomen",
+    definition: "A roll of absorbent paper used for cleaning surfaces and drying hands in the kitchen.",
+    examples: [
+      "Tear off a sheet of kitchen roll to wipe up the spill.",
+      "Always keep a roll of kitchen roll handy when cooking messy dishes."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 74,
+    word: "Plug",
+    translation: "Stöpsel (Abfluss), Stecker (Elektro)",
+    pronunciation: "/plʌɡ/",
+    wordType: "Nomen",
+    definition: "A stopper used to block a drain in a sink or bath; also an electrical connector.",
+    examples: [
+      "Put the plug in the sink before filling it to wash the dishes.",
+      "The sink plug is stuck — could you try to pull it out?"
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 75,
+    word: "Tea towel",
+    translation: "Geschirrtuch",
+    pronunciation: "/tiː ˈtaʊəl/",
+    wordType: "Nomen",
+    definition: "A cloth used for drying dishes, glasses and cutlery after washing.",
+    examples: [
+      "Dry the glasses with a clean tea towel so they don't get watermarks.",
+      "Hang the wet tea towel over the oven handle to let it dry."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 76,
+    word: "Shelf",
+    translation: "Regal, Ablage",
+    pronunciation: "/ʃelf/",
+    wordType: "Nomen",
+    definition: "A flat board fixed to a wall or inside a cupboard, used to store things.",
+    examples: [
+      "The spices are on the shelf above the cooker.",
+      "She added an extra shelf to the kitchen cupboard to create more storage."
+    ],
+    imageUrl: "",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 77,
+    word: "Sink",
+    translation: "Spüle, Spülbecken",
+    pronunciation: "/sɪŋk/",
+    wordType: "Nomen",
+    definition: "A fixed basin in the kitchen connected to a water supply, used for washing up.",
+    examples: [
+      "Fill the sink with hot soapy water to wash the dishes.",
+      "Leave the dirty pots in the sink and I'll wash them later."
+    ],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Kitchen_Sink.JPG?width=400",
+    difficulty: "A1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 78,
+    word: "Tablecloth",
+    translation: "Tischdecke",
+    pronunciation: "/ˈteɪblklɒθ/",
+    wordType: "Nomen",
+    definition: "A cloth used to cover a table, especially during meals.",
+    examples: [
+      "She spread a clean white tablecloth over the dining table.",
+      "The tablecloth is covered in wine stains — it needs a good wash."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 79,
+    word: "Washing-up liquid",
+    translation: "Spülmittel",
+    pronunciation: "/ˈwɒʃɪŋ ʌp ˈlɪkwɪd/",
+    wordType: "Nomen",
+    definition: "A liquid soap used for washing dishes by hand.",
+    examples: [
+      "Squirt a little washing-up liquid onto the sponge before scrubbing the pans.",
+      "We've run out of washing-up liquid — could you pick some up at the shops?"
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 80,
+    word: "to do the dishes",
+    translation: "das Geschirr spülen / abwaschen",
+    pronunciation: "/tuː duː ðə ˈdɪʃɪz/",
+    wordType: "Verb",
+    definition: "To wash the plates, pots and cutlery after a meal.",
+    examples: [
+      "Who's going to do the dishes tonight? It's your turn.",
+      "She did the dishes while her husband put the children to bed."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 81,
+    word: "to do the washing up",
+    translation: "das Geschirr spülen",
+    pronunciation: "/tuː duː ðə ˈwɒʃɪŋ ʌp/",
+    wordType: "Verb",
+    definition: "To wash all the used dishes, glasses and cutlery after a meal; British expression.",
+    examples: [
+      "I'll do the washing up if you put the leftovers away.",
+      "He hates doing the washing up and wishes they had a dishwasher."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 82,
+    word: "to clear the table",
+    translation: "den Tisch abräumen",
+    pronunciation: "/tuː klɪər ðə ˈteɪbl/",
+    wordType: "Verb",
+    definition: "To remove all the dishes, glasses and items from the table after a meal.",
+    examples: [
+      "Could you clear the table while I bring out the dessert?",
+      "The children helped to clear the table after Sunday lunch."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 83,
+    word: "to set the table",
+    translation: "den Tisch decken",
+    pronunciation: "/tuː set ðə ˈteɪbl/",
+    wordType: "Verb",
+    definition: "To arrange plates, cutlery and glasses on the table before a meal.",
+    examples: [
+      "Can you set the table? Dinner will be ready in five minutes.",
+      "She set the table with the best crockery for the dinner guests."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  },
+  {
+    id: 84,
+    word: "to lay the table",
+    translation: "den Tisch decken",
+    pronunciation: "/tuː leɪ ðə ˈteɪbl/",
+    wordType: "Verb",
+    definition: "To arrange plates, cutlery and glasses on the table ready for a meal; slightly more formal than 'to set the table'.",
+    examples: [
+      "Would you mind laying the table while I finish cooking?",
+      "He carefully laid the table with the good cutlery and linen napkins."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-04-03",
+    category: "Kitchen/Cooking"
+  }
+];
+
+/* ═══════════════════════════════════════════════
+   App-Zustand
+   ═══════════════════════════════════════════════ */
+let mode = 'flash';
+let deck = [];
+let idx = 0;
+let flipped = false;
+let correct = 0;
+let incorrect = 0;
+let quizAnswered = false;
+let quizChoices = [];
+let quizCorrectIdx = 0;
+let fillChecked = false;
+const CATEGORIES = ['TV', 'Books', 'Kitchen/Cooking'];
+let listFilterType = 'Alle';
+let listFilterCat  = 'Alle';
+let listSearch     = '';
+let listOpen = {};
+
+function catBadgeClass(cat){
+  if(cat==='TV') return 'badge-cat-TV';
+  if(cat==='Books') return 'badge-cat-Books';
+  if(cat==='Kitchen/Cooking') return 'badge-cat-Kitchen';
+  return 'badge-cat-none';
+}
+
+const typeIcon = {Nomen:'📦',Verb:'⚡',Adjektiv:'🎨',Adverb:'💫'};
+
+function diffColor(d){ return ['A1','A2'].includes(d)?'badge-A1':['B1','B2'].includes(d)?'badge-B1':'badge-C1'; }
+function icon(w){ return typeIcon[w.wordType]||'📝'; }
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+
+/* ═══════════════════════════════════════════════
+   📸 DYNAMISCHES BILD-LADEN (Wikipedia API)
+   Bilder werden beim ersten Öffnen automatisch
+   geladen und danach im Browser gecacht.
+   ═══════════════════════════════════════════════ */
+const WIKI_TITLES = {
+  'Fridge':'Refrigerator','Refrigerator':'Refrigerator',
+  'Coffee pot':'Coffeemaker','Cooker':'Kitchen_stove','Dishwasher':'Dishwasher',
+  'Freezer':'Freezer','Kettle':'Kettle','Oven':'Oven','Stove':'Kitchen_stove',
+  'Toaster':'Toaster','Washing machine':'Washing_machine','Grill':'Barbecue_grill',
+  'Bottle opener':'Bottle_opener','Chopping board':'Cutting_board',
+  'Colander':'Colander','Corkscrew':'Corkscrew','Frying pan':'Frying_pan',
+  'Grater':'Grater','Cheese grater':'Grater','Juicer':'Juicer',
+  'Kitchen foil':'Aluminium_foil','Kitchen scales':'Weighing_scale',
+  'Ladle':'Ladle_(spoon)','Mixing bowl':'Bowl','Oven cloth':'Oven_glove',
+  'Oven gloves':'Oven_glove','Rolling pin':'Rolling_pin',
+  'Saucepan':'Cookware_and_bakeware','Scouring pad':'Scouring_pad',
+  'Scourer':'Scouring_pad','Sieve':'Sieve','Tin opener':'Can_opener',
+  'Tongs':'Tongs','Tray':'Tray','Whisk':'Whisk','Wooden spoon':'Wooden_spoon',
+  'Knife':'Kitchen_knife','Fork':'Fork','Spoon':'Spoon',
+  'Dessert spoon':'Spoon','Soup spoon':'Spoon','Tablespoon':'Tablespoon',
+  'Teaspoon':'Teaspoon','Carving knife':'Kitchen_knife','Chopsticks':'Chopsticks',
+  'Cup':'Cup','Bowl':'Bowl','Crockery':'Tableware','Glass':'Drinkware',
+  'Jar':'Jar','Jug':'Pitcher_(containers)','Mug':'Mug',
+  'Plate':'Plate_(dishware)','Saucer':'Saucer','Sugar bowl':'Sugar_bowl',
+  'Teapot':'Teapot','Wine glass':'Wine_glass','Bin':'Waste_container',
+  'Cling film':'Plastic_wrap','Plastic wrap':'Plastic_wrap',
+  'Cookery book':'Cookbook','Dishcloth':'Dishcloth',
+  'Draining board':'Draining_board','Kitchen roll':'Paper_towel',
+  'Plug':'Drain','Tea towel':'Dish_towel','Shelf':'Shelf','Sink':'Sink',
+  'Tablecloth':'Tablecloth','Washing-up liquid':'Dishwashing_liquid',
+  'Threshold':'Threshold_(architecture)','Serendipity':'Serendipity',
+  'Breakthrough':'Innovation'
+};
+
+// Bild-Cache aus localStorage laden (für schnelles Wiederöffnen)
+let imageCache = {};
+try { imageCache = JSON.parse(localStorage.getItem('etImageCache') || '{}'); } catch(e) {}
+
+function getImg(w){
+  return w.imageUrl || imageCache[w.word] || '';
+}
+
+async function fetchWikiImage(word){
+  const title = WIKI_TITLES[word];
+  if(!title) return '';
+  try {
+    const r = await fetch(
+      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title),
+      {headers:{'User-Agent':'EnglishTrainerApp/1.0 (educational)'}}
+    );
+    if(!r.ok) return '';
+    const d = await r.json();
+    let url = (d.thumbnail && d.thumbnail.source) ? d.thumbnail.source : '';
+    if(url) url = url.replace(/\/\d+px-/, '/400px-');
+    if(url){
+      imageCache[word] = url;
+      try { localStorage.setItem('etImageCache', JSON.stringify(imageCache)); } catch(e) {}
+    }
+    return url;
+  } catch(e){ return ''; }
+}
+
+async function prefetchImages(){
+  // Nur Wörter holen, die noch kein Bild haben
+  const missing = WORDS.filter(w => !w.imageUrl && WIKI_TITLES[w.word] && !imageCache[w.word]);
+  if(!missing.length) return;
+  for(const w of missing){
+    await fetchWikiImage(w.word);
+    await new Promise(res => setTimeout(res, 130)); // höfliches Rate-Limiting
+  }
+  render(); // Ansicht nach dem Laden aktualisieren
+}
+
+function updateStats(){
+  document.getElementById('statOk').textContent = `✓ ${correct}`;
+  document.getElementById('statErr').textContent = `✗ ${incorrect}`;
+}
+
+function progressHTML(cur,total){
+  const pct = total ? Math.round((cur/total)*100) : 0;
+  return `<div class="progress-wrap">
+    <div class="progress-label"><span>Karte ${cur} von ${total}</span><span>${pct}%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   Mode switching
+   ═══════════════════════════════════════════════ */
+function setMode(m, btn){
+  mode = m;
+  idx = 0; flipped = false; quizAnswered = false; fillChecked = false;
+  deck = shuffle(WORDS);
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  render();
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER dispatcher
+   ═══════════════════════════════════════════════ */
+function render(){
+  if(mode==='flash') renderFlash();
+  else if(mode==='quiz') renderQuiz();
+  else if(mode==='fill') renderFill();
+  else renderList();
+}
+
+/* ═══════════════════════════════════════════════
+   🃏 KARTEIKARTEN
+   ═══════════════════════════════════════════════ */
+function renderFlash(){
+  const app = document.getElementById('app');
+  if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
+
+  // Check if all done
+  if(idx >= deck.length){ renderSummary(); return; }
+
+  const w = deck[idx];
+  const imgFront = getImg(w)
+    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" onerror="this.style.display='none'">`
+    : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
+
+  const examplesHTML = w.examples.map(ex =>
+    `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
+  ).join('');
+
+  app.innerHTML = `
+    ${progressHTML(idx+1, deck.length)}
+    <div class="scene">
+      <div class="flashcard" id="fc" onclick="flipCard()">
+        <div class="face">
+          ${imgFront}
+          <div class="fc-word">${w.word}</div>
+          <div class="fc-pronunciation">${w.pronunciation}</div>
+          <div class="fc-badges">
+            <span class="badge badge-type">${w.wordType}</span>
+            <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+          </div>
+          <div class="fc-front-example">📝 „${w.examples[0]}"</div>
+          <div class="fc-hint">Tippe, um umzudrehen ↕</div>
+        </div>
+        <div class="face face-back">
+          <div class="back-section-label">📖 Definition</div>
+          <div class="back-def">${w.definition}</div>
+          <div class="back-section-label">📝 Beispiele</div>
+          ${examplesHTML}
+          <div class="back-translation-small">🇩🇪 ${w.translation}</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-actions" id="fcActions" style="display:none">
+      <button class="btn btn-err" onclick="markCard(false)">✗ Nochmal</button>
+      <button class="btn btn-ok" onclick="markCard(true)">✓ Gewusst!</button>
+    </div>
+    <div class="nav-row" id="navRow">
+      <button class="btn btn-ghost btn-sm" onclick="prevCard()" ${idx===0?'disabled':''}>← Zurück</button>
+      <span class="nav-pos">${idx+1} / ${deck.length}</span>
+      <button class="btn btn-outline btn-sm" onclick="flipCard()">Umdrehen ↕</button>
+    </div>`;
+}
+
+function flipCard(){
+  flipped = !flipped;
+  const fc = document.getElementById('fc');
+  if(fc) fc.classList.toggle('flipped', flipped);
+  const acts = document.getElementById('fcActions');
+  if(acts) acts.style.display = flipped ? 'flex' : 'none';
+}
+
+function markCard(wasCorrect){
+  if(wasCorrect){ correct++; } else { incorrect++; }
+  updateStats();
+  idx++;
+  flipped = false;
+  render();
+}
+
+function prevCard(){
+  if(idx > 0){ idx--; flipped = false; render(); }
+}
+
+/* ═══════════════════════════════════════════════
+   ❓ QUIZ
+   ═══════════════════════════════════════════════ */
+function renderQuiz(){
+  const app = document.getElementById('app');
+  if(WORDS.length < 2){ app.innerHTML='<p>Mindestens 2 Wörter für den Quiz-Modus benötigt.</p>'; return; }
+  if(idx >= deck.length){ renderSummary(); return; }
+
+  const w = deck[idx];
+  // Build choices: 1 correct + up to 3 wrong
+  const wrong = shuffle(WORDS.filter(x=>x.id!==w.id)).slice(0,3);
+  quizChoices = shuffle([w, ...wrong]);
+  quizCorrectIdx = quizChoices.findIndex(c=>c.id===w.id);
+  quizAnswered = false;
+
+  const choicesHTML = quizChoices.map((c,i) =>
+    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
+  ).join('');
+
+  app.innerHTML = `
+    ${progressHTML(idx+1, deck.length)}
+    <div class="quiz-question">
+      <div class="quiz-sub">Was bedeutet dieses Wort?</div>
+      <div class="quiz-word">${w.word}</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+        <span class="badge badge-type">${w.wordType}</span>
+        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+      </div>
+      <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
+      <div class="fc-front-example" style="margin-top:14px;text-align:center;">📝 „${w.examples[0]}"</div>
+    </div>
+    <div class="quiz-choices">${choicesHTML}</div>
+    <div id="quizFeedback"></div>
+    <div class="nav-row">
+      <button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button>
+    </div>`;
+}
+
+function answerQuiz(chosen){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const isOk = chosen === quizCorrectIdx;
+  if(isOk){ correct++; } else { incorrect++; }
+  updateStats();
+
+  quizChoices.forEach((_,i)=>{
+    const btn = document.getElementById(`ch${i}`);
+    btn.disabled = true;
+    if(i===quizCorrectIdx) btn.classList.add('correct');
+    else if(i===chosen && !isOk) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('quizFeedback');
+  fb.className = `quiz-feedback ${isOk?'ok':'err'}`;
+  fb.textContent = isOk ? '🎉 Richtig! Sehr gut!' : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
+
+  document.getElementById('nextQuizBtn').style.display = 'inline-flex';
+}
+
+function nextQuiz(){
+  idx++;
+  render();
+}
+
+/* ═══════════════════════════════════════════════
+   ✏️ LÜCKENTEXT
+   ═══════════════════════════════════════════════ */
+function renderFill(){
+  const app = document.getElementById('app');
+  if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
+  if(idx >= deck.length){ renderSummary(); return; }
+
+  const w = deck[idx];
+  // pick a random example and blank the word
+  const ex = w.examples[Math.floor(Math.random()*w.examples.length)];
+  const regex = new RegExp(w.word, 'gi');
+  const blanked = ex.replace(regex, '<span class="blank">_____</span>');
+  fillChecked = false;
+
+  app.innerHTML = `
+    ${progressHTML(idx+1, deck.length)}
+    <div class="fill-card">
+      <div class="fill-label">🇩🇪 Übersetzung: <strong>${w.translation}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;
+        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Pronunciation: ${w.pronunciation}</div>
+      <div class="fill-label">Ergänze den Satz mit dem richtigen Wort:</div>
+      <div class="fill-sentence">${blanked}</div>
+      <div class="fill-input-row">
+        <input class="fill-input" id="fillInput" type="text" placeholder="Deine Antwort…"
+          onkeydown="if(event.key==='Enter')checkFill()"
+          oninput="onFillInput(this)"
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn btn-primary" onclick="checkFill()">Prüfen</button>
+      </div>
+      <div id="fillResult"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost btn-sm" onclick="idx++;render()" id="skipBtn">Überspringen →</button>
+    </div>`;
+
+  setTimeout(()=>{ const i=document.getElementById('fillInput'); if(i) i.focus(); },100);
+}
+
+function onFillInput(input){
+  if(fillChecked) return;
+  const w = deck[idx];
+  const val = input.value.trim().toLowerCase();
+  const target = w.word.toLowerCase();
+  if(val && val === target){ input.classList.add('live-ok'); }
+  else { input.classList.remove('live-ok'); }
+}
+
+function checkFill(){
+  if(fillChecked) return;
+  fillChecked = true;
+  const input = document.getElementById('fillInput');
+  const answer = input.value.trim();
+  const w = deck[idx];
+  input.classList.remove('live-ok');
+  const isOk = answer.toLowerCase() === w.word.toLowerCase();
+
+  if(isOk){ correct++; } else { incorrect++; }
+  updateStats();
+
+  input.classList.add(isOk?'ok':'err');
+  input.disabled = true;
+
+  const res = document.getElementById('fillResult');
+  const fullEx = w.examples[0];
+  res.className = `fill-result ${isOk?'ok':'err'}`;
+  res.innerHTML = isOk
+    ? `✓ Richtig! <em>${fullEx}</em>`
+    : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong><br><em>${fullEx}</em>`;
+
+  const skip = document.getElementById('skipBtn');
+  if(skip){ skip.textContent = 'Weiter →'; skip.onclick = ()=>{ idx++; render(); }; }
+}
+
+/* ═══════════════════════════════════════════════
+   📋 WORTLISTE
+   ═══════════════════════════════════════════════ */
+function renderList(){
+  const app = document.getElementById('app');
+  const types = ['Alle', ...new Set(WORDS.map(w=>w.wordType))];
+  const cats  = ['Alle', ...CATEGORIES, '—'];
+
+  const q = listSearch.trim().toLowerCase();
+  const filtered = WORDS.filter(w => {
+    if(listFilterType!=='Alle' && w.wordType!==listFilterType) return false;
+    if(listFilterCat!=='Alle'  && w.category!==listFilterCat)  return false;
+    if(!q) return true;
+    const hay = [w.word, w.translation, w.definition, ...(w.examples||[])].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+
+  const typeFilters = types.map(t=>
+    `<button class="filter-btn ${listFilterType===t?'active':''}" onclick="setFilterType('${t}')">${t}</button>`
+  ).join('');
+
+  const catFilters = cats.map(c=>{
+    const cls = c!=='Alle' && c!=='—' ? `badge ${catBadgeClass(c)}` : '';
+    return `<button class="filter-btn ${listFilterCat===c?'active':''}" onclick="setFilterCat('${c}')">
+      ${cls ? `<span class="${cls}" style="margin-right:4px">${c}</span>` : c}
+    </button>`;
+  }).join('');
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+  const cardsHTML = filtered.length ? filtered.map(w => {
+    const exHTML = w.examples.map(e=>`<div class="wc-ex">📝 ${esc(e)}</div>`).join('');
+    const src = getImg(w);
+    const thumb = src
+      ? `<img class="wc-thumb" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.onerror=null;this.outerHTML='<div class=&quot;wc-thumb-fallback&quot;>${icon(w)}</div>'">`
+      : `<div class="wc-thumb-fallback">${icon(w)}</div>`;
+    const detailImg = src
+      ? `<img class="wc-detail-img" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.style.display='none'">`
+      : '';
+    const catBadge = `<span class="badge ${catBadgeClass(w.category)}">${w.category}</span>`;
+    return `
+    <div class="word-card ${listOpen[w.id]?'open':''}" onclick="toggleCard(event,${w.id})">
+      <div class="wc-top">
+        ${thumb}
+        <div class="wc-body">
+          <div class="wc-title-row">
+            <span class="wc-word">${esc(w.word)}</span>
+            <span class="wc-pron">${esc(w.pronunciation)}</span>
+          </div>
+          <div class="wc-translation">${esc(w.translation)}</div>
+        </div>
+        <div class="wc-meta">
+          ${catBadge}
+          <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+          <span class="wc-chev">▾</span>
+        </div>
+      </div>
+      <div class="wc-detail ${listOpen[w.id]?'open':''}" id="detail${w.id}">
+        ${detailImg}
+        <p><strong>📖 Definition:</strong> ${esc(w.definition)}</p>
+        ${exHTML}
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">${esc(w.wordType)} · Hinzugefügt: ${esc(w.dateAdded)}</p>
+      </div>
+    </div>`;
+  }).join('') : `<div style="text-align:center;padding:40px;color:var(--muted)">Keine Wörter gefunden.</div>`;
+
+  app.innerHTML = `
+    <div class="list-header">
+      <h2>📋 Wortliste <span style="color:var(--muted);font-weight:500">(${filtered.length} / ${WORDS.length})</span></h2>
+    </div>
+    <div class="search-bar ${listSearch?'has-value':''}">
+      <input id="listSearchInput" type="text" placeholder="Suche in Wort, Übersetzung, Definition, Beispiel…" value="${esc(listSearch)}" oninput="onSearchInput(this.value)" autocomplete="off" spellcheck="false">
+      <button class="search-clear" onclick="clearSearch(event)" aria-label="Suche leeren">✕</button>
+    </div>
+    <div class="filter-group-label">Wortart</div>
+    <div class="list-filters">${typeFilters}</div>
+    <div class="filter-group-label">Kategorie</div>
+    <div class="list-filters">${catFilters}</div>
+    <div class="word-grid">${cardsHTML}</div>`;
+
+  // Restore focus + caret to the search input after re-render
+  if(document.activeElement && document.activeElement.id !== 'listSearchInput'){
+    const si = document.getElementById('listSearchInput');
+    if(si && listSearch){ si.focus(); si.setSelectionRange(listSearch.length, listSearch.length); }
+  }
+}
+
+function setFilterType(f){ listFilterType=f; renderList(); }
+function setFilterCat(f){  listFilterCat=f;  renderList(); }
+function toggleCard(evt, id){
+  // Ignore clicks that originate inside the search input or its clear button
+  const t = evt && evt.target;
+  if(t && (t.tagName==='INPUT' || (t.closest && t.closest('.search-bar')))) return;
+  listOpen[id]=!listOpen[id]; renderList();
+}
+function onSearchInput(v){
+  listSearch = v;
+  renderList();
+}
+function clearSearch(e){
+  if(e){ e.stopPropagation(); }
+  listSearch = '';
+  renderList();
+  const si = document.getElementById('listSearchInput');
+  if(si) si.focus();
+}
+
+/* ═══════════════════════════════════════════════
+   🏆 ZUSAMMENFASSUNG
+   ═══════════════════════════════════════════════ */
+function renderSummary(){
+  const app = document.getElementById('app');
+  const total = correct + incorrect;
+  const pct = total ? Math.round((correct/total)*100) : 0;
+  let emoji = pct>=80?'🏆':pct>=50?'💪':'📚';
+  let msg = pct>=80?'Ausgezeichnet! Du kennst deine Vörter sehr gut!'
+           :pct>=50?'Gut gemacht! Übe weiter und du wirst es bald perfekt beherrschen.'
+           :'Kein Problem – Übung macht den Meister!';
+
+  app.innerHTML = `
+    <div class="summary-card">
+      <div class="summary-emoji">${emoji}</div>
+      <h2>Runde beendet!</h2>
+      <p>${msg}</p>
+      <div class="summary-stats">
+        <div class="ss ss-ok"><div class="ss-num">${correct}</div><div class="ss-label">Richtig</div></div>
+        <div class="ss ss-err"><div class="ss-num">${incorrect}</div><div class="ss-label">Falsch</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="restartMode()">🔄 Nochmal trainieren</button>
+        <button class="btn btn-outline" onclick="setMode('list',null);document.querySelectorAll('.tab')[3].classList.add('active');document.querySelectorAll('.tab').forEach((t,i)=>{if(i!==3)t.classList.remove('active')})">📋 Wortliste ansehen</button>
+      </div>
+    </div>`;
+}
+
+function restartMode(){
+  correct = 0; incorrect = 0;
+  updateStats();
+  idx = 0; flipped = false; quizAnswered = false; fillChecked = false;
+  deck = shuffle(WORDS);
+  render();
+}
+
+/* ═══════════════════════════════════════════════
+   🌙 THEME (Hell / Dunkel)
+   ═══════════════════════════════════════════════ */
+function applyTheme(mode){
+  if(mode === 'dark'){ document.body.classList.add('dark'); }
+  else { document.body.classList.remove('dark'); }
+  const btn = document.getElementById('themeToggle');
+  if(btn) btn.textContent = mode === 'dark' ? '🌙' : '☀️';
+}
+function toggleTheme(){
+  const now = document.body.classList.contains('dark') ? 'light' : 'dark';
+  try { localStorage.setItem('etTheme', now); } catch(e) {}
+  applyTheme(now);
+}
+(function initTheme(){
+  let saved = 'light';
+  try { saved = localStorage.getItem('etTheme') || 'light'; } catch(e) {}
+  applyTheme(saved);
+})();
+
+/* ═══════════════════════════════════════════════
+   Start
+   ═══════════════════════════════════════════════ */
+document.getElementById('wordCountLabel').textContent = `${WORDS.length} Wörter gespeichert`; // auto-updated
+deck = shuffle(WORDS);
+render();
+// Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
+prefetchImages();
+</script>
+</body>
+</html>
