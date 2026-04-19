@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HTML_FILE = ROOT / "index.html"
 XLSX_FILE = ROOT / "vokabeln.xlsx"
 
-CLAUDE_MODEL = "claude-sonnet-4-5"  # schnell & guenstig, gute Qualitaet
+CLAUDE_MODEL = "claude-sonnet-4-5"
 
 SYSTEM_PROMPT = """Du bist ein Englisch-Lehrer-Assistent. Der Nutzer nennt dir ein englisches Wort.
 Liefere ein JSON-Objekt mit exakt diesen Feldern:
@@ -94,12 +94,7 @@ def find_wikimedia_image(keyword: str) -> str:
 
 
 def find_wikipedia_image(keyword: str) -> str:
-    """Fallback: holt das Hauptbild des englischen Wikipedia-Artikels zum Wort.
-
-    Funktioniert besonders gut fuer abstrakte Nomen (z.B. 'Freedom', 'Democracy'),
-    bei denen die Wikimedia-Commons-Suche oft nichts Brauchbares liefert.
-    Nutzt die kostenlose Page-Summary-REST-API von Wikipedia (kein API-Key noetig).
-    """
+    """Fallback: Hauptbild des englischen Wikipedia-Artikels."""
     if not keyword:
         return ""
     try:
@@ -124,6 +119,33 @@ def find_wikipedia_image(keyword: str) -> str:
 def next_word_id(html: str) -> int:
     ids = [int(m) for m in re.findall(r'"id"\s*:\s*(\d+)', html)]
     return (max(ids) + 1) if ids else 1
+
+
+def normalize_word(w: str) -> str:
+    """Normalisiert ein Wort fuer den Dubletten-Vergleich:
+    - macht alles klein
+    - schneidet Whitespace ab
+    - entfernt fuehrendes 'to ' (damit 'to struggle' == 'struggle')
+    """
+    if not w:
+        return ""
+    w = w.strip().lower()
+    if w.startswith("to "):
+        w = w[3:].strip()
+    return w
+
+
+def word_already_exists(word_raw: str) -> bool:
+    """Prueft, ob das Wort schon im WORDS-Array von index.html steht."""
+    if not HTML_FILE.exists():
+        return False
+    try:
+        html = HTML_FILE.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    existing = re.findall(r'"word"\s*:\s*"([^"]+)"', html)
+    candidate = normalize_word(word_raw)
+    return any(normalize_word(w) == candidate for w in existing)
 
 
 def js_escape(s: str) -> str:
@@ -158,89 +180,4 @@ def append_word_to_html(data: dict, category: str):
         "}"
     )
 
-    m = re.search(r"const\s+WORDS\s*=\s*\[", html)
-    if not m:
-        raise RuntimeError("WORDS-Array nicht in index.html gefunden.")
-    start = m.end()
-    depth = 1
-    i = start
-    while i < len(html) and depth > 0:
-        c = html[i]
-        if c == "[":
-            depth += 1
-        elif c == "]":
-            depth -= 1
-            if depth == 0:
-                break
-        i += 1
-    if depth != 0:
-        raise RuntimeError("Ende von WORDS-Array nicht gefunden.")
-    before = html[:i].rstrip()
-    after = html[i:]
-    separator = ",\n" if before.endswith("}") else "\n"
-    new_html = before + separator + entry + "\n" + after
-    HTML_FILE.write_text(new_html, encoding="utf-8")
-    print(f"In index.html eingefuegt (id={wid}).")
-
-
-def append_word_to_xlsx(data: dict, category: str):
-    if not XLSX_FILE.exists():
-        print("vokabeln.xlsx nicht gefunden - ueberspringe.")
-        return
-    wb = load_workbook(XLSX_FILE)
-    ws = wb.active
-    examples = data.get("examples", [])
-    ws.append([
-        data["word"],
-        data["translation"],
-        data["pronunciation"],
-        data["wordType"],
-        data["definition"],
-        examples[0] if len(examples) > 0 else "",
-        examples[1] if len(examples) > 1 else "",
-        data.get("imageUrl", ""),
-        int(data.get("difficulty", 2)),
-        date.today().isoformat(),
-        "",
-        category,
-    ])
-    wb.save(XLSX_FILE)
-    print("In vokabeln.xlsx angehaengt.")
-
-
-def main():
-    title = os.environ.get("ISSUE_TITLE", "")
-    if not title.lower().startswith("eta:"):
-        print("Kein ETA-Issue, breche ab.")
-        return
-
-    word_raw, category = parse_issue_title(title)
-    if not word_raw:
-        print("Kein Wort im Issue-Titel gefunden.")
-        sys.exit(1)
-
-    print(f"Verarbeite Wort: '{word_raw}' (Kategorie: {category})")
-
-    data = ask_claude(word_raw)
-    print("Claude-Antwort:", data)
-
-    # Bild fuer Nomen: erst Wikimedia Commons, dann Wikipedia-Artikelbild als Fallback
-    if data.get("wordType") == "Nomen":
-        keyword = data.get("imageKeyword") or data.get("word", "")
-        img = find_wikimedia_image(keyword)
-        if not img:
-            img = find_wikipedia_image(data.get("word", "") or keyword)
-            if img:
-                print("Fallback: Wikipedia-Artikelbild verwendet.")
-        data["imageUrl"] = img
-        print(f"Bild-URL: {data['imageUrl']}")
-    else:
-        data["imageUrl"] = ""
-
-    append_word_to_html(data, category)
-    append_word_to_xlsx(data, category)
-    print("Fertig.")
-
-
-if __name__ == "__main__":
-    main()
+    m = re.search(r"
