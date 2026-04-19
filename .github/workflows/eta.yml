@@ -37,6 +37,7 @@ jobs:
         run: python .github/scripts/eta_process.py
 
       - name: Aenderungen committen
+        id: commit
         run: |
           git config user.name "ETA Bot"
           git config user.email "eta-bot@users.noreply.github.com"
@@ -44,7 +45,9 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "ETA: Neues Wort aus Issue #${{ github.event.issue.number }}"
             git push
+            echo "committed=true" >> $GITHUB_OUTPUT
           else
+            echo "committed=false" >> $GITHUB_OUTPUT
             echo "Keine Aenderungen zum Committen."
           fi
 
@@ -52,4 +55,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh issue close ${{ github.event.issue.number }} --comment "Wort wurde erfolgreich aufgenommen. Die App aktualisiert sich in ca. 1 Minute." --repo ${{ github.repository }}
+          if [ "${{ steps.commit.outputs.committed }}" = "true" ]; then
+            gh issue close ${{ github.event.issue.number }} --comment "Wort wurde aufgenommen. Die App aktualisiert sich in ca. 1 Minute." --repo ${{ github.repository }}
+          else
+            gh issue close ${{ github.event.issue.number }} --comment "Das Wort steht bereits in der Liste - kein Doppeleintrag noetig." --repo ${{ github.repository }}
+          fi
