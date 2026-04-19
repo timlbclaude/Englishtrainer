@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import time
+import urllib.parse
 from datetime import date
 from pathlib import Path
 
@@ -22,12 +23,17 @@ ROOT = Path(__file__).resolve().parents[2]
 HTML_FILE = ROOT / "index.html"
 XLSX_FILE = ROOT / "vokabeln.xlsx"
 
-CLAUDE_MODEL = "claude-sonnet-4-5"
+CLAUDE_MODEL = "claude-sonnet-4-5"  # schnell & guenstig, gute Qualitaet
 
 SYSTEM_PROMPT = """Du bist ein Englisch-Lehrer-Assistent. Der Nutzer nennt dir ein englisches Wort.
 Liefere ein JSON-Objekt mit exakt diesen Feldern:
-- "word": das Wort in Kleinbuchstaben (bei Eigennamen Grossschreibung lassen)
-- "translation": Deutsche Uebersetzung (max. 4 Woerter)
+- "word": das Wort in folgender Formatierung (WICHTIG, genau einhalten):
+    * Nomen: erster Buchstabe gross, Rest klein (z.B. "Napkin", "Handkerchief"). Eigennamen behalten ihre uebliche Schreibung.
+    * Verb: "to <verb>" in Kleinbuchstaben (z.B. "to struggle", "to overcome"). Das Wort "to" gehoert IMMER dazu.
+    * Adjektiv/Adverb: Kleinbuchstaben (z.B. "beautiful", "quickly").
+    * Praeposition/Konjunktion: Kleinbuchstaben.
+    * Phrase: wie im Englischen ueblich geschrieben (z.B. "piece of cake").
+- "translation": Deutsche Uebersetzung (max. 4 Woerter). Bei Verben "<verb>" mit deutschem Infinitiv (z.B. "kaempfen") - ohne "zu".
 - "pronunciation": IPA-Lautschrift in Slashes, z.B. "/brik/"
 - "wordType": Einer von "Nomen", "Verb", "Adjektiv", "Adverb", "Praeposition", "Konjunktion", "Phrase"
 - "definition": Kurze englische Definition (max. 15 Woerter)
@@ -84,6 +90,34 @@ def find_wikimedia_image(keyword: str) -> str:
                     return f"https://commons.wikimedia.org/wiki/Special:FilePath/{safe}?width=400"
     except Exception as e:
         print(f"Wikimedia-Lookup fehlgeschlagen: {e}", file=sys.stderr)
+    return ""
+
+
+def find_wikipedia_image(keyword: str) -> str:
+    """Fallback: holt das Hauptbild des englischen Wikipedia-Artikels zum Wort.
+
+    Funktioniert besonders gut fuer abstrakte Nomen (z.B. 'Freedom', 'Democracy'),
+    bei denen die Wikimedia-Commons-Suche oft nichts Brauchbares liefert.
+    Nutzt die kostenlose Page-Summary-REST-API von Wikipedia (kein API-Key noetig).
+    """
+    if not keyword:
+        return ""
+    try:
+        title = urllib.parse.quote(keyword.strip().replace(" ", "_"))
+        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
+        r = requests.get(url, headers={"User-Agent": "ETA-Bot/1.0"}, timeout=15)
+        if r.status_code != 200:
+            return ""
+        data = r.json()
+        if data.get("type") == "disambiguation":
+            return ""
+        img = (
+            data.get("originalimage", {}).get("source")
+            or data.get("thumbnail", {}).get("source", "")
+        )
+        return img or ""
+    except Exception as e:
+        print(f"Wikipedia-Lookup fehlgeschlagen: {e}", file=sys.stderr)
     return ""
 
 
@@ -190,9 +224,15 @@ def main():
     data = ask_claude(word_raw)
     print("Claude-Antwort:", data)
 
+    # Bild fuer Nomen: erst Wikimedia Commons, dann Wikipedia-Artikelbild als Fallback
     if data.get("wordType") == "Nomen":
         keyword = data.get("imageKeyword") or data.get("word", "")
-        data["imageUrl"] = find_wikimedia_image(keyword)
+        img = find_wikimedia_image(keyword)
+        if not img:
+            img = find_wikipedia_image(data.get("word", "") or keyword)
+            if img:
+                print("Fallback: Wikipedia-Artikelbild verwendet.")
+        data["imageUrl"] = img
         print(f"Bild-URL: {data['imageUrl']}")
     else:
         data["imageUrl"] = ""
