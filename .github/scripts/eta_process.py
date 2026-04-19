@@ -180,4 +180,100 @@ def append_word_to_html(data: dict, category: str):
         "}"
     )
 
-    m = re.search(r"
+    m = re.search(r"const\s+WORDS\s*=\s*\[", html)
+    if not m:
+        raise RuntimeError("WORDS-Array nicht in index.html gefunden.")
+    start = m.end()
+    depth = 1
+    i = start
+    while i < len(html) and depth > 0:
+        c = html[i]
+        if c == "[":
+            depth += 1
+        elif c == "]":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    if depth != 0:
+        raise RuntimeError("Ende von WORDS-Array nicht gefunden.")
+    before = html[:i].rstrip()
+    after = html[i:]
+    separator = ",\n" if before.endswith("}") else "\n"
+    new_html = before + separator + entry + "\n" + after
+    HTML_FILE.write_text(new_html, encoding="utf-8")
+    print(f"In index.html eingefuegt (id={wid}).")
+
+
+def append_word_to_xlsx(data: dict, category: str):
+    if not XLSX_FILE.exists():
+        print("vokabeln.xlsx nicht gefunden - ueberspringe.")
+        return
+    wb = load_workbook(XLSX_FILE)
+    ws = wb.active
+    examples = data.get("examples", [])
+    ws.append([
+        data["word"],
+        data["translation"],
+        data["pronunciation"],
+        data["wordType"],
+        data["definition"],
+        examples[0] if len(examples) > 0 else "",
+        examples[1] if len(examples) > 1 else "",
+        data.get("imageUrl", ""),
+        int(data.get("difficulty", 2)),
+        date.today().isoformat(),
+        "",
+        category,
+    ])
+    wb.save(XLSX_FILE)
+    print("In vokabeln.xlsx angehaengt.")
+
+
+def main():
+    title = os.environ.get("ISSUE_TITLE", "")
+    if not title.lower().startswith("eta:"):
+        print("Kein ETA-Issue, breche ab.")
+        return
+
+    word_raw, category = parse_issue_title(title)
+    if not word_raw:
+        print("Kein Wort im Issue-Titel gefunden.")
+        sys.exit(1)
+
+    # Doppelcheck VOR dem Claude-Call (spart API-Kosten)
+    if word_already_exists(word_raw):
+        print(f"Dublettenschutz: '{word_raw}' steht bereits in der Wortliste - ueberspringe.")
+        return
+
+    print(f"Verarbeite Wort: '{word_raw}' (Kategorie: {category})")
+
+    data = ask_claude(word_raw)
+    print("Claude-Antwort:", data)
+
+    # Zweiter Doppelcheck nach Claude's Normalisierung
+    # (z.B. Nutzer tippt 'running' -> Claude gibt 'to run' zurueck, evtl. schon vorhanden)
+    if word_already_exists(data.get("word", "")):
+        print(f"Dublettenschutz: Claude hat '{word_raw}' als '{data['word']}' normalisiert - ist bereits in der Liste, ueberspringe.")
+        return
+
+    # Bild fuer Nomen: erst Wikimedia Commons, dann Wikipedia-Artikelbild als Fallback
+    if data.get("wordType") == "Nomen":
+        keyword = data.get("imageKeyword") or data.get("word", "")
+        img = find_wikimedia_image(keyword)
+        if not img:
+            img = find_wikipedia_image(data.get("word", "") or keyword)
+            if img:
+                print("Fallback: Wikipedia-Artikelbild verwendet.")
+        data["imageUrl"] = img
+        print(f"Bild-URL: {data['imageUrl']}")
+    else:
+        data["imageUrl"] = ""
+
+    append_word_to_html(data, category)
+    append_word_to_xlsx(data, category)
+    print("Fertig.")
+
+
+if __name__ == "__main__":
+    main()
