@@ -257,6 +257,57 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 
 /* ── Subtle focus ring for accessibility ── */
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm);}
+
+/* ═══════════════════════════════════════════════
+   🧠 SRS (Spaced Repetition) – Dashboard, Level-Badges, Training-Buttons
+   ═══════════════════════════════════════════════ */
+.srs-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.srs-dash-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:center;box-shadow:var(--sh-sm);transition:transform .15s ease, box-shadow .15s ease;}
+.srs-dash-item:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+.srs-dash-num{font-size:26px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em;}
+.srs-dash-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:6px;}
+.srs-dash-item.due .srs-dash-num{color:var(--primary);}
+.srs-dash-item.new .srs-dash-num{color:var(--warn);}
+.srs-dash-item.learn .srs-dash-num{color:#2563eb;}
+.srs-dash-item.mastered .srs-dash-num{color:var(--ok);}
+@media (max-width:640px){
+  .srs-dash{grid-template-columns:repeat(2,1fr);}
+}
+
+.srs-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.srs-actions .btn{min-width:150px;}
+.btn-srs-ok{background:var(--ok);color:#fff;border:1px solid var(--ok);}
+.btn-srs-ok:hover{filter:brightness(.95);}
+.btn-srs-err{background:var(--err);color:#fff;border:1px solid var(--err);}
+.btn-srs-err:hover{filter:brightness(.95);}
+
+.srs-empty{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:48px 28px;text-align:center;box-shadow:var(--sh);}
+.srs-empty-emoji{font-size:54px;margin-bottom:14px;}
+.srs-empty h2{font-size:22px;font-weight:700;margin-bottom:6px;}
+.srs-empty p{color:var(--muted);font-size:14.5px;margin-bottom:22px;}
+
+/* Level-Badges */
+.level-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;letter-spacing:.02em;border:1px solid transparent;}
+.lvl-0{background:var(--warn-bg);color:var(--warn-text);border-color:rgba(245,158,11,.3);}
+.lvl-1,.lvl-2{background:#dbeafe;color:#1e40af;border-color:rgba(37,99,235,.25);}
+body.dark .lvl-1,body.dark .lvl-2{background:rgba(59,130,246,.15);color:#93c5fd;border-color:rgba(59,130,246,.35);}
+.lvl-3,.lvl-4{background:#e0e7ff;color:#3730a3;border-color:rgba(79,70,229,.25);}
+body.dark .lvl-3,body.dark .lvl-4{background:rgba(129,140,248,.15);color:#c7d2fe;border-color:rgba(129,140,248,.35);}
+.lvl-5,.lvl-6{background:#f3e8ff;color:#6b21a8;border-color:rgba(147,51,234,.25);}
+body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;border-color:rgba(168,85,247,.35);}
+.lvl-7{background:var(--ok-bg);color:var(--ok-text);border-color:rgba(5,150,105,.3);}
+.due-pill{display:inline-block;background:var(--primary-bg);color:var(--primary);font-size:10px;font-weight:700;padding:1px 7px;border-radius:var(--radius-full);letter-spacing:.04em;text-transform:uppercase;margin-left:6px;}
+
+.srs-settings-row{display:flex;justify-content:flex-end;margin-top:18px;}
+.srs-reset-btn{background:transparent;color:var(--muted);border:1px dashed var(--border-strong);padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;transition:color .15s, border-color .15s;}
+.srs-reset-btn:hover{color:var(--err);border-color:var(--err);}
+
+.srs-intro{background:var(--primary-bg);border:1px solid rgba(99,102,241,.25);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13.5px;color:var(--text-soft);}
+.srs-intro strong{color:var(--primary);}
+
+/* Karteikarten: SRS-Bewertungszeile */
+.srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
 </style>
 </head>
 <body>
@@ -277,7 +328,8 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 </header>
 
 <nav>
-  <button class="tab active" onclick="setMode('flash',this)">🃏 Karteikarten</button>
+  <button class="tab active" onclick="setMode('train',this)">🧠 Training</button>
+  <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
   <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
   <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
   <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
@@ -1639,7 +1691,7 @@ const WORDS = [
 /* ═══════════════════════════════════════════════
    App-Zustand
    ═══════════════════════════════════════════════ */
-let mode = 'flash';
+let mode = 'train';
 let deck = [];
 let idx = 0;
 let flipped = false;
@@ -1757,12 +1809,113 @@ function progressHTML(cur,total){
 }
 
 /* ═══════════════════════════════════════════════
+   🧠 SPACED REPETITION (Leitner-Box, Lexilize-inspiriert)
+   ═══════════════════════════════════════════════ */
+const SRS = {
+  KEY: 'etSRS_v1',
+  // index = stufe; INTERVALS_DAYS[level] = Tage bis zur naechsten Wiederholung
+  INTERVALS_DAYS: [0, 0, 1, 3, 7, 14, 30, 90],
+  LABELS: ['Neu','Lernen','+1 Tag','+3 Tage','+7 Tage','+2 Wo','+30 Tage','Gemeistert'],
+  state: {},
+
+  load(){
+    try { this.state = JSON.parse(localStorage.getItem(this.KEY) || '{}'); }
+    catch(e){ this.state = {}; }
+  },
+  save(){
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+  // Lokales Datum als YYYY-MM-DD (timezone-safe, unabhaengig von UTC-Offset)
+  localISO(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dd}`;
+  },
+  todayISO(){ return this.localISO(new Date()); },
+  addDays(iso, days){
+    const [y,m,dd] = iso.split('-').map(Number);
+    const d = new Date(y, m-1, dd);
+    d.setDate(d.getDate() + days);
+    return this.localISO(d);
+  },
+  entry(id){
+    if(!this.state[id]){
+      this.state[id] = { level:0, nextDue:this.todayISO(), lastReview:null, ok:0, wrong:0 };
+    }
+    return this.state[id];
+  },
+  isDue(id){
+    const e = this.entry(id);
+    return e.nextDue <= this.todayISO();
+  },
+  markCorrect(id){
+    const e = this.entry(id);
+    e.level = Math.min(7, (e.level||0) + 1);
+    e.lastReview = this.todayISO();
+    e.nextDue = this.addDays(this.todayISO(), this.INTERVALS_DAYS[e.level] || 0);
+    e.ok = (e.ok||0) + 1;
+    this.save();
+  },
+  markWrong(id){
+    const e = this.entry(id);
+    e.level = 1;
+    e.lastReview = this.todayISO();
+    e.nextDue = this.todayISO(); // sofort wieder
+    e.wrong = (e.wrong||0) + 1;
+    this.save();
+  },
+  resetAll(){
+    this.state = {};
+    this.save();
+  },
+  stats(words){
+    const today = this.todayISO();
+    let due=0, fresh=0, learning=0, mastered=0;
+    words.forEach(w => {
+      const e = this.state[w.id];
+      if(!e){ fresh++; due++; return; }
+      if(e.level >= 7) mastered++;
+      else if(e.level >= 1) learning++;
+      else fresh++;
+      if(e.nextDue <= today) due++;
+    });
+    return { due, fresh, learning, mastered, total: words.length };
+  },
+  dueQueue(words){
+    const today = this.todayISO();
+    return words
+      .filter(w => {
+        const e = this.state[w.id];
+        return !e || e.nextDue <= today;
+      })
+      .sort((a,b) => {
+        const ea = this.state[a.id], eb = this.state[b.id];
+        const la = ea ? ea.level : 0, lb = eb ? eb.level : 0;
+        // Niedrige Stufen zuerst (faellige Lernwoerter), neue gemischt rein
+        if(la !== lb) return la - lb;
+        return Math.random() - 0.5;
+      });
+  }
+};
+SRS.load();
+
+let trainDeck = [];
+let trainIdx = 0;
+let trainFlipped = false;
+
+/* ═══════════════════════════════════════════════
    Mode switching
    ═══════════════════════════════════════════════ */
 function setMode(m, btn){
   mode = m;
   idx = 0; flipped = false; quizAnswered = false; fillChecked = false;
-  deck = shuffle(WORDS);
+  trainIdx = 0; trainFlipped = false;
+  if(m === 'train'){
+    trainDeck = SRS.dueQueue(WORDS);
+  } else {
+    deck = shuffle(WORDS);
+  }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
   render();
@@ -1772,10 +1925,135 @@ function setMode(m, btn){
    RENDER dispatcher
    ═══════════════════════════════════════════════ */
 function render(){
-  if(mode==='flash') renderFlash();
+  if(mode==='train') renderTrain();
+  else if(mode==='flash') renderFlash();
   else if(mode==='quiz') renderQuiz();
   else if(mode==='fill') renderFill();
   else renderList();
+}
+
+/* ═══════════════════════════════════════════════
+   🧠 TRAINING (Spaced Repetition)
+   ═══════════════════════════════════════════════ */
+function srsDashHTML(){
+  const s = SRS.stats(WORDS);
+  return `
+    <div class="srs-dash">
+      <div class="srs-dash-item due"><div class="srs-dash-num">${s.due}</div><div class="srs-dash-label">Heute fällig</div></div>
+      <div class="srs-dash-item new"><div class="srs-dash-num">${s.fresh}</div><div class="srs-dash-label">Neu</div></div>
+      <div class="srs-dash-item learn"><div class="srs-dash-num">${s.learning}</div><div class="srs-dash-label">Im Lernen</div></div>
+      <div class="srs-dash-item mastered"><div class="srs-dash-num">${s.mastered}</div><div class="srs-dash-label">Gemeistert</div></div>
+    </div>`;
+}
+
+function renderTrain(){
+  const app = document.getElementById('app');
+  const dash = srsDashHTML();
+  const stats = SRS.stats(WORDS);
+
+  if(!trainDeck.length){
+    trainDeck = SRS.dueQueue(WORDS);
+  }
+
+  if(!trainDeck.length || trainIdx >= trainDeck.length){
+    // Alles erledigt fuer heute
+    app.innerHTML = `
+      ${dash}
+      <div class="srs-empty">
+        <div class="srs-empty-emoji">🎉</div>
+        <h2>${trainIdx > 0 ? 'Sitzung abgeschlossen!' : 'Heute alles erledigt!'}</h2>
+        <p>${trainIdx > 0
+          ? `Du hast ${trainIdx} Wörter durchgegangen. Komm morgen wieder – die nächste Wiederholung wartet.`
+          : 'Es gibt aktuell keine fälligen Wörter. Schau später wieder vorbei oder übe frei in den anderen Modi.'}</p>
+        <div class="srs-actions">
+          <button class="btn btn-primary" onclick="setMode('flash',document.querySelectorAll('.tab')[1])">🃏 Freie Übung: Karteikarten</button>
+          <button class="btn btn-outline" onclick="setMode('list',document.querySelectorAll('.tab')[4])">📋 Wortliste</button>
+        </div>
+        <div class="srs-settings-row">
+          <button class="srs-reset-btn" onclick="resetSRS()">Lernfortschritt zurücksetzen</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const w = trainDeck[trainIdx];
+  const e = SRS.entry(w.id);
+  const lvl = e.level || 0;
+  const imgFront = getImg(w)
+    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" onerror="this.style.display='none'">`
+    : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
+  const examplesHTML = w.examples.map(ex =>
+    `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
+  ).join('');
+
+  app.innerHTML = `
+    ${dash}
+    <div class="srs-intro">
+      <strong>Stufe ${lvl}/7 · ${SRS.LABELS[lvl]}</strong> – Drehe die Karte um, dann bewerte ehrlich, ob du das Wort wusstest.
+    </div>
+    ${progressHTML(trainIdx+1, trainDeck.length)}
+    <div class="scene">
+      <div class="flashcard ${trainFlipped?'flipped':''}" id="trainFc" onclick="flipTrain()">
+        <div class="face">
+          ${imgFront}
+          <div class="fc-word">${w.word}</div>
+          <div class="fc-pronunciation">${w.pronunciation}</div>
+          <div class="fc-badges">
+            <span class="badge badge-type">${w.wordType}</span>
+            <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+            <span class="level-badge lvl-${lvl}">Stufe ${lvl}</span>
+          </div>
+          <div class="fc-front-example">📝 „${w.examples[0]}"</div>
+          <div class="fc-hint">Tippe, um umzudrehen ↕</div>
+        </div>
+        <div class="face face-back">
+          <div class="back-section-label">📖 Definition</div>
+          <div class="back-def">${w.definition}</div>
+          <div class="back-section-label">📝 Beispiele</div>
+          ${examplesHTML}
+          <div class="back-translation-small">🇩🇪 ${w.translation}</div>
+        </div>
+      </div>
+    </div>
+    <div class="srs-rate-row" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
+      <button class="btn btn-srs-err" onclick="rateTrain(false)">✗ Nicht gewusst</button>
+      <button class="btn btn-srs-ok" onclick="rateTrain(true)">✓ Gewusst</button>
+    </div>
+    <div class="nav-row">
+      <span class="nav-pos">${trainIdx+1} / ${trainDeck.length}</span>
+      <button class="btn btn-outline btn-sm" onclick="flipTrain()">${trainFlipped?'Zurück':'Umdrehen ↕'}</button>
+    </div>
+    <div class="srs-settings-row">
+      <button class="srs-reset-btn" onclick="resetSRS()">Lernfortschritt zurücksetzen</button>
+    </div>`;
+}
+
+function flipTrain(){
+  trainFlipped = !trainFlipped;
+  const fc = document.getElementById('trainFc');
+  if(fc) fc.classList.toggle('flipped', trainFlipped);
+  const rate = document.getElementById('trainRate');
+  if(rate) rate.style.display = trainFlipped ? 'flex' : 'none';
+}
+
+function rateTrain(wasCorrect){
+  if(!trainFlipped) return; // muss erst aufgedeckt werden
+  const w = trainDeck[trainIdx];
+  if(wasCorrect){ SRS.markCorrect(w.id); correct++; }
+  else          { SRS.markWrong(w.id);   incorrect++; }
+  updateStats();
+  trainIdx++;
+  trainFlipped = false;
+  render();
+}
+
+function resetSRS(){
+  if(!confirm('Wirklich allen Lernfortschritt zurücksetzen? Diese Aktion lässt sich nicht rückgängig machen.')) return;
+  SRS.resetAll();
+  trainIdx = 0;
+  trainFlipped = false;
+  trainDeck = SRS.dueQueue(WORDS);
+  render();
 }
 
 /* ═══════════════════════════════════════════════
@@ -1841,6 +2119,10 @@ function flipCard(){
 }
 
 function markCard(wasCorrect){
+  const w = deck[idx];
+  if(w){
+    if(wasCorrect) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(wasCorrect){ correct++; } else { incorrect++; }
   updateStats();
   idx++;
@@ -1894,6 +2176,10 @@ function answerQuiz(chosen){
   if(quizAnswered) return;
   quizAnswered = true;
   const isOk = chosen === quizCorrectIdx;
+  const w = deck[idx];
+  if(w){
+    if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(isOk){ correct++; } else { incorrect++; }
   updateStats();
 
@@ -1974,6 +2260,9 @@ function checkFill(){
   input.classList.remove('live-ok');
   const isOk = answer.toLowerCase() === w.word.toLowerCase();
 
+  if(w){
+    if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(isOk){ correct++; } else { incorrect++; }
   updateStats();
 
@@ -2031,6 +2320,11 @@ function renderList(){
       ? `<img class="wc-detail-img" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.style.display='none'">`
       : '';
     const catBadge = `<span class="badge ${catBadgeClass(w.category)}">${w.category}</span>`;
+    const sEntry = SRS.state[w.id];
+    const lvl = sEntry ? (sEntry.level||0) : 0;
+    const isDue = SRS.isDue(w.id);
+    const lvlBadge = `<span class="level-badge lvl-${lvl}" title="Lernstufe ${lvl}/7 – ${SRS.LABELS[lvl]}">L${lvl}</span>`;
+    const duePill = isDue ? `<span class="due-pill" title="Heute zur Wiederholung fällig">Fällig</span>` : '';
     return `
     <div class="word-card ${listOpen[w.id]?'open':''}" onclick="toggleCard(event,${w.id})">
       <div class="wc-top">
@@ -2039,10 +2333,12 @@ function renderList(){
           <div class="wc-title-row">
             <span class="wc-word">${esc(w.word)}</span>
             <span class="wc-pron">${esc(w.pronunciation)}</span>
+            ${duePill}
           </div>
           <div class="wc-translation">${esc(w.translation)}</div>
         </div>
         <div class="wc-meta">
+          ${lvlBadge}
           ${catBadge}
           <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
           <span class="wc-chev">▾</span>
@@ -2159,6 +2455,7 @@ function toggleTheme(){
    ═══════════════════════════════════════════════ */
 document.getElementById('wordCountLabel').textContent = `${WORDS.length} Wörter gespeichert`; // auto-updated
 deck = shuffle(WORDS);
+trainDeck = SRS.dueQueue(WORDS);
 render();
 // Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
 prefetchImages();
