@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HTML_FILE = ROOT / "index.html"
 XLSX_FILE = ROOT / "vokabeln.xlsx"
 
-CLAUDE_MODEL = "claude-sonnet-4-5"
+CLAUDE_MODEL = "claude-sonnet-4-5"  # schnell & guenstig, gute Qualitaet
 
 SYSTEM_PROMPT = """Du bist ein Englisch-Lehrer-Assistent. Der Nutzer nennt dir ein englisches Wort.
 Liefere ein JSON-Objekt mit exakt diesen Feldern:
@@ -44,7 +44,10 @@ Liefere ein JSON-Objekt mit exakt diesen Feldern:
 Antworte NUR mit dem JSON-Objekt, ohne Code-Fence, ohne Erklaerung."""
 
 
+# ---------- Hilfsfunktionen ----------
+
 def parse_issue_title(title: str):
+    """ETA: brick #TV  ->  ("brick", "TV")"""
     body = title[len("ETA:"):].strip() if title.lower().startswith("eta:") else title
     cat_match = re.search(r"#(\S+)", body)
     category = cat_match.group(1) if cat_match else "Allgemein"
@@ -61,11 +64,13 @@ def ask_claude(word: str) -> dict:
         messages=[{"role": "user", "content": f"Wort: {word}"}],
     )
     text = msg.content[0].text.strip()
+    # Sicherheitsnetz: falls Claude doch mal einen Code-Fence liefert
     text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text, flags=re.MULTILINE).strip()
     return json.loads(text)
 
 
 def find_wikimedia_image(keyword: str) -> str:
+    """Sucht ein Bild auf Wikimedia Commons und liefert eine stabile Special:FilePath-URL."""
     if not keyword:
         return ""
     try:
@@ -75,7 +80,7 @@ def find_wikimedia_image(keyword: str) -> str:
             "format": "json",
             "list": "search",
             "srsearch": f"{keyword} filetype:bitmap",
-            "srnamespace": "6",
+            "srnamespace": "6",  # File-Namespace
             "srlimit": "5",
         }
         r = requests.get(api, params=params, headers={"User-Agent": "ETA-Bot/1.0"}, timeout=15)
@@ -85,6 +90,7 @@ def find_wikimedia_image(keyword: str) -> str:
             title = h.get("title", "")
             if title.lower().startswith("file:"):
                 filename = title[5:]
+                # Nur "einfache" Dateitypen akzeptieren
                 if re.search(r"\.(jpg|jpeg|png|gif|webp)$", filename, re.I):
                     safe = filename.replace(" ", "_")
                     return f"https://commons.wikimedia.org/wiki/Special:FilePath/{safe}?width=400"
@@ -94,18 +100,26 @@ def find_wikimedia_image(keyword: str) -> str:
 
 
 def find_wikipedia_image(keyword: str) -> str:
-    """Fallback: Hauptbild des englischen Wikipedia-Artikels."""
+    """Fallback: holt das Hauptbild des englischen Wikipedia-Artikels zum Wort.
+
+    Funktioniert besonders gut fuer abstrakte Nomen (z.B. 'Freedom', 'Democracy'),
+    bei denen die Wikimedia-Commons-Suche oft nichts Brauchbares liefert.
+    Nutzt die kostenlose Page-Summary-REST-API von Wikipedia (kein API-Key noetig).
+    """
     if not keyword:
         return ""
     try:
+        # Erstes Wort als Artikel-Titel; Leerzeichen werden in Unterstriche umgewandelt
         title = urllib.parse.quote(keyword.strip().replace(" ", "_"))
         url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
         r = requests.get(url, headers={"User-Agent": "ETA-Bot/1.0"}, timeout=15)
         if r.status_code != 200:
             return ""
         data = r.json()
+        # Disambiguation-Seiten ueberspringen (z.B. "Bat" -> mehrere Bedeutungen)
         if data.get("type") == "disambiguation":
             return ""
+        # originalimage hat hoehere Aufloesung als thumbnail
         img = (
             data.get("originalimage", {}).get("source")
             or data.get("thumbnail", {}).get("source", "")
@@ -117,12 +131,14 @@ def find_wikipedia_image(keyword: str) -> str:
 
 
 def next_word_id(html: str) -> int:
-    ids = [int(m) for m in re.findall(r'"id"\s*:\s*(\d+)', html)]
+    # Erkennt sowohl JS-Kurzstil (id: 1) als auch JSON-Stil ("id": 1)
+    ids = [int(m) for m in re.findall(r'\bid"?\s*:\s*(\d+)', html)]
     return (max(ids) + 1) if ids else 1
 
 
 def normalize_word(w: str) -> str:
-    """Normalisiert ein Wort fuer den Dubletten-Vergleich:
+    """Normalisiert ein Wort fuer den Dubletten-Vergleich.
+
     - macht alles klein
     - schneidet Whitespace ab
     - entfernt fuehrendes 'to ' (damit 'to struggle' == 'struggle')
@@ -143,7 +159,8 @@ def word_already_exists(word_raw: str) -> bool:
         html = HTML_FILE.read_text(encoding="utf-8")
     except Exception:
         return False
-    existing = re.findall(r'"word"\s*:\s*"([^"]+)"', html)
+    # Erkennt sowohl JS-Kurzstil (word: "...") als auch JSON-Stil ("word": "...")
+    existing = re.findall(r'\bword"?\s*:\s*"([^"]+)"', html)
     candidate = normalize_word(word_raw)
     return any(normalize_word(w) == candidate for w in existing)
 
@@ -180,6 +197,8 @@ def append_word_to_html(data: dict, category: str):
         "}"
     )
 
+    # WORDS-Array-Ende finden: das schliessende "]" des Arrays
+    # Wir suchen den ersten Treffer fuer "const WORDS = [" und laufen dann zum passenden "]".
     m = re.search(r"const\s+WORDS\s*=\s*\[", html)
     if not m:
         raise RuntimeError("WORDS-Array nicht in index.html gefunden.")
@@ -197,6 +216,7 @@ def append_word_to_html(data: dict, category: str):
         i += 1
     if depth != 0:
         raise RuntimeError("Ende von WORDS-Array nicht gefunden.")
+    # i zeigt auf das schliessende "]"
     before = html[:i].rstrip()
     after = html[i:]
     separator = ",\n" if before.endswith("}") else "\n"
@@ -230,6 +250,8 @@ def append_word_to_xlsx(data: dict, category: str):
     print("In vokabeln.xlsx angehaengt.")
 
 
+# ---------- Main ----------
+
 def main():
     title = os.environ.get("ISSUE_TITLE", "")
     if not title.lower().startswith("eta:"):
@@ -241,7 +263,7 @@ def main():
         print("Kein Wort im Issue-Titel gefunden.")
         sys.exit(1)
 
-    # Doppelcheck VOR dem Claude-Call (spart API-Kosten)
+    # Doppelcheck VOR dem (kostenpflichtigen) Claude-Call:
     if word_already_exists(word_raw):
         print(f"Dublettenschutz: '{word_raw}' steht bereits in der Wortliste - ueberspringe.")
         return
@@ -251,17 +273,20 @@ def main():
     data = ask_claude(word_raw)
     print("Claude-Antwort:", data)
 
-    # Zweiter Doppelcheck nach Claude's Normalisierung
-    # (z.B. Nutzer tippt 'running' -> Claude gibt 'to run' zurueck, evtl. schon vorhanden)
+    # Zweiter Doppelcheck nach Claude's Normalisierung:
+    # z.B. wenn der Nutzer 'running' tippt, gibt Claude 'to run' zurueck - und das ist evtl. schon drin.
     if word_already_exists(data.get("word", "")):
         print(f"Dublettenschutz: Claude hat '{word_raw}' als '{data['word']}' normalisiert - ist bereits in der Liste, ueberspringe.")
         return
 
-    # Bild fuer Nomen: erst Wikimedia Commons, dann Wikipedia-Artikelbild als Fallback
+    # Bild fuer Nomen
     if data.get("wordType") == "Nomen":
         keyword = data.get("imageKeyword") or data.get("word", "")
+        # 1. Versuch: Wikimedia Commons (gut fuer konkrete Nomen wie "Brick", "Spatula")
         img = find_wikimedia_image(keyword)
+        # 2. Versuch: Wikipedia-Artikelbild (gut fuer abstrakte Nomen wie "Freedom")
         if not img:
+            # Beim Fallback das Wort selbst nehmen, nicht das oft generischere imageKeyword
             img = find_wikipedia_image(data.get("word", "") or keyword)
             if img:
                 print("Fallback: Wikipedia-Artikelbild verwendet.")
