@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sync einrichten – English Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#4f46e5; --primary2:#6366f1; --primary-bg:#eef2ff;
+  --ok:#059669; --ok-bg:#d1fae5; --err:#dc2626; --err-bg:#fee2e2;
+  --warn:#f59e0b; --warn-bg:#fef3c7; --warn-text:#92400e;
+  --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --text-soft:#334155; --muted:#64748b;
+  --border:#e5e7eb; --radius:14px; --radius-sm:10px; --radius-full:9999px;
+  --sh:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:780px;margin:0 auto;padding:40px 24px 80px;}
+header{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+h1{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;}
+.sub{color:var(--muted);font-size:15px;}
+h2{font-size:20px;font-weight:700;margin:36px 0 14px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;font-size:14px;font-weight:700;flex-shrink:0;}
+h3{font-size:15.5px;font-weight:600;margin:18px 0 8px;color:var(--text-soft);}
+p{margin-bottom:12px;color:var(--text-soft);}
+ul,ol{margin:10px 0 16px 22px;color:var(--text-soft);}
+li{margin-bottom:8px;}
+code{font-family:'SFMono-Regular',Consolas,Menlo,monospace;background:var(--primary-bg);color:var(--primary);padding:2px 7px;border-radius:4px;font-size:13px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin:16px 0;box-shadow:var(--sh);}
+.tip{background:var(--primary-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:var(--radius-sm);margin:16px 0;font-size:14px;}
+.warn{background:var(--warn-bg);border-left:4px solid var(--warn);color:var(--warn-text);padding:14px 18px;border-radius:var(--radius-sm);margin:16px 0;font-size:14px;}
+.ok{background:var(--ok-bg);border-left:4px solid var(--ok);padding:14px 18px;border-radius:var(--radius-sm);margin:16px 0;font-size:14px;color:#065f46;}
+a{color:var(--primary);text-decoration:none;font-weight:500;}
+a:hover{text-decoration:underline;}
+.btn{display:inline-block;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;margin:8px 8px 8px 0;border:none;cursor:pointer;}
+.btn:hover{background:var(--primary2);text-decoration:none;}
+kbd{font-family:'SFMono-Regular',Menlo,monospace;background:#f1f5f9;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:2px 6px;font-size:12.5px;color:var(--text-soft);}
+.flex-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+@media (max-width:640px){ .flex-cols{grid-template-columns:1fr;} }
+.mini-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;}
+.mini-card h3{margin-top:0;font-size:14px;color:var(--primary);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>☁️ Sync einrichten</h1>
+  <p class="sub">Handy und Laptop sollen denselben Lernfortschritt zeigen. Einmal einrichten, dann läuft es automatisch.</p>
+</header>
+
+<div class="card">
+  <h3 style="margin-top:0;">Wie der Sync funktioniert</h3>
+  <p style="margin-bottom:0;">Der Trainer speichert pro Wort die Stufe (0–7), das nächste Fälligkeitsdatum und die Trefferquote. Diese Daten werden als einzelne JSON-Datei in einem <strong>privaten GitHub-Gist</strong> abgelegt. Bei jeder Bewertung pusht die App den neuen Stand in den Gist; beim Öffnen oder Zurückkehren auf einen Tab zieht sie den neuesten Stand. Beide Geräte nutzen denselben Gist – damit sind sie immer synchron.</p>
+</div>
+
+<h2><span class="step-num">1</span>Token bei GitHub erstellen</h2>
+
+<p>Der Token ist ein Passwort, mit dem die App auf deinen Gist zugreifen darf. Er braucht <strong>nur Gist-Zugriff</strong> – kein Zugriff auf deine Repos.</p>
+
+<ol>
+  <li>Öffne <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (Fine-grained Token).</li>
+  <li><strong>Token name:</strong> <code>English-Trainer-Sync</code></li>
+  <li><strong>Expiration:</strong> wähle <em>Custom</em> → ein Datum in 1 Jahr. (Erinnerung: rechtzeitig vor Ablauf neuen Token erstellen.)</li>
+  <li><strong>Resource owner:</strong> dein eigener Account (<em>timlbclaude</em>).</li>
+  <li><strong>Repository access:</strong> <em>Public Repositories (read-only)</em> — Gists werden separat behandelt, die App braucht keine Repo-Rechte.</li>
+  <li><strong>Account permissions</strong> → Gists → <em>Access: Read and write</em>. Das ist die einzige Berechtigung, die du setzen musst.</li>
+  <li>Klicke <em>Generate token</em>. Der Token wird einmalig angezeigt — sofort kopieren. Er beginnt mit <code>github_pat_</code>.</li>
+</ol>
+
+<div class="warn">
+  <strong>Wichtig:</strong> Der Token ist ein Passwort. Nicht in Chats posten, nicht in Screenshots zeigen. Der Token wird nur in localStorage deines Browsers gespeichert und bei jedem Sync direkt an GitHub geschickt — er landet nirgendwo sonst.
+</div>
+
+<div class="tip">
+  <strong>Alternative – Classic Token:</strong> Wenn der Fine-grained-Flow zickt, funktioniert auch ein klassischer Token unter <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a> mit einzigem Scope <code>gist</code>.
+</div>
+
+<h2><span class="step-num">2</span>Auf dem ersten Gerät einrichten (z.B. Laptop)</h2>
+
+<ol>
+  <li>Öffne den English Trainer.</li>
+  <li>Gehe zum Tab <strong>🧠 Training</strong>.</li>
+  <li>Oben rechts im Dashboard siehst du den Button <strong>☁️ Sync einrichten</strong>. Klick drauf.</li>
+  <li>Füge den gerade kopierten Token ins Feld <em>GitHub Personal Access Token</em> ein.</li>
+  <li>Das Feld <em>Gist-ID</em> lässt du <strong>leer</strong>. Klick <em>Speichern &amp; Verbinden</em>.</li>
+  <li>Die App legt automatisch einen privaten Gist an und zeigt dir die neu erzeugte <strong>Gist-ID</strong> (sieht aus wie <code>a1b2c3d4e5f6...</code>).</li>
+  <li>Mit dem Button <em>📋 ID kopieren</em> kommt die ID in die Zwischenablage.</li>
+</ol>
+
+<div class="ok">
+  ✓ Auf dem Badge oben rechts sollte jetzt <strong>☁️ Synchronisiert · HH:MM</strong> stehen.
+</div>
+
+<h2><span class="step-num">3</span>Zweites Gerät koppeln (z.B. Handy)</h2>
+
+<ol>
+  <li>Öffne den English Trainer auf dem zweiten Gerät.</li>
+  <li>Tab <strong>🧠 Training</strong> → <strong>☁️ Sync einrichten</strong>.</li>
+  <li>Trag <strong>denselben Token</strong> ein (am einfachsten: Token vorher kurz in einer Notiz an sich selbst verschicken, dort auf dem Handy öffnen, kopieren, in App einfügen, Notiz löschen).</li>
+  <li>Trag <strong>die Gist-ID</strong> vom ersten Gerät ein.</li>
+  <li>Klick <em>Speichern &amp; Verbinden</em>.</li>
+  <li>Das Handy zieht jetzt den aktuellen Stand und übernimmt ihn.</li>
+</ol>
+
+<div class="tip">
+  <strong>Tipp für den Token-Transfer:</strong> E-Mail an dich selbst mit Betreff <em>"ETA-Sync Token"</em>. Schreib den Token ins Mail-Body, nicht in den Betreff. Nach erfolgreichem Setup auf dem Handy: Mail löschen (auch aus dem Papierkorb). Alternativ: Token nochmal neu erstellen für das zweite Gerät – beide funktionieren parallel.
+</div>
+
+<h2><span class="step-num">4</span>Wie du erkennst, dass der Sync läuft</h2>
+
+<div class="flex-cols">
+  <div class="mini-card">
+    <h3>☁️ Synchronisiert · 14:32</h3>
+    <p style="margin:0;font-size:13.5px;">Alles gut. Die Zeit ist der letzte erfolgreiche Sync.</p>
+  </div>
+  <div class="mini-card">
+    <h3>⟳ Synchronisiere…</h3>
+    <p style="margin:0;font-size:13.5px;">Gerade dabei, Daten zu schicken/holen. Kurz warten.</p>
+  </div>
+  <div class="mini-card">
+    <h3>⚠️ Sync-Fehler</h3>
+    <p style="margin:0;font-size:13.5px;">Token ungültig, kein Netz, oder Gist gelöscht. Klick für Details.</p>
+  </div>
+  <div class="mini-card">
+    <h3>☁️ Sync einrichten</h3>
+    <p style="margin:0;font-size:13.5px;">Auf diesem Gerät ist Sync noch nicht konfiguriert.</p>
+  </div>
+</div>
+
+<h2>Wann wird synchronisiert?</h2>
+<ul>
+  <li><strong>Automatisch nach jeder Bewertung</strong> (✓ Gewusst / ✗ Nicht gewusst) – nach 1,5 s debounced, damit schnelle Klick-Serien zu einem einzigen Upload zusammengefasst werden.</li>
+  <li><strong>Beim Öffnen der Seite</strong> – holt den aktuellsten Stand vom anderen Gerät.</li>
+  <li><strong>Wenn der Tab wieder in den Vordergrund kommt</strong> – zum Beispiel nach dem Umschalten vom Handy zurück zum Trainer.</li>
+  <li><strong>Wenn das Internet zurückkehrt</strong> nach kurzer Offline-Phase.</li>
+  <li><strong>Manuell</strong> über den <em>⟳ Sync</em>-Button neben dem Badge.</li>
+</ul>
+
+<h2>Konflikt-Auflösung</h2>
+<p>Falls doch mal beide Geräte gleichzeitig dasselbe Wort bewerten: Pro Wort-ID gewinnt der Eintrag mit dem jüngeren Zeitstempel (<code>updatedAt</code>, Millisekunden-Präzision). Das wird in der Praxis nicht auftreten, weil du alleine trainierst.</p>
+
+<h2>Sicherheit &amp; Privatsphäre</h2>
+<ul>
+  <li>Der Gist ist <strong>privat</strong> — nur mit deinem GitHub-Account sichtbar.</li>
+  <li>Der Token hat <strong>nur Gist-Scope</strong>. Selbst bei einem Leak kann damit niemand in deine Repos schreiben.</li>
+  <li>Token und Gist-ID liegen nur in <code>localStorage</code> deines Browsers — nicht im Repo, nicht in GitHub Pages.</li>
+  <li>Widerruf: Jederzeit unter <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a> den Token sofort invalidieren.</li>
+</ul>
+
+<h2>Trennen oder Zurücksetzen</h2>
+<p>Klick auf das Sync-Badge → Modal öffnet sich → Token-Feld leeren → <em>Speichern &amp; Verbinden</em>. Das trennt das Gerät vom Sync. Der Gist selbst bleibt erhalten.</p>
+
+<p>Um den Gist ganz zu löschen: <a href="https://gist.github.com" target="_blank" rel="noopener">gist.github.com</a> öffnen, den Gist mit dem Titel <em>„English Trainer – SRS Sync"</em> aufrufen, <em>Delete</em>. Dann auf beiden Geräten im Sync-Modal auch das Gist-ID-Feld leeren.</p>
+
+<div class="card" style="margin-top:40px;text-align:center;">
+  <h3 style="margin-top:0;">Fertig?</h3>
+  <p>Zurück zum Trainer und loslegen.</p>
+  <a href="index.html" class="btn">🇬🇧 Zurück zum English Trainer</a>
+</div>
+
+</div>
+</body>
+</html>

@@ -257,6 +257,83 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 
 /* ── Subtle focus ring for accessibility ── */
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm);}
+
+/* ═══════════════════════════════════════════════
+   🧠 SRS (Spaced Repetition) – Dashboard, Level-Badges, Training-Buttons
+   ═══════════════════════════════════════════════ */
+.srs-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.srs-dash-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:center;box-shadow:var(--sh-sm);transition:transform .15s ease, box-shadow .15s ease;}
+.srs-dash-item:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+.srs-dash-num{font-size:26px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em;}
+.srs-dash-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:6px;}
+.srs-dash-item.due .srs-dash-num{color:var(--primary);}
+.srs-dash-item.new .srs-dash-num{color:var(--warn);}
+.srs-dash-item.learn .srs-dash-num{color:#2563eb;}
+.srs-dash-item.mastered .srs-dash-num{color:var(--ok);}
+@media (max-width:640px){
+  .srs-dash{grid-template-columns:repeat(2,1fr);}
+}
+
+.srs-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.srs-actions .btn{min-width:150px;}
+.btn-srs-ok{background:var(--ok);color:#fff;border:1px solid var(--ok);}
+.btn-srs-ok:hover{filter:brightness(.95);}
+.btn-srs-err{background:var(--err);color:#fff;border:1px solid var(--err);}
+.btn-srs-err:hover{filter:brightness(.95);}
+
+.srs-empty{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:48px 28px;text-align:center;box-shadow:var(--sh);}
+.srs-empty-emoji{font-size:54px;margin-bottom:14px;}
+.srs-empty h2{font-size:22px;font-weight:700;margin-bottom:6px;}
+.srs-empty p{color:var(--muted);font-size:14.5px;margin-bottom:22px;}
+
+/* Level-Badges */
+.level-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;letter-spacing:.02em;border:1px solid transparent;}
+.lvl-0{background:var(--warn-bg);color:var(--warn-text);border-color:rgba(245,158,11,.3);}
+.lvl-1,.lvl-2{background:#dbeafe;color:#1e40af;border-color:rgba(37,99,235,.25);}
+body.dark .lvl-1,body.dark .lvl-2{background:rgba(59,130,246,.15);color:#93c5fd;border-color:rgba(59,130,246,.35);}
+.lvl-3,.lvl-4{background:#e0e7ff;color:#3730a3;border-color:rgba(79,70,229,.25);}
+body.dark .lvl-3,body.dark .lvl-4{background:rgba(129,140,248,.15);color:#c7d2fe;border-color:rgba(129,140,248,.35);}
+.lvl-5,.lvl-6{background:#f3e8ff;color:#6b21a8;border-color:rgba(147,51,234,.25);}
+body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;border-color:rgba(168,85,247,.35);}
+.lvl-7{background:var(--ok-bg);color:var(--ok-text);border-color:rgba(5,150,105,.3);}
+.due-pill{display:inline-block;background:var(--primary-bg);color:var(--primary);font-size:10px;font-weight:700;padding:1px 7px;border-radius:var(--radius-full);letter-spacing:.04em;text-transform:uppercase;margin-left:6px;}
+
+.srs-settings-row{display:flex;justify-content:flex-end;margin-top:18px;}
+.srs-reset-btn{background:transparent;color:var(--muted);border:1px dashed var(--border-strong);padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;transition:color .15s, border-color .15s;}
+.srs-reset-btn:hover{color:var(--err);border-color:var(--err);}
+
+.srs-intro{background:var(--primary-bg);border:1px solid rgba(99,102,241,.25);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13.5px;color:var(--text-soft);}
+.srs-intro strong{color:var(--primary);}
+
+/* Sync-Badge & Leiste */
+.sync-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--radius-full);font-size:12px;font-weight:600;letter-spacing:.01em;border:1px solid var(--border);background:var(--card);cursor:pointer;user-select:none;transition:all .15s ease;}
+.sync-badge:hover{border-color:var(--border-strong);background:var(--card-hover);}
+.sync-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 25%,var(--border));background:var(--ok-bg);}
+.sync-off{color:var(--muted);border-style:dashed;}
+.sync-err{color:var(--err);border-color:color-mix(in srgb,var(--err) 25%,var(--border));background:var(--err-bg);}
+.sync-active{color:var(--primary);border-color:color-mix(in srgb,var(--primary) 30%,var(--border));background:var(--primary-bg);}
+.sync-manual-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:var(--radius-full);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s ease;}
+.sync-manual-btn:hover{color:var(--primary);border-color:var(--primary);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:18px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);color:var(--text);border-radius:var(--radius-lg);padding:24px;max-width:520px;width:100%;box-shadow:var(--sh-lg);border:1px solid var(--border);max-height:90vh;overflow-y:auto;}
+.modal h2{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px;}
+.modal .modal-sub{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.5;}
+.modal label{display:block;font-size:12px;font-weight:600;color:var(--text-soft);margin-bottom:6px;letter-spacing:.02em;}
+.modal .input{width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;background:var(--bg);color:var(--text);margin-bottom:14px;transition:border-color .15s;}
+.modal .input:focus{outline:none;border-color:var(--primary);}
+.modal .input.mono{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:12px;}
+.modal .hint{font-size:12.5px;color:var(--muted);background:var(--primary-bg);border-left:3px solid var(--primary);padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:14px;line-height:1.5;}
+.modal .hint code{background:var(--card);padding:1px 6px;border-radius:4px;font-size:11.5px;}
+.modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
+
+/* Karteikarten: SRS-Bewertungszeile */
+.srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
 </style>
 </head>
 <body>
@@ -277,7 +354,8 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 </header>
 
 <nav>
-  <button class="tab active" onclick="setMode('flash',this)">🃏 Karteikarten</button>
+  <button class="tab active" onclick="setMode('train',this)">🧠 Training</button>
+  <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
   <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
   <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
   <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
@@ -477,7 +555,7 @@ const WORDS = [
       "She filled the coffee pot and switched it on before breakfast.",
       "There's a full coffee pot on the counter — help yourself."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bedford_coffee_pot.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -525,7 +603,7 @@ const WORDS = [
       "I keep a bag of frozen peas in the freezer for emergencies.",
       "Take the chicken out of the freezer the night before to defrost it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Iced_freezer,_defrosting.JPG?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -557,7 +635,7 @@ const WORDS = [
       "Preheat the oven to 200°C before putting the bread in.",
       "The pizza came out of the oven perfectly golden and crispy."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Industrial_hearth_deck_oven_and_rotary_rack_oven.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -893,7 +971,7 @@ const WORDS = [
       "You'll need a scouring pad to get that burnt food off the pan.",
       "Don't use a scouring pad on non-stick surfaces — it will scratch them."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -909,7 +987,7 @@ const WORDS = [
       "The scourer removed the burnt residue from the bottom of the pan.",
       "A steel scourer is perfect for cast iron pans but too harsh for coated ones."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -925,7 +1003,7 @@ const WORDS = [
       "Sift the flour through a sieve to remove any lumps before baking.",
       "He rinsed the rice through a fine sieve under cold water."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Sieve_texture.JPG?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -941,7 +1019,7 @@ const WORDS = [
       "I need the tin opener to open this can of tomatoes.",
       "The electric tin opener makes it much easier to open large cans."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Proctor_Silex_Electric_Can_Opener.JPG?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -973,7 +1051,7 @@ const WORDS = [
       "She carried the mugs of coffee through on a tray.",
       "Line the baking tray with greaseproof paper before putting the biscuits on it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Making_Mmnce_pies_-_tarts_in_baking_tray.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1037,7 +1115,7 @@ const WORDS = [
       "She twirled the spaghetti around her fork.",
       "Set a knife and fork on each side of the plate."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/African_Fork,_spoon_and_knife.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1165,7 +1243,7 @@ const WORDS = [
       "She made herself a cup of tea and sat down by the window.",
       "Could you pass me a clean cup from the cupboard, please?"
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A_small_cup_of_coffee.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1181,7 +1259,7 @@ const WORDS = [
       "She poured the cereal into a bowl and added some milk.",
       "He filled a large bowl with fresh salad leaves."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Fufu_with_light_soup_and_chicken_in_a_ceramic_bowl.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1213,7 +1291,7 @@ const WORDS = [
       "He poured the orange juice into a tall glass.",
       "There's a glass of water on the bedside table for you."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Carlsberg_beer_glass.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1229,7 +1307,7 @@ const WORDS = [
       "She opened a new jar of peanut butter.",
       "There's a jar of strawberry jam in the cupboard."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Egyptian_glass_jar.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1309,7 +1387,7 @@ const WORDS = [
       "Could you pass the sugar bowl? I'd like one spoonful.",
       "The sugar bowl is on the table next to the teapot."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Studio_Ceramics_sugar_bowl_by_Bernard_Leach_(YORYM-2004.1.2022.3).JPG?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1639,7 +1717,7 @@ const WORDS = [
 /* ═══════════════════════════════════════════════
    App-Zustand
    ═══════════════════════════════════════════════ */
-let mode = 'flash';
+let mode = 'train';
 let deck = [];
 let idx = 0;
 let flipped = false;
@@ -1757,12 +1835,402 @@ function progressHTML(cur,total){
 }
 
 /* ═══════════════════════════════════════════════
+   🧠 SPACED REPETITION (Leitner-Box, Lexilize-inspiriert)
+   ═══════════════════════════════════════════════ */
+const SRS = {
+  KEY: 'etSRS_v1',
+  // index = stufe; INTERVALS_DAYS[level] = Tage bis zur naechsten Wiederholung
+  INTERVALS_DAYS: [0, 0, 1, 3, 7, 14, 30, 90],
+  LABELS: ['Neu','Lernen','+1 Tag','+3 Tage','+7 Tage','+2 Wo','+30 Tage','Gemeistert'],
+  state: {},
+
+  load(){
+    try { this.state = JSON.parse(localStorage.getItem(this.KEY) || '{}'); }
+    catch(e){ this.state = {}; }
+  },
+  save(skipSync){
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e) {}
+    if(!skipSync && typeof Sync !== 'undefined' && Sync.schedulePush){ Sync.schedulePush(); }
+  },
+  // Lokales Datum als YYYY-MM-DD (timezone-safe, unabhaengig von UTC-Offset)
+  localISO(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dd}`;
+  },
+  todayISO(){ return this.localISO(new Date()); },
+  addDays(iso, days){
+    const [y,m,dd] = iso.split('-').map(Number);
+    const d = new Date(y, m-1, dd);
+    d.setDate(d.getDate() + days);
+    return this.localISO(d);
+  },
+  entry(id){
+    if(!this.state[id]){
+      this.state[id] = { level:0, nextDue:this.todayISO(), lastReview:null, ok:0, wrong:0, updatedAt:0 };
+    }
+    return this.state[id];
+  },
+  isDue(id){
+    const e = this.entry(id);
+    return e.nextDue <= this.todayISO();
+  },
+  markCorrect(id){
+    const e = this.entry(id);
+    e.level = Math.min(7, (e.level||0) + 1);
+    e.lastReview = this.todayISO();
+    e.nextDue = this.addDays(this.todayISO(), this.INTERVALS_DAYS[e.level] || 0);
+    e.ok = (e.ok||0) + 1;
+    e.updatedAt = Date.now();
+    this.save();
+  },
+  markWrong(id){
+    const e = this.entry(id);
+    e.level = 1;
+    e.lastReview = this.todayISO();
+    e.nextDue = this.todayISO(); // sofort wieder
+    e.wrong = (e.wrong||0) + 1;
+    e.updatedAt = Date.now();
+    this.save();
+  },
+  resetAll(){
+    // Tombstone-Zeitstempel, damit ein leerer Stand beim Sync als "neuer" gilt
+    // als ein vollerer Remote-Stand vom anderen Gerät.
+    this.state = { __reset: { updatedAt: Date.now() } };
+    this.save();
+    delete this.state.__reset; // lokal nicht benötigt
+    this.save(true);
+  },
+  // Merge eines Remote-Stands in den lokalen State.
+  // Regel: pro Wort-ID gewinnt der Eintrag mit dem höheren updatedAt.
+  // Fehlt lokal, remote vorhanden -> übernehmen. Umgekehrt -> lokaler Stand bleibt.
+  mergeRemote(remote){
+    if(!remote || typeof remote !== 'object') return false;
+    const remoteEntries = remote.entries || {};
+    let changed = false;
+    // Global-Reset-Tombstone: wenn Remote einen __reset hat, der neuer ist als ALLE lokalen Einträge, leeren
+    const remoteReset = remoteEntries.__reset && remoteEntries.__reset.updatedAt ? remoteEntries.__reset.updatedAt : 0;
+    if(remoteReset){
+      const anyLocalNewer = Object.entries(this.state).some(([id,e]) => id !== '__reset' && (e.updatedAt||0) > remoteReset);
+      if(!anyLocalNewer){
+        // Remote hat reset, lokal keine neueren Änderungen -> alles leeren
+        const hadEntries = Object.keys(this.state).some(k => k !== '__reset');
+        this.state = {};
+        if(hadEntries){ changed = true; this.save(true); }
+        return changed;
+      }
+    }
+    for(const [id, r] of Object.entries(remoteEntries)){
+      if(id === '__reset') continue;
+      const l = this.state[id];
+      if(!l){ this.state[id] = r; changed = true; continue; }
+      const lU = l.updatedAt || 0;
+      const rU = r.updatedAt || 0;
+      if(rU > lU){ this.state[id] = r; changed = true; }
+    }
+    if(changed) this.save(true);
+    return changed;
+  },
+  stats(words){
+    const today = this.todayISO();
+    let due=0, fresh=0, learning=0, mastered=0;
+    words.forEach(w => {
+      const e = this.state[w.id];
+      if(!e){ fresh++; due++; return; }
+      if(e.level >= 7) mastered++;
+      else if(e.level >= 1) learning++;
+      else fresh++;
+      if(e.nextDue <= today) due++;
+    });
+    return { due, fresh, learning, mastered, total: words.length };
+  },
+  dueQueue(words){
+    const today = this.todayISO();
+    return words
+      .filter(w => {
+        const e = this.state[w.id];
+        return !e || e.nextDue <= today;
+      })
+      .sort((a,b) => {
+        const ea = this.state[a.id], eb = this.state[b.id];
+        const la = ea ? ea.level : 0, lb = eb ? eb.level : 0;
+        // Niedrige Stufen zuerst (faellige Lernwoerter), neue gemischt rein
+        if(la !== lb) return la - lb;
+        return Math.random() - 0.5;
+      });
+  }
+};
+SRS.load();
+
+/* ═══════════════════════════════════════════════
+   ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
+   Speicherort: Ein privater Gist im GitHub-Account des Users.
+   Token: fine-grained PAT mit "Gist"-Scope, lokal in localStorage.
+   Merge: pro Wort-ID gewinnt das höhere updatedAt. Konfliktfrei, solange
+   nur ein Mensch das Training auf beiden Geräten durchführt.
+   ═══════════════════════════════════════════════ */
+const Sync = {
+  TOKEN_KEY: 'etSyncToken_v1',
+  GIST_KEY:  'etSyncGistId_v1',
+  FILENAME:  'english-trainer-srs.json',
+  status: 'off',    // off | ok | pushing | pulling | error
+  lastError: null,
+  lastSync: null,
+  _debounce: null,
+  _inflight: false,
+  _pendingAfterInflight: false,
+
+  token(){ try { return localStorage.getItem(this.TOKEN_KEY) || ''; } catch(e){ return ''; } },
+  gistId(){ try { return localStorage.getItem(this.GIST_KEY) || ''; } catch(e){ return ''; } },
+  isConfigured(){ return !!this.token(); },
+
+  setToken(t){
+    try {
+      if(t) localStorage.setItem(this.TOKEN_KEY, t);
+      else  localStorage.removeItem(this.TOKEN_KEY);
+    } catch(e){}
+  },
+  setGistId(g){
+    try {
+      if(g) localStorage.setItem(this.GIST_KEY, g);
+      else  localStorage.removeItem(this.GIST_KEY);
+    } catch(e){}
+  },
+
+  setStatus(s, err){
+    this.status = s;
+    this.lastError = err || null;
+    if(s === 'ok') this.lastSync = new Date();
+    this.renderBadge();
+  },
+
+  renderBadge(){
+    const el = document.getElementById('syncBadge');
+    if(!el) return;
+    el.innerHTML = this.badgeHTML();
+  },
+
+  badgeHTML(){
+    if(!this.isConfigured())    return `<span class="sync-badge sync-off" onclick="openSyncModal()" title="Sync ist noch nicht eingerichtet – klicken zum Einrichten">☁️ Sync einrichten</span>`;
+    if(this.status === 'pushing') return `<span class="sync-badge sync-active">⟳ Synchronisiere…</span>`;
+    if(this.status === 'pulling') return `<span class="sync-badge sync-active">↓ Lade Stände…</span>`;
+    if(this.status === 'error')   return `<span class="sync-badge sync-err" onclick="openSyncModal()" title="${(this.lastError||'').replace(/"/g,'&quot;')}">⚠️ Sync-Fehler – klick für Details</span>`;
+    const t = this.lastSync ? this.lastSync.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) : '';
+    return `<span class="sync-badge sync-ok" onclick="openSyncModal()" title="Klicken für Einstellungen">☁️ Synchronisiert${t?' · '+t:''}</span>`;
+  },
+
+  async api(method, path, body){
+    const token = this.token();
+    if(!token) throw new Error('Kein Token gesetzt.');
+    const res = await fetch('https://api.github.com' + path, {
+      method,
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'Bearer ' + token,
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if(!res.ok){
+      const txt = await res.text().catch(()=> '');
+      throw new Error(res.status + ' ' + res.statusText + (txt ? ' – ' + txt.slice(0,200) : ''));
+    }
+    return res.json();
+  },
+
+  buildPayload(){
+    return { schema: 1, updatedAt: Date.now(), entries: SRS.state };
+  },
+
+  async createGist(){
+    const gist = await this.api('POST', '/gists', {
+      description: 'English Trainer – SRS Sync (Lernfortschritt)',
+      public: false,
+      files: { [this.FILENAME]: { content: JSON.stringify(this.buildPayload(), null, 2) } }
+    });
+    this.setGistId(gist.id);
+    return gist.id;
+  },
+
+  async pull(){
+    if(!this.isConfigured()) return false;
+    if(!this.gistId()) return false;
+    this.setStatus('pulling');
+    try {
+      const gist = await this.api('GET', '/gists/' + this.gistId());
+      const file = gist.files && gist.files[this.FILENAME];
+      if(!file) throw new Error('Datei "' + this.FILENAME + '" im Gist nicht gefunden.');
+      let raw = file.content || '';
+      if(file.truncated && file.raw_url){
+        const r = await fetch(file.raw_url);
+        raw = await r.text();
+      }
+      const data = JSON.parse(raw || '{}');
+      const changed = SRS.mergeRemote(data);
+      this.setStatus('ok');
+      if(changed && typeof render === 'function' && typeof WORDS !== 'undefined'){
+        if(typeof mode !== 'undefined' && mode === 'train'){
+          trainDeck = SRS.dueQueue(WORDS);
+        }
+        try { render(); } catch(e){}
+      }
+      return changed;
+    } catch(e){
+      this.setStatus('error', e.message || String(e));
+      return false;
+    }
+  },
+
+  async push(){
+    if(!this.isConfigured()) return false;
+    if(this._inflight){ this._pendingAfterInflight = true; return false; }
+    this._inflight = true;
+    try {
+      if(!this.gistId()){
+        this.setStatus('pushing');
+        await this.createGist();
+        this.setStatus('ok');
+        return true;
+      }
+      this.setStatus('pushing');
+      await this.api('PATCH', '/gists/' + this.gistId(), {
+        files: { [this.FILENAME]: { content: JSON.stringify(this.buildPayload(), null, 2) } }
+      });
+      this.setStatus('ok');
+      return true;
+    } catch(e){
+      this.setStatus('error', e.message || String(e));
+      return false;
+    } finally {
+      this._inflight = false;
+      if(this._pendingAfterInflight){
+        this._pendingAfterInflight = false;
+        this.schedulePush();
+      }
+    }
+  },
+
+  schedulePush(){
+    if(!this.isConfigured()) return;
+    clearTimeout(this._debounce);
+    this._debounce = setTimeout(() => this.push(), 1500);
+  },
+
+  async init(){
+    if(!this.isConfigured()){ this.setStatus('off'); return; }
+    // 1. Remote einlesen und ggf. mergen
+    if(this.gistId()){
+      await this.pull();
+    }
+    // 2. lokalen (ggf. gemergten) Stand hochschieben – falls lokal Einträge neuer sind als remote
+    await this.push();
+  }
+};
+
+// Automatischer Re-Sync, wenn das Fenster wieder in den Vordergrund kommt oder Netz zurückkehrt.
+window.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && Sync.isConfigured() && Sync.gistId()){
+    Sync.pull();
+  }
+});
+window.addEventListener('online', () => {
+  if(Sync.isConfigured()){
+    Sync.pull().then(() => Sync.push());
+  }
+});
+
+/* ═══════════════════════════════════════════════
+   Sync-Setup-Modal (einmalige Einrichtung pro Gerät)
+   ═══════════════════════════════════════════════ */
+function openSyncModal(){
+  const m = document.getElementById('syncModal');
+  if(!m) return;
+  const tok = Sync.token();
+  const gid = Sync.gistId();
+  document.getElementById('syncTokenInput').value = tok;
+  document.getElementById('syncGistInput').value  = gid;
+  const hint = document.getElementById('syncModalHint');
+  if(Sync.status === 'error' && Sync.lastError){
+    hint.innerHTML = '<strong style="color:var(--err)">Letzter Fehler:</strong> ' + Sync.lastError.replace(/</g,'&lt;');
+  } else if(gid){
+    hint.innerHTML = 'Gist-ID ist gesetzt. Auf dem zweiten Gerät denselben Token und dieselbe Gist-ID eintragen.';
+  } else {
+    hint.innerHTML = 'Trage deinen GitHub Personal Access Token ein. Lass das Gist-ID-Feld leer, wenn du Sync jetzt zum ersten Mal einrichtest – die App legt dann automatisch einen privaten Gist an.';
+  }
+  m.classList.add('open');
+}
+function closeSyncModal(){
+  const m = document.getElementById('syncModal');
+  if(m) m.classList.remove('open');
+}
+async function saveSyncSettings(){
+  const tok = document.getElementById('syncTokenInput').value.trim();
+  const gid = document.getElementById('syncGistInput').value.trim();
+  const msg = document.getElementById('syncModalMsg');
+  msg.textContent = '';
+  if(!tok){
+    Sync.setToken(''); Sync.setGistId('');
+    Sync.setStatus('off');
+    msg.innerHTML = '<span style="color:var(--muted)">Sync getrennt.</span>';
+    return;
+  }
+  Sync.setToken(tok);
+  Sync.setGistId(gid);
+  msg.innerHTML = '<span style="color:var(--muted)">Verbinde…</span>';
+  try {
+    if(gid){
+      // Zweites Gerät: erst lesen, dann mergen, dann schreiben
+      await Sync.pull();
+      await Sync.push();
+    } else {
+      // Erstes Gerät: Gist anlegen
+      await Sync.push();
+    }
+    if(Sync.status === 'ok'){
+      document.getElementById('syncGistInput').value = Sync.gistId();
+      msg.innerHTML = '<span style="color:var(--ok)">✓ Verbunden. Gist-ID: <code style="user-select:all">' + Sync.gistId() + '</code></span>';
+    } else if(Sync.status === 'error'){
+      msg.innerHTML = '<span style="color:var(--err)">Fehler: ' + (Sync.lastError||'unbekannt') + '</span>';
+    }
+  } catch(e){
+    msg.innerHTML = '<span style="color:var(--err)">Fehler: ' + (e.message||e) + '</span>';
+  }
+  Sync.renderBadge();
+}
+function copyGistIdToClipboard(){
+  const g = Sync.gistId();
+  if(!g) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(g).then(() => {
+      const msg = document.getElementById('syncModalMsg');
+      if(msg) msg.innerHTML = '<span style="color:var(--ok)">Gist-ID in die Zwischenablage kopiert.</span>';
+    });
+  }
+}
+async function manualSyncNow(){
+  if(!Sync.isConfigured()){ openSyncModal(); return; }
+  await Sync.pull();
+  await Sync.push();
+}
+
+let trainDeck = [];
+let trainIdx = 0;
+let trainFlipped = false;
+
+/* ═══════════════════════════════════════════════
    Mode switching
    ═══════════════════════════════════════════════ */
 function setMode(m, btn){
   mode = m;
   idx = 0; flipped = false; quizAnswered = false; fillChecked = false;
-  deck = shuffle(WORDS);
+  trainIdx = 0; trainFlipped = false;
+  if(m === 'train'){
+    trainDeck = SRS.dueQueue(WORDS);
+  } else {
+    deck = shuffle(WORDS);
+  }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
   render();
@@ -1772,10 +2240,139 @@ function setMode(m, btn){
    RENDER dispatcher
    ═══════════════════════════════════════════════ */
 function render(){
-  if(mode==='flash') renderFlash();
+  if(mode==='train') renderTrain();
+  else if(mode==='flash') renderFlash();
   else if(mode==='quiz') renderQuiz();
   else if(mode==='fill') renderFill();
   else renderList();
+}
+
+/* ═══════════════════════════════════════════════
+   🧠 TRAINING (Spaced Repetition)
+   ═══════════════════════════════════════════════ */
+function srsDashHTML(){
+  const s = SRS.stats(WORDS);
+  return `
+    <div class="sync-row">
+      <button class="sync-manual-btn" onclick="manualSyncNow()" title="Jetzt synchronisieren">⟳ Sync</button>
+      <span id="syncBadge">${Sync.badgeHTML()}</span>
+    </div>
+    <div class="srs-dash">
+      <div class="srs-dash-item due"><div class="srs-dash-num">${s.due}</div><div class="srs-dash-label">Heute fällig</div></div>
+      <div class="srs-dash-item new"><div class="srs-dash-num">${s.fresh}</div><div class="srs-dash-label">Neu</div></div>
+      <div class="srs-dash-item learn"><div class="srs-dash-num">${s.learning}</div><div class="srs-dash-label">Im Lernen</div></div>
+      <div class="srs-dash-item mastered"><div class="srs-dash-num">${s.mastered}</div><div class="srs-dash-label">Gemeistert</div></div>
+    </div>`;
+}
+
+function renderTrain(){
+  const app = document.getElementById('app');
+  const dash = srsDashHTML();
+  const stats = SRS.stats(WORDS);
+
+  if(!trainDeck.length){
+    trainDeck = SRS.dueQueue(WORDS);
+  }
+
+  if(!trainDeck.length || trainIdx >= trainDeck.length){
+    // Alles erledigt fuer heute
+    app.innerHTML = `
+      ${dash}
+      <div class="srs-empty">
+        <div class="srs-empty-emoji">🎉</div>
+        <h2>${trainIdx > 0 ? 'Sitzung abgeschlossen!' : 'Heute alles erledigt!'}</h2>
+        <p>${trainIdx > 0
+          ? `Du hast ${trainIdx} Wörter durchgegangen. Komm morgen wieder – die nächste Wiederholung wartet.`
+          : 'Es gibt aktuell keine fälligen Wörter. Schau später wieder vorbei oder übe frei in den anderen Modi.'}</p>
+        <div class="srs-actions">
+          <button class="btn btn-primary" onclick="setMode('flash',document.querySelectorAll('.tab')[1])">🃏 Freie Übung: Karteikarten</button>
+          <button class="btn btn-outline" onclick="setMode('list',document.querySelectorAll('.tab')[4])">📋 Wortliste</button>
+        </div>
+        <div class="srs-settings-row">
+          <button class="srs-reset-btn" onclick="resetSRS()">Lernfortschritt zurücksetzen</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const w = trainDeck[trainIdx];
+  const e = SRS.entry(w.id);
+  const lvl = e.level || 0;
+  const imgFront = getImg(w)
+    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" onerror="this.style.display='none'">`
+    : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
+  const examplesHTML = w.examples.map(ex =>
+    `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
+  ).join('');
+
+  app.innerHTML = `
+    ${dash}
+    <div class="srs-intro">
+      <strong>Stufe ${lvl}/7 · ${SRS.LABELS[lvl]}</strong> – Drehe die Karte um, dann bewerte ehrlich, ob du das Wort wusstest.
+    </div>
+    ${progressHTML(trainIdx+1, trainDeck.length)}
+    <div class="scene">
+      <div class="flashcard ${trainFlipped?'flipped':''}" id="trainFc" onclick="flipTrain()">
+        <div class="face">
+          ${imgFront}
+          <div class="fc-word">${w.word}</div>
+          <div class="fc-pronunciation">${w.pronunciation}</div>
+          <div class="fc-badges">
+            <span class="badge badge-type">${w.wordType}</span>
+            <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+            <span class="level-badge lvl-${lvl}">Stufe ${lvl}</span>
+          </div>
+          <div class="fc-front-example">📝 „${w.examples[0]}"</div>
+          <div class="fc-hint">Tippe, um umzudrehen ↕</div>
+        </div>
+        <div class="face face-back">
+          <div class="back-section-label">📖 Definition</div>
+          <div class="back-def">${w.definition}</div>
+          <div class="back-section-label">📝 Beispiele</div>
+          ${examplesHTML}
+          <div class="back-translation-small">🇩🇪 ${w.translation}</div>
+        </div>
+      </div>
+    </div>
+    <div class="srs-rate-row" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
+      <button class="btn btn-srs-err" onclick="rateTrain(false)">✗ Nicht gewusst</button>
+      <button class="btn btn-srs-ok" onclick="rateTrain(true)">✓ Gewusst</button>
+    </div>
+    <div class="nav-row">
+      <span class="nav-pos">${trainIdx+1} / ${trainDeck.length}</span>
+      <button class="btn btn-outline btn-sm" onclick="flipTrain()">${trainFlipped?'Zurück':'Umdrehen ↕'}</button>
+    </div>
+    <div class="srs-settings-row">
+      <button class="srs-reset-btn" onclick="resetSRS()">Lernfortschritt zurücksetzen</button>
+    </div>`;
+}
+
+function flipTrain(){
+  trainFlipped = !trainFlipped;
+  const fc = document.getElementById('trainFc');
+  if(fc) fc.classList.toggle('flipped', trainFlipped);
+  const rate = document.getElementById('trainRate');
+  if(rate) rate.style.display = trainFlipped ? 'flex' : 'none';
+}
+
+function rateTrain(wasCorrect){
+  if(!trainFlipped) return; // muss erst aufgedeckt werden
+  const w = trainDeck[trainIdx];
+  if(wasCorrect){ SRS.markCorrect(w.id); correct++; }
+  else          { SRS.markWrong(w.id);   incorrect++; }
+  updateStats();
+  trainIdx++;
+  trainFlipped = false;
+  render();
+}
+
+function resetSRS(){
+  if(!confirm('Wirklich allen Lernfortschritt zurücksetzen? Diese Aktion lässt sich nicht rückgängig machen.')) return;
+  SRS.resetAll();
+  trainIdx = 0;
+  trainFlipped = false;
+  trainDeck = SRS.dueQueue(WORDS);
+  render();
 }
 
 /* ═══════════════════════════════════════════════
@@ -1841,6 +2438,10 @@ function flipCard(){
 }
 
 function markCard(wasCorrect){
+  const w = deck[idx];
+  if(w){
+    if(wasCorrect) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(wasCorrect){ correct++; } else { incorrect++; }
   updateStats();
   idx++;
@@ -1894,6 +2495,10 @@ function answerQuiz(chosen){
   if(quizAnswered) return;
   quizAnswered = true;
   const isOk = chosen === quizCorrectIdx;
+  const w = deck[idx];
+  if(w){
+    if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(isOk){ correct++; } else { incorrect++; }
   updateStats();
 
@@ -1974,6 +2579,9 @@ function checkFill(){
   input.classList.remove('live-ok');
   const isOk = answer.toLowerCase() === w.word.toLowerCase();
 
+  if(w){
+    if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
+  }
   if(isOk){ correct++; } else { incorrect++; }
   updateStats();
 
@@ -2031,6 +2639,11 @@ function renderList(){
       ? `<img class="wc-detail-img" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.style.display='none'">`
       : '';
     const catBadge = `<span class="badge ${catBadgeClass(w.category)}">${w.category}</span>`;
+    const sEntry = SRS.state[w.id];
+    const lvl = sEntry ? (sEntry.level||0) : 0;
+    const isDue = SRS.isDue(w.id);
+    const lvlBadge = `<span class="level-badge lvl-${lvl}" title="Lernstufe ${lvl}/7 – ${SRS.LABELS[lvl]}">L${lvl}</span>`;
+    const duePill = isDue ? `<span class="due-pill" title="Heute zur Wiederholung fällig">Fällig</span>` : '';
     return `
     <div class="word-card ${listOpen[w.id]?'open':''}" onclick="toggleCard(event,${w.id})">
       <div class="wc-top">
@@ -2039,10 +2652,12 @@ function renderList(){
           <div class="wc-title-row">
             <span class="wc-word">${esc(w.word)}</span>
             <span class="wc-pron">${esc(w.pronunciation)}</span>
+            ${duePill}
           </div>
           <div class="wc-translation">${esc(w.translation)}</div>
         </div>
         <div class="wc-meta">
+          ${lvlBadge}
           ${catBadge}
           <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
           <span class="wc-chev">▾</span>
@@ -2159,9 +2774,39 @@ function toggleTheme(){
    ═══════════════════════════════════════════════ */
 document.getElementById('wordCountLabel').textContent = `${WORDS.length} Wörter gespeichert`; // auto-updated
 deck = shuffle(WORDS);
+trainDeck = SRS.dueQueue(WORDS);
 render();
 // Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
 prefetchImages();
+// Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
+Sync.init();
 </script>
+
+<!-- Sync-Einrichtungs-Modal -->
+<div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
+  <div class="modal" role="dialog" aria-labelledby="syncModalTitle">
+    <h2 id="syncModalTitle">☁️ Geräte-Synchronisation</h2>
+    <p class="modal-sub">Synchronisiere deinen Lernfortschritt (welches Wort ist auf welcher Stufe) zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten — danach läuft alles automatisch.</p>
+
+    <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
+
+    <label for="syncTokenInput">GitHub Personal Access Token</label>
+    <input type="password" id="syncTokenInput" class="input mono" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
+
+    <label for="syncGistInput">Gist-ID (nur auf zweitem Gerät nötig)</label>
+    <input type="text" id="syncGistInput" class="input mono" placeholder="leer lassen, um neuen Gist anzulegen" autocomplete="off" spellcheck="false">
+
+    <div class="modal-msg" id="syncModalMsg"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="copyGistIdToClipboard()" title="Gist-ID kopieren">📋 ID kopieren</button>
+      <button class="btn btn-outline btn-sm" onclick="closeSyncModal()">Schließen</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSyncSettings()">Speichern &amp; Verbinden</button>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:var(--muted);text-align:center;">
+      Hilfe nötig? Öffne <a href="sync-anleitung.html" style="color:var(--primary);text-decoration:none;">sync-anleitung.html</a>.
+    </div>
+  </div>
+</div>
 </body>
 </html>

@@ -305,6 +305,32 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
 .srs-intro{background:var(--primary-bg);border:1px solid rgba(99,102,241,.25);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13.5px;color:var(--text-soft);}
 .srs-intro strong{color:var(--primary);}
 
+/* Sync-Badge & Leiste */
+.sync-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--radius-full);font-size:12px;font-weight:600;letter-spacing:.01em;border:1px solid var(--border);background:var(--card);cursor:pointer;user-select:none;transition:all .15s ease;}
+.sync-badge:hover{border-color:var(--border-strong);background:var(--card-hover);}
+.sync-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 25%,var(--border));background:var(--ok-bg);}
+.sync-off{color:var(--muted);border-style:dashed;}
+.sync-err{color:var(--err);border-color:color-mix(in srgb,var(--err) 25%,var(--border));background:var(--err-bg);}
+.sync-active{color:var(--primary);border-color:color-mix(in srgb,var(--primary) 30%,var(--border));background:var(--primary-bg);}
+.sync-manual-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:var(--radius-full);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s ease;}
+.sync-manual-btn:hover{color:var(--primary);border-color:var(--primary);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:18px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);color:var(--text);border-radius:var(--radius-lg);padding:24px;max-width:520px;width:100%;box-shadow:var(--sh-lg);border:1px solid var(--border);max-height:90vh;overflow-y:auto;}
+.modal h2{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px;}
+.modal .modal-sub{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.5;}
+.modal label{display:block;font-size:12px;font-weight:600;color:var(--text-soft);margin-bottom:6px;letter-spacing:.02em;}
+.modal .input{width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;background:var(--bg);color:var(--text);margin-bottom:14px;transition:border-color .15s;}
+.modal .input:focus{outline:none;border-color:var(--primary);}
+.modal .input.mono{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:12px;}
+.modal .hint{font-size:12.5px;color:var(--muted);background:var(--primary-bg);border-left:3px solid var(--primary);padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:14px;line-height:1.5;}
+.modal .hint code{background:var(--card);padding:1px 6px;border-radius:4px;font-size:11.5px;}
+.modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
+
 /* Karteikarten: SRS-Bewertungszeile */
 .srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 .srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
@@ -529,7 +555,7 @@ const WORDS = [
       "She filled the coffee pot and switched it on before breakfast.",
       "There's a full coffee pot on the counter — help yourself."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bedford_coffee_pot.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -577,7 +603,7 @@ const WORDS = [
       "I keep a bag of frozen peas in the freezer for emergencies.",
       "Take the chicken out of the freezer the night before to defrost it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Iced_freezer,_defrosting.JPG?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -609,7 +635,7 @@ const WORDS = [
       "Preheat the oven to 200°C before putting the bread in.",
       "The pizza came out of the oven perfectly golden and crispy."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Industrial_hearth_deck_oven_and_rotary_rack_oven.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -945,7 +971,7 @@ const WORDS = [
       "You'll need a scouring pad to get that burnt food off the pan.",
       "Don't use a scouring pad on non-stick surfaces — it will scratch them."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -961,7 +987,7 @@ const WORDS = [
       "The scourer removed the burnt residue from the bottom of the pan.",
       "A steel scourer is perfect for cast iron pans but too harsh for coated ones."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scrubber.JPG?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -977,7 +1003,7 @@ const WORDS = [
       "Sift the flour through a sieve to remove any lumps before baking.",
       "He rinsed the rice through a fine sieve under cold water."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Sieve_texture.JPG?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -993,7 +1019,7 @@ const WORDS = [
       "I need the tin opener to open this can of tomatoes.",
       "The electric tin opener makes it much easier to open large cans."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Proctor_Silex_Electric_Can_Opener.JPG?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1025,7 +1051,7 @@ const WORDS = [
       "She carried the mugs of coffee through on a tray.",
       "Line the baking tray with greaseproof paper before putting the biscuits on it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Making_Mmnce_pies_-_tarts_in_baking_tray.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1089,7 +1115,7 @@ const WORDS = [
       "She twirled the spaghetti around her fork.",
       "Set a knife and fork on each side of the plate."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/African_Fork,_spoon_and_knife.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1217,7 +1243,7 @@ const WORDS = [
       "She made herself a cup of tea and sat down by the window.",
       "Could you pass me a clean cup from the cupboard, please?"
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A_small_cup_of_coffee.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1233,7 +1259,7 @@ const WORDS = [
       "She poured the cereal into a bowl and added some milk.",
       "He filled a large bowl with fresh salad leaves."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Fufu_with_light_soup_and_chicken_in_a_ceramic_bowl.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1265,7 +1291,7 @@ const WORDS = [
       "He poured the orange juice into a tall glass.",
       "There's a glass of water on the bedside table for you."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Carlsberg_beer_glass.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1281,7 +1307,7 @@ const WORDS = [
       "She opened a new jar of peanut butter.",
       "There's a jar of strawberry jam in the cupboard."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Egyptian_glass_jar.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1361,7 +1387,7 @@ const WORDS = [
       "Could you pass the sugar bowl? I'd like one spoonful.",
       "The sugar bowl is on the table next to the teapot."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Studio_Ceramics_sugar_bowl_by_Bernard_Leach_(YORYM-2004.1.2022.3).JPG?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1685,10 +1711,7 @@ const WORDS = [
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
-  },
-  {"id":85,"word":"persistent","translation":"beharrlich, ausdauernd","pronunciation":"/pəˈsɪstənt/","wordType":"Adjektiv","definition":"Continuing firmly despite difficulty or opposition","examples":["She was persistent in her efforts to learn English.","The persistent rain lasted for three days."],"imageUrl":"","difficulty":2,"dateAdded":"2026-04-22","notes":"","category":"Allgemein"},
-  {"id":86,"word":"to steep tea","translation":"Tee ziehen lassen","pronunciation":"/tuː stiːp tiː/","wordType":"Phrase","definition":"To let tea leaves sit in hot water to release flavor and color.","examples":["You should steep tea for about three to five minutes.","She steeped the tea in boiling water before serving it."],"imageUrl":"","difficulty":2,"dateAdded":"2026-04-22","notes":"","category":"Allgemein"},
-  {"id":87,"word":"Personally Identifiable Information (PII)","translation":"personenbezogene Daten","pronunciation":"/ˈpɜːrsənəli aɪˈdentɪfaɪəbl ˌɪnfərˈmeɪʃən/","wordType":"Phrase","definition":"Data that can identify a specific individual, such as name, address, or social security number.","examples":["Companies must protect PII to comply with privacy regulations.","Never share your PII with untrusted websites or emails."],"imageUrl":"","difficulty":3,"dateAdded":"2026-04-22","notes":"","category":"Allgemein"}
+  }
 ];
 
 /* ═══════════════════════════════════════════════
@@ -1825,8 +1848,9 @@ const SRS = {
     try { this.state = JSON.parse(localStorage.getItem(this.KEY) || '{}'); }
     catch(e){ this.state = {}; }
   },
-  save(){
+  save(skipSync){
     try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e) {}
+    if(!skipSync && typeof Sync !== 'undefined' && Sync.schedulePush){ Sync.schedulePush(); }
   },
   // Lokales Datum als YYYY-MM-DD (timezone-safe, unabhaengig von UTC-Offset)
   localISO(d){
@@ -1844,7 +1868,7 @@ const SRS = {
   },
   entry(id){
     if(!this.state[id]){
-      this.state[id] = { level:0, nextDue:this.todayISO(), lastReview:null, ok:0, wrong:0 };
+      this.state[id] = { level:0, nextDue:this.todayISO(), lastReview:null, ok:0, wrong:0, updatedAt:0 };
     }
     return this.state[id];
   },
@@ -1858,6 +1882,7 @@ const SRS = {
     e.lastReview = this.todayISO();
     e.nextDue = this.addDays(this.todayISO(), this.INTERVALS_DAYS[e.level] || 0);
     e.ok = (e.ok||0) + 1;
+    e.updatedAt = Date.now();
     this.save();
   },
   markWrong(id){
@@ -1866,11 +1891,46 @@ const SRS = {
     e.lastReview = this.todayISO();
     e.nextDue = this.todayISO(); // sofort wieder
     e.wrong = (e.wrong||0) + 1;
+    e.updatedAt = Date.now();
     this.save();
   },
   resetAll(){
-    this.state = {};
+    // Tombstone-Zeitstempel, damit ein leerer Stand beim Sync als "neuer" gilt
+    // als ein vollerer Remote-Stand vom anderen Gerät.
+    this.state = { __reset: { updatedAt: Date.now() } };
     this.save();
+    delete this.state.__reset; // lokal nicht benötigt
+    this.save(true);
+  },
+  // Merge eines Remote-Stands in den lokalen State.
+  // Regel: pro Wort-ID gewinnt der Eintrag mit dem höheren updatedAt.
+  // Fehlt lokal, remote vorhanden -> übernehmen. Umgekehrt -> lokaler Stand bleibt.
+  mergeRemote(remote){
+    if(!remote || typeof remote !== 'object') return false;
+    const remoteEntries = remote.entries || {};
+    let changed = false;
+    // Global-Reset-Tombstone: wenn Remote einen __reset hat, der neuer ist als ALLE lokalen Einträge, leeren
+    const remoteReset = remoteEntries.__reset && remoteEntries.__reset.updatedAt ? remoteEntries.__reset.updatedAt : 0;
+    if(remoteReset){
+      const anyLocalNewer = Object.entries(this.state).some(([id,e]) => id !== '__reset' && (e.updatedAt||0) > remoteReset);
+      if(!anyLocalNewer){
+        // Remote hat reset, lokal keine neueren Änderungen -> alles leeren
+        const hadEntries = Object.keys(this.state).some(k => k !== '__reset');
+        this.state = {};
+        if(hadEntries){ changed = true; this.save(true); }
+        return changed;
+      }
+    }
+    for(const [id, r] of Object.entries(remoteEntries)){
+      if(id === '__reset') continue;
+      const l = this.state[id];
+      if(!l){ this.state[id] = r; changed = true; continue; }
+      const lU = l.updatedAt || 0;
+      const rU = r.updatedAt || 0;
+      if(rU > lU){ this.state[id] = r; changed = true; }
+    }
+    if(changed) this.save(true);
+    return changed;
   },
   stats(words){
     const today = this.todayISO();
@@ -1902,6 +1962,258 @@ const SRS = {
   }
 };
 SRS.load();
+
+/* ═══════════════════════════════════════════════
+   ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
+   Speicherort: Ein privater Gist im GitHub-Account des Users.
+   Token: fine-grained PAT mit "Gist"-Scope, lokal in localStorage.
+   Merge: pro Wort-ID gewinnt das höhere updatedAt. Konfliktfrei, solange
+   nur ein Mensch das Training auf beiden Geräten durchführt.
+   ═══════════════════════════════════════════════ */
+const Sync = {
+  TOKEN_KEY: 'etSyncToken_v1',
+  GIST_KEY:  'etSyncGistId_v1',
+  FILENAME:  'english-trainer-srs.json',
+  status: 'off',    // off | ok | pushing | pulling | error
+  lastError: null,
+  lastSync: null,
+  _debounce: null,
+  _inflight: false,
+  _pendingAfterInflight: false,
+
+  token(){ try { return localStorage.getItem(this.TOKEN_KEY) || ''; } catch(e){ return ''; } },
+  gistId(){ try { return localStorage.getItem(this.GIST_KEY) || ''; } catch(e){ return ''; } },
+  isConfigured(){ return !!this.token(); },
+
+  setToken(t){
+    try {
+      if(t) localStorage.setItem(this.TOKEN_KEY, t);
+      else  localStorage.removeItem(this.TOKEN_KEY);
+    } catch(e){}
+  },
+  setGistId(g){
+    try {
+      if(g) localStorage.setItem(this.GIST_KEY, g);
+      else  localStorage.removeItem(this.GIST_KEY);
+    } catch(e){}
+  },
+
+  setStatus(s, err){
+    this.status = s;
+    this.lastError = err || null;
+    if(s === 'ok') this.lastSync = new Date();
+    this.renderBadge();
+  },
+
+  renderBadge(){
+    const el = document.getElementById('syncBadge');
+    if(!el) return;
+    el.innerHTML = this.badgeHTML();
+  },
+
+  badgeHTML(){
+    if(!this.isConfigured())    return `<span class="sync-badge sync-off" onclick="openSyncModal()" title="Sync ist noch nicht eingerichtet – klicken zum Einrichten">☁️ Sync einrichten</span>`;
+    if(this.status === 'pushing') return `<span class="sync-badge sync-active">⟳ Synchronisiere…</span>`;
+    if(this.status === 'pulling') return `<span class="sync-badge sync-active">↓ Lade Stände…</span>`;
+    if(this.status === 'error')   return `<span class="sync-badge sync-err" onclick="openSyncModal()" title="${(this.lastError||'').replace(/"/g,'&quot;')}">⚠️ Sync-Fehler – klick für Details</span>`;
+    const t = this.lastSync ? this.lastSync.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) : '';
+    return `<span class="sync-badge sync-ok" onclick="openSyncModal()" title="Klicken für Einstellungen">☁️ Synchronisiert${t?' · '+t:''}</span>`;
+  },
+
+  async api(method, path, body){
+    const token = this.token();
+    if(!token) throw new Error('Kein Token gesetzt.');
+    const res = await fetch('https://api.github.com' + path, {
+      method,
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'Bearer ' + token,
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if(!res.ok){
+      const txt = await res.text().catch(()=> '');
+      throw new Error(res.status + ' ' + res.statusText + (txt ? ' – ' + txt.slice(0,200) : ''));
+    }
+    return res.json();
+  },
+
+  buildPayload(){
+    return { schema: 1, updatedAt: Date.now(), entries: SRS.state };
+  },
+
+  async createGist(){
+    const gist = await this.api('POST', '/gists', {
+      description: 'English Trainer – SRS Sync (Lernfortschritt)',
+      public: false,
+      files: { [this.FILENAME]: { content: JSON.stringify(this.buildPayload(), null, 2) } }
+    });
+    this.setGistId(gist.id);
+    return gist.id;
+  },
+
+  async pull(){
+    if(!this.isConfigured()) return false;
+    if(!this.gistId()) return false;
+    this.setStatus('pulling');
+    try {
+      const gist = await this.api('GET', '/gists/' + this.gistId());
+      const file = gist.files && gist.files[this.FILENAME];
+      if(!file) throw new Error('Datei "' + this.FILENAME + '" im Gist nicht gefunden.');
+      let raw = file.content || '';
+      if(file.truncated && file.raw_url){
+        const r = await fetch(file.raw_url);
+        raw = await r.text();
+      }
+      const data = JSON.parse(raw || '{}');
+      const changed = SRS.mergeRemote(data);
+      this.setStatus('ok');
+      if(changed && typeof render === 'function' && typeof WORDS !== 'undefined'){
+        if(typeof mode !== 'undefined' && mode === 'train'){
+          trainDeck = SRS.dueQueue(WORDS);
+        }
+        try { render(); } catch(e){}
+      }
+      return changed;
+    } catch(e){
+      this.setStatus('error', e.message || String(e));
+      return false;
+    }
+  },
+
+  async push(){
+    if(!this.isConfigured()) return false;
+    if(this._inflight){ this._pendingAfterInflight = true; return false; }
+    this._inflight = true;
+    try {
+      if(!this.gistId()){
+        this.setStatus('pushing');
+        await this.createGist();
+        this.setStatus('ok');
+        return true;
+      }
+      this.setStatus('pushing');
+      await this.api('PATCH', '/gists/' + this.gistId(), {
+        files: { [this.FILENAME]: { content: JSON.stringify(this.buildPayload(), null, 2) } }
+      });
+      this.setStatus('ok');
+      return true;
+    } catch(e){
+      this.setStatus('error', e.message || String(e));
+      return false;
+    } finally {
+      this._inflight = false;
+      if(this._pendingAfterInflight){
+        this._pendingAfterInflight = false;
+        this.schedulePush();
+      }
+    }
+  },
+
+  schedulePush(){
+    if(!this.isConfigured()) return;
+    clearTimeout(this._debounce);
+    this._debounce = setTimeout(() => this.push(), 1500);
+  },
+
+  async init(){
+    if(!this.isConfigured()){ this.setStatus('off'); return; }
+    // 1. Remote einlesen und ggf. mergen
+    if(this.gistId()){
+      await this.pull();
+    }
+    // 2. lokalen (ggf. gemergten) Stand hochschieben – falls lokal Einträge neuer sind als remote
+    await this.push();
+  }
+};
+
+// Automatischer Re-Sync, wenn das Fenster wieder in den Vordergrund kommt oder Netz zurückkehrt.
+window.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && Sync.isConfigured() && Sync.gistId()){
+    Sync.pull();
+  }
+});
+window.addEventListener('online', () => {
+  if(Sync.isConfigured()){
+    Sync.pull().then(() => Sync.push());
+  }
+});
+
+/* ═══════════════════════════════════════════════
+   Sync-Setup-Modal (einmalige Einrichtung pro Gerät)
+   ═══════════════════════════════════════════════ */
+function openSyncModal(){
+  const m = document.getElementById('syncModal');
+  if(!m) return;
+  const tok = Sync.token();
+  const gid = Sync.gistId();
+  document.getElementById('syncTokenInput').value = tok;
+  document.getElementById('syncGistInput').value  = gid;
+  const hint = document.getElementById('syncModalHint');
+  if(Sync.status === 'error' && Sync.lastError){
+    hint.innerHTML = '<strong style="color:var(--err)">Letzter Fehler:</strong> ' + Sync.lastError.replace(/</g,'&lt;');
+  } else if(gid){
+    hint.innerHTML = 'Gist-ID ist gesetzt. Auf dem zweiten Gerät denselben Token und dieselbe Gist-ID eintragen.';
+  } else {
+    hint.innerHTML = 'Trage deinen GitHub Personal Access Token ein. Lass das Gist-ID-Feld leer, wenn du Sync jetzt zum ersten Mal einrichtest – die App legt dann automatisch einen privaten Gist an.';
+  }
+  m.classList.add('open');
+}
+function closeSyncModal(){
+  const m = document.getElementById('syncModal');
+  if(m) m.classList.remove('open');
+}
+async function saveSyncSettings(){
+  const tok = document.getElementById('syncTokenInput').value.trim();
+  const gid = document.getElementById('syncGistInput').value.trim();
+  const msg = document.getElementById('syncModalMsg');
+  msg.textContent = '';
+  if(!tok){
+    Sync.setToken(''); Sync.setGistId('');
+    Sync.setStatus('off');
+    msg.innerHTML = '<span style="color:var(--muted)">Sync getrennt.</span>';
+    return;
+  }
+  Sync.setToken(tok);
+  Sync.setGistId(gid);
+  msg.innerHTML = '<span style="color:var(--muted)">Verbinde…</span>';
+  try {
+    if(gid){
+      // Zweites Gerät: erst lesen, dann mergen, dann schreiben
+      await Sync.pull();
+      await Sync.push();
+    } else {
+      // Erstes Gerät: Gist anlegen
+      await Sync.push();
+    }
+    if(Sync.status === 'ok'){
+      document.getElementById('syncGistInput').value = Sync.gistId();
+      msg.innerHTML = '<span style="color:var(--ok)">✓ Verbunden. Gist-ID: <code style="user-select:all">' + Sync.gistId() + '</code></span>';
+    } else if(Sync.status === 'error'){
+      msg.innerHTML = '<span style="color:var(--err)">Fehler: ' + (Sync.lastError||'unbekannt') + '</span>';
+    }
+  } catch(e){
+    msg.innerHTML = '<span style="color:var(--err)">Fehler: ' + (e.message||e) + '</span>';
+  }
+  Sync.renderBadge();
+}
+function copyGistIdToClipboard(){
+  const g = Sync.gistId();
+  if(!g) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(g).then(() => {
+      const msg = document.getElementById('syncModalMsg');
+      if(msg) msg.innerHTML = '<span style="color:var(--ok)">Gist-ID in die Zwischenablage kopiert.</span>';
+    });
+  }
+}
+async function manualSyncNow(){
+  if(!Sync.isConfigured()){ openSyncModal(); return; }
+  await Sync.pull();
+  await Sync.push();
+}
 
 let trainDeck = [];
 let trainIdx = 0;
@@ -1941,6 +2253,10 @@ function render(){
 function srsDashHTML(){
   const s = SRS.stats(WORDS);
   return `
+    <div class="sync-row">
+      <button class="sync-manual-btn" onclick="manualSyncNow()" title="Jetzt synchronisieren">⟳ Sync</button>
+      <span id="syncBadge">${Sync.badgeHTML()}</span>
+    </div>
     <div class="srs-dash">
       <div class="srs-dash-item due"><div class="srs-dash-num">${s.due}</div><div class="srs-dash-label">Heute fällig</div></div>
       <div class="srs-dash-item new"><div class="srs-dash-num">${s.fresh}</div><div class="srs-dash-label">Neu</div></div>
@@ -2462,6 +2778,35 @@ trainDeck = SRS.dueQueue(WORDS);
 render();
 // Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
 prefetchImages();
+// Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
+Sync.init();
 </script>
+
+<!-- Sync-Einrichtungs-Modal -->
+<div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
+  <div class="modal" role="dialog" aria-labelledby="syncModalTitle">
+    <h2 id="syncModalTitle">☁️ Geräte-Synchronisation</h2>
+    <p class="modal-sub">Synchronisiere deinen Lernfortschritt (welches Wort ist auf welcher Stufe) zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten — danach läuft alles automatisch.</p>
+
+    <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
+
+    <label for="syncTokenInput">GitHub Personal Access Token</label>
+    <input type="password" id="syncTokenInput" class="input mono" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
+
+    <label for="syncGistInput">Gist-ID (nur auf zweitem Gerät nötig)</label>
+    <input type="text" id="syncGistInput" class="input mono" placeholder="leer lassen, um neuen Gist anzulegen" autocomplete="off" spellcheck="false">
+
+    <div class="modal-msg" id="syncModalMsg"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="copyGistIdToClipboard()" title="Gist-ID kopieren">📋 ID kopieren</button>
+      <button class="btn btn-outline btn-sm" onclick="closeSyncModal()">Schließen</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSyncSettings()">Speichern &amp; Verbinden</button>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:var(--muted);text-align:center;">
+      Hilfe nötig? Öffne <a href="sync-anleitung.html" style="color:var(--primary);text-decoration:none;">sync-anleitung.html</a>.
+    </div>
+  </div>
+</div>
 </body>
 </html>
