@@ -331,6 +331,97 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
 .modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
 
+/* ── Header-Stat-Badges (Streak, XP, Tagesziel) ── */
+.hd-stats{flex-wrap:wrap;}
+.stat-streak{color:#ea580c;border-color:rgba(234,88,12,.25);background:#fff7ed;}
+body.dark .stat-streak{color:#fdba74;background:rgba(234,88,12,.18);border-color:rgba(234,88,12,.4);}
+.stat-xp{color:#7c3aed;border-color:rgba(124,58,237,.25);background:#f5f3ff;}
+body.dark .stat-xp{color:#c4b5fd;background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.4);}
+.stat-goal{color:#0891b2;border-color:rgba(8,145,178,.25);background:#ecfeff;}
+body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:rgba(8,145,178,.4);}
+@media (max-width:680px){
+  .hd-stats .stat-ok,.hd-stats .stat-err{display:none;} /* Platz sparen am Handy */
+}
+
+/* ── Combo-Badge in Quiz/Fill Feedback ── */
+.combo-badge{display:inline-block;margin-left:6px;background:linear-gradient(90deg,#f59e0b,#ea580c);color:#fff;padding:2px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:700;letter-spacing:.02em;animation:pop .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{0%{transform:scale(.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+/* ── 10er-Runden-Auswertung ── */
+.round-result{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--sh);padding:32px 28px;text-align:center;}
+.round-emoji{font-size:62px;margin-bottom:8px;line-height:1;}
+.round-title{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;}
+.round-msg{color:var(--muted);font-size:15px;margin-bottom:22px;}
+.round-score-circle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:160px;height:160px;border-radius:50%;background:var(--primary-bg);border:6px solid var(--primary);margin:6px auto 18px;}
+.round-score-num{font-size:42px;font-weight:800;color:var(--primary);line-height:1;letter-spacing:-.03em;}
+.round-score-of{font-size:22px;font-weight:600;color:var(--primary-soft);}
+.round-score-pct{margin-top:4px;font-size:14px;font-weight:600;color:var(--text-soft);}
+.round-mini-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:10px;margin:18px auto 6px;max-width:560px;}
+.rm{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;}
+.rm-num{font-size:18px;font-weight:700;color:var(--text);}
+.rm-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.rm-err .rm-num{color:var(--err);}
+.rm-bonus{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(234,88,12,.12));border-color:rgba(234,88,12,.35);}
+.rm-bonus .rm-num{color:#ea580c;}
+.round-wrong-list{margin:20px auto;text-align:left;background:var(--err-bg);border:1px solid color-mix(in srgb,var(--err) 25%,var(--border));border-radius:var(--radius-sm);padding:14px 18px;max-width:560px;}
+.round-wrong-head{font-size:13px;font-weight:700;color:var(--err-text);margin-bottom:8px;letter-spacing:.02em;}
+.round-wrong-item{font-size:14px;color:var(--text-soft);padding:4px 0;border-bottom:1px solid color-mix(in srgb,var(--err) 12%,transparent);}
+.round-wrong-item:last-child{border-bottom:none;}
+.round-wrong-item .muted{color:var(--muted);margin-left:6px;}
+.round-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
+
+/* ── Tagesziel-Ring + Accuracy-Trend (auf Training-Dashboard) ── */
+.goal-row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--sh-sm);}
+.goal-ring-wrap{position:relative;width:78px;height:78px;flex-shrink:0;}
+.goal-ring-wrap svg{transform:rotate(-90deg);}
+.goal-ring-bg{fill:none;stroke:var(--border);stroke-width:8;}
+.goal-ring-fill{fill:none;stroke:var(--primary);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1);}
+.goal-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;}
+.goal-ring-num{font-size:18px;color:var(--text);line-height:1;}
+.goal-ring-of{font-size:11px;color:var(--muted);}
+.goal-meta{display:flex;flex-direction:column;gap:6px;}
+.goal-meta-line{display:flex;justify-content:space-between;font-size:13px;color:var(--text-soft);}
+.goal-meta-line strong{font-weight:700;color:var(--text);}
+.trend-up{color:var(--ok);}
+.trend-down{color:var(--err);}
+.trend-flat{color:var(--muted);}
+.goal-edit{font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline dashed;background:none;border:none;padding:0;font-family:inherit;}
+.goal-edit:hover{color:var(--primary);}
+
+/* ── Session-Historie ── */
+.history-box{margin-top:22px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--sh-sm);}
+.history-head{font-size:13px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.history-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:8px 0;font-size:13.5px;border-bottom:1px solid var(--border);}
+.history-row:last-child{border-bottom:none;}
+.history-mode{padding:2px 8px;border-radius:var(--radius-full);background:var(--primary-bg);color:var(--primary);font-size:11.5px;font-weight:700;letter-spacing:.02em;}
+.history-date{color:var(--muted);font-size:12px;}
+.history-score{color:var(--text);font-weight:600;}
+.history-score-pct{color:var(--muted);font-size:12px;margin-left:2px;}
+.history-empty{color:var(--muted);font-size:13.5px;text-align:center;padding:14px 0;}
+
+/* ── Match-Modus ── */
+.match-meta{display:flex;justify-content:space-around;margin-bottom:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;box-shadow:var(--sh-sm);}
+.match-meta-item{text-align:center;}
+.match-meta-num{font-size:22px;font-weight:800;color:var(--text);line-height:1;}
+.match-meta-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:4px;}
+.match-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;margin:0 auto;}
+@media (max-width:540px){ .match-grid{grid-template-columns:repeat(3,1fr);} }
+.match-card{aspect-ratio:3/4;perspective:1000px;cursor:pointer;}
+.match-card-inner{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;}
+.match-card.flipped .match-card-inner{transform:rotateY(180deg);}
+.match-card.matched .match-card-inner{transform:rotateY(180deg);opacity:.55;}
+.match-card.matched{cursor:default;}
+.match-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;border:1px solid var(--border);overflow:hidden;}
+.match-face-back{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-size:32px;}
+.match-face-front{background:var(--card);color:var(--text);transform:rotateY(180deg);padding:6px;text-align:center;font-weight:600;font-size:13.5px;}
+.match-face-front img{max-width:100%;max-height:100%;object-fit:cover;border-radius:var(--radius-sm);}
+.match-face-front .match-text{padding:6px 4px;line-height:1.25;}
+.match-actions{display:flex;gap:10px;justify-content:center;margin:20px auto;flex-wrap:wrap;}
+.match-result{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--sh);padding:30px 24px;text-align:center;}
+.match-result h2{font-size:22px;font-weight:800;margin-bottom:6px;}
+.match-result .big-score{font-size:48px;font-weight:800;color:var(--primary);letter-spacing:-.02em;margin:8px 0;}
+.match-result .new-high{color:var(--warn-text);background:var(--warn-bg);padding:6px 14px;border-radius:var(--radius-full);display:inline-block;font-size:13px;font-weight:700;margin:6px 0;}
+
 /* Karteikarten: SRS-Bewertungszeile */
 .srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 .srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
@@ -347,8 +438,11 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
     </div>
   </div>
   <div class="hd-stats">
-    <span class="stat stat-ok" id="statOk">✓ 0</span>
-    <span class="stat stat-err" id="statErr">✗ 0</span>
+    <span class="stat stat-streak" id="statStreak" title="Aktuelle Streak — Tage in Folge">🔥 0</span>
+    <span class="stat stat-xp" id="statXP" title="Erfahrungspunkte gesamt">⭐ 0</span>
+    <span class="stat stat-goal" id="statGoal" title="Tagesziel">🎯 0/20</span>
+    <span class="stat stat-ok" id="statOk" title="Richtig in dieser Sitzung">✓ 0</span>
+    <span class="stat stat-err" id="statErr" title="Falsch in dieser Sitzung">✗ 0</span>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Theme umschalten" title="Hell / Dunkel umschalten">☀️</button>
   </div>
 </header>
@@ -358,6 +452,7 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
   <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
   <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
   <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
+  <button class="tab" onclick="setMode('match',this)">🎮 Match</button>
   <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
 </nav>
 
@@ -1711,12 +1806,7 @@ const WORDS = [
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
-  },
-  {"id":85,"word":"pointless","translation":"sinnlos","pronunciation":"/ˈpɔɪntləs/","wordType":"Adjektiv","definition":"Having no purpose, use, or likelihood of success.","examples":["It's pointless to argue about it now.","The meeting was completely pointless."],"imageUrl":"","difficulty":2,"dateAdded":"2026-04-26","notes":"","category":"Allgemein"},
-  {"id":86,"word":"cheerful","translation":"fröhlich","pronunciation":"/ˈtʃɪəfəl/","wordType":"Adjektiv","definition":"Noticeably happy and optimistic in mood or manner.","examples":["She greeted us with a cheerful smile.","The children were cheerful despite the rain."],"imageUrl":"","difficulty":2,"dateAdded":"2026-04-26","notes":"","category":"Allgemein"},
-  {"id":87,"word":"clumsy","translation":"ungeschickt","pronunciation":"/ˈklʌmzi/","wordType":"Adjektiv","definition":"Moving or doing things in an awkward way, often causing accidents or mistakes.","examples":["He is too clumsy to carry those fragile dishes.","She made a clumsy attempt to catch the ball."],"imageUrl":"","difficulty":2,"dateAdded":"2026-04-26","notes":"","category":"Allgemein"},
-  {"id":88,"word":"exploitation","translation":"Ausbeutung","pronunciation":"/ˌeksplɔɪˈteɪʃən/","wordType":"Nomen","definition":"The action of treating someone unfairly to benefit from their work or resources.","examples":["The exploitation of workers in factories was common during the industrial revolution.","Environmental exploitation leads to the destruction of natural habitats."],"imageUrl":"https://commons.wikimedia.org/wiki/Special:FilePath/Continental_AG_tire_factory_Mittellandkanal_Stoecken_Hannover_Germany_02.jpg?width=400","difficulty":3,"dateAdded":"2026-05-03","notes":"","category":"Allgemein"},
-  {"id":89,"word":"invocable","translation":"aufrufbar","pronunciation":"/ɪnˈvoʊkəbl/","wordType":"Adjektiv","definition":"Capable of being called upon or summoned, especially in programming or legal contexts.","examples":["The function is invocable from any part of the code.","This right is invocable by any citizen under the law."],"imageUrl":"","difficulty":3,"dateAdded":"2026-05-08","notes":"","category":"Allgemein"}
+  }
 ];
 
 /* ═══════════════════════════════════════════════
@@ -1732,6 +1822,13 @@ let quizAnswered = false;
 let quizChoices = [];
 let quizCorrectIdx = 0;
 let fillChecked = false;
+// 10er-Runden für Quiz und Lückentext
+const ROUND_SIZE = 10;
+let roundCorrect = 0;
+let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwortet wurden
+let combo = 0;            // aktuelle Streak innerhalb der Runde
+let bestComboInRound = 0;
+let roundStartTs = 0;
 const CATEGORIES = ['TV', 'Books', 'Kitchen/Cooking'];
 let listFilterType = 'Alle';
 let listFilterCat  = 'Alle';
@@ -1827,8 +1924,26 @@ async function prefetchImages(){
 }
 
 function updateStats(){
-  document.getElementById('statOk').textContent = `✓ ${correct}`;
-  document.getElementById('statErr').textContent = `✗ ${incorrect}`;
+  const $ = id => document.getElementById(id);
+  if($('statOk'))     $('statOk').textContent     = `✓ ${correct}`;
+  if($('statErr'))    $('statErr').textContent    = `✗ ${incorrect}`;
+  if($('statStreak')) $('statStreak').textContent = `🔥 ${Stats.state.streak||0}`;
+  if($('statXP'))     $('statXP').textContent     = `⭐ ${Stats.state.xp||0}`;
+  if($('statGoal'))   $('statGoal').textContent   = `🎯 ${Stats.todayProgress()}/${Stats.state.dailyGoal}`;
+}
+
+function resetRound(){
+  roundCorrect = 0;
+  roundWrongWords = [];
+  combo = 0;
+  bestComboInRound = 0;
+  roundStartTs = Date.now();
+}
+
+// Erzeugt einen frischen 10er-Pool aus zufälligen Wörtern
+function buildRoundDeck(){
+  const size = Math.min(ROUND_SIZE, WORDS.length);
+  return shuffle(WORDS).slice(0, size);
 }
 
 function progressHTML(cur,total){
@@ -1883,12 +1998,16 @@ const SRS = {
   },
   markCorrect(id){
     const e = this.entry(id);
+    const wasMaster = (e.level||0) >= 7;
     e.level = Math.min(7, (e.level||0) + 1);
     e.lastReview = this.todayISO();
     e.nextDue = this.addDays(this.todayISO(), this.INTERVALS_DAYS[e.level] || 0);
     e.ok = (e.ok||0) + 1;
     e.updatedAt = Date.now();
     this.save();
+    if(!wasMaster && e.level >= 7 && typeof Stats !== 'undefined' && Stats.recordMastered){
+      Stats.recordMastered();
+    }
   },
   markWrong(id){
     const e = this.entry(id);
@@ -1935,6 +2054,10 @@ const SRS = {
       if(rU > lU){ this.state[id] = r; changed = true; }
     }
     if(changed) this.save(true);
+    // Stats parallel mergen (eigenes updatedAt-Feld)
+    if(remote.stats && typeof Stats !== 'undefined' && Stats.applyRemote){
+      if(Stats.applyRemote(remote.stats)) changed = true;
+    }
     return changed;
   },
   stats(words){
@@ -1967,6 +2090,116 @@ const SRS = {
   }
 };
 SRS.load();
+
+/* ═══════════════════════════════════════════════
+   🏆 STATS (XP, Streak, Sessions, Tagesziel, Match-Highscore)
+   ═══════════════════════════════════════════════ */
+const Stats = {
+  KEY: 'etStats_v1',
+  defaults(){
+    return {
+      xp: 0,
+      streak: 0,
+      longestStreak: 0,
+      lastDay: null,
+      dailyGoal: 20,
+      dailyProgress: {},   // { 'YYYY-MM-DD': count }
+      sessions: [],        // letzte 50 Sessions
+      matchHigh: 0,
+      perfectRounds: 0,
+      bestCombo: 0,
+      updatedAt: 0
+    };
+  },
+  state: null,
+  load(){
+    this.state = this.defaults();
+    try {
+      const raw = JSON.parse(localStorage.getItem(this.KEY) || 'null');
+      if(raw && typeof raw === 'object') Object.assign(this.state, raw);
+    } catch(e){}
+  },
+  save(skipSync){
+    this.state.updatedAt = Date.now();
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
+    if(!skipSync && typeof Sync !== 'undefined' && Sync.schedulePush){ Sync.schedulePush(); }
+  },
+  todayISO(){ return SRS.todayISO(); },
+  yesterdayISO(){ return SRS.addDays(SRS.todayISO(), -1); },
+
+  // Bei jeder Antwort aufgerufen. wasCorrect: bool, mode: string
+  recordAnswer(wasCorrect, mode){
+    const today = this.todayISO();
+    // Streak-Bumping nur einmal pro Tag
+    if(this.state.lastDay !== today){
+      if(this.state.lastDay === this.yesterdayISO()){
+        this.state.streak = (this.state.streak || 0) + 1;
+      } else {
+        this.state.streak = 1;
+      }
+      this.state.lastDay = today;
+      if(this.state.streak > (this.state.longestStreak||0)){
+        this.state.longestStreak = this.state.streak;
+      }
+    }
+    this.state.dailyProgress[today] = (this.state.dailyProgress[today] || 0) + 1;
+    if(wasCorrect) this.state.xp = (this.state.xp || 0) + 10;
+    this.save();
+  },
+
+  awardBonus(n){ this.state.xp = (this.state.xp || 0) + n; this.save(); },
+  recordPerfectRound(){ this.state.perfectRounds = (this.state.perfectRounds || 0) + 1; this.awardBonus(50); },
+  recordMastered(){ this.awardBonus(25); },
+  recordCombo(c){ if(c > (this.state.bestCombo||0)){ this.state.bestCombo = c; this.save(); } },
+
+  recordSession(s){
+    const session = Object.assign({ date: this.todayISO(), ts: Date.now() }, s);
+    this.state.sessions.unshift(session);
+    if(this.state.sessions.length > 50) this.state.sessions = this.state.sessions.slice(0, 50);
+    this.save();
+  },
+
+  recordMatchScore(score){
+    if(score > (this.state.matchHigh||0)){ this.state.matchHigh = score; this.save(); return true; }
+    return false;
+  },
+
+  // 7-Tage-Accuracy-Trend (vs. die 7 Tage davor)
+  accuracyTrend(){
+    const todayMs = new Date(this.todayISO()).getTime();
+    let cur = {tot:0,ok:0}, prev = {tot:0,ok:0};
+    for(const s of this.state.sessions){
+      if(typeof s.total !== 'number' || typeof s.correct !== 'number') continue;
+      const sMs = new Date(s.date).getTime();
+      const ageDays = Math.floor((todayMs - sMs) / 86400000);
+      if(ageDays < 0) continue;
+      if(ageDays < 7){ cur.tot += s.total; cur.ok += s.correct; }
+      else if(ageDays < 14){ prev.tot += s.total; prev.ok += s.correct; }
+    }
+    const curPct  = cur.tot  ? Math.round(100 * cur.ok / cur.tot)  : null;
+    const prevPct = prev.tot ? Math.round(100 * prev.ok / prev.tot) : null;
+    const diff = (curPct !== null && prevPct !== null) ? (curPct - prevPct) : 0;
+    return { curPct, prevPct, diff, samples: cur.tot };
+  },
+
+  todayProgress(){ return this.state.dailyProgress[this.todayISO()] || 0; },
+  todayGoalPct(){ const g = this.state.dailyGoal || 20; return Math.min(1, this.todayProgress() / g); },
+  setDailyGoal(n){ if(typeof n === 'number' && n > 0 && n <= 999){ this.state.dailyGoal = n; this.save(); } },
+
+  // Wird beim Sync-Pull aufgerufen
+  applyRemote(remote){
+    if(!remote || typeof remote !== 'object') return false;
+    const lU = this.state.updatedAt || 0;
+    const rU = remote.updatedAt || 0;
+    if(rU > lU){
+      this.state = Object.assign(this.defaults(), remote);
+      try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
+      return true;
+    }
+    return false;
+  }
+};
+Stats.load();
 
 /* ═══════════════════════════════════════════════
    ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
@@ -2046,7 +2279,12 @@ const Sync = {
   },
 
   buildPayload(){
-    return { schema: 1, updatedAt: Date.now(), entries: SRS.state };
+    return {
+      schema: 2,
+      updatedAt: Date.now(),
+      entries: SRS.state,
+      stats: (typeof Stats !== 'undefined') ? Stats.state : null
+    };
   },
 
   async createGist(){
@@ -2233,6 +2471,12 @@ function setMode(m, btn){
   trainIdx = 0; trainFlipped = false;
   if(m === 'train'){
     trainDeck = SRS.dueQueue(WORDS);
+  } else if(m === 'quiz' || m === 'fill'){
+    // 10er-Runde
+    deck = buildRoundDeck();
+    resetRound();
+  } else if(m === 'match'){
+    Match.start();
   } else {
     deck = shuffle(WORDS);
   }
@@ -2249,6 +2493,7 @@ function render(){
   else if(mode==='flash') renderFlash();
   else if(mode==='quiz') renderQuiz();
   else if(mode==='fill') renderFill();
+  else if(mode==='match') renderMatch();
   else renderList();
 }
 
@@ -2262,12 +2507,104 @@ function srsDashHTML(){
       <button class="sync-manual-btn" onclick="manualSyncNow()" title="Jetzt synchronisieren">⟳ Sync</button>
       <span id="syncBadge">${Sync.badgeHTML()}</span>
     </div>
+    ${goalAndAccuracyHTML()}
     <div class="srs-dash">
       <div class="srs-dash-item due"><div class="srs-dash-num">${s.due}</div><div class="srs-dash-label">Heute fällig</div></div>
       <div class="srs-dash-item new"><div class="srs-dash-num">${s.fresh}</div><div class="srs-dash-label">Neu</div></div>
       <div class="srs-dash-item learn"><div class="srs-dash-num">${s.learning}</div><div class="srs-dash-label">Im Lernen</div></div>
       <div class="srs-dash-item mastered"><div class="srs-dash-num">${s.mastered}</div><div class="srs-dash-label">Gemeistert</div></div>
+    </div>
+    ${historyHTML()}`;
+}
+
+function goalAndAccuracyHTML(){
+  const goal = Stats.state.dailyGoal || 20;
+  const prog = Stats.todayProgress();
+  const pct  = Stats.todayGoalPct();
+  // Kreis-Geometrie: r=32, Umfang ≈ 201
+  const r = 32, c = 2 * Math.PI * r;
+  const offset = c * (1 - pct);
+  const trend = Stats.accuracyTrend();
+  const accStr = trend.curPct === null ? '— %' : `${trend.curPct}%`;
+  let trendStr = '';
+  if(trend.curPct !== null && trend.prevPct !== null){
+    if(trend.diff > 0)      trendStr = `<span class="trend-up">↗ +${trend.diff}%</span>`;
+    else if(trend.diff < 0) trendStr = `<span class="trend-down">↘ ${trend.diff}%</span>`;
+    else                    trendStr = `<span class="trend-flat">→ stabil</span>`;
+  } else {
+    trendStr = `<span class="trend-flat">noch keine Vergleichsbasis</span>`;
+  }
+  const streak = Stats.state.streak || 0;
+  const longest = Stats.state.longestStreak || 0;
+  return `
+    <div class="goal-row">
+      <div class="goal-ring-wrap">
+        <svg width="78" height="78" viewBox="0 0 78 78">
+          <circle class="goal-ring-bg" cx="39" cy="39" r="${r}"></circle>
+          <circle class="goal-ring-fill" cx="39" cy="39" r="${r}"
+            stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"></circle>
+        </svg>
+        <div class="goal-ring-text">
+          <div class="goal-ring-num">${prog}</div>
+          <div class="goal-ring-of">/ ${goal}</div>
+        </div>
+      </div>
+      <div class="goal-meta">
+        <div class="goal-meta-line"><span>Tagesziel</span><strong>${prog} / ${goal} <button class="goal-edit" onclick="editDailyGoal()">ändern</button></strong></div>
+        <div class="goal-meta-line"><span>Accuracy (7 Tage)</span><strong>${accStr} ${trendStr}</strong></div>
+        <div class="goal-meta-line"><span>Streak 🔥</span><strong>${streak} Tag${streak===1?'':'e'} <span style="color:var(--muted);font-weight:500">(Rekord ${longest})</span></strong></div>
+      </div>
     </div>`;
+}
+
+function historyHTML(){
+  const sessions = (Stats.state.sessions || []).slice(0, 5);
+  const modeIcon = { quiz:'❓ Quiz', fill:'✏️ Lückentext', match:'🎮 Match', train:'🧠 Training', flash:'🃏 Karten' };
+  if(!sessions.length){
+    return `<div class="history-box">
+      <div class="history-head">📊 Letzte Sessions</div>
+      <div class="history-empty">Noch keine abgeschlossenen Runden. Leg los — Quiz oder Lückentext starten!</div>
+    </div>`;
+  }
+  const fmtDate = (iso) => {
+    const today = SRS.todayISO(), y = SRS.addDays(today,-1);
+    if(iso === today) return 'heute';
+    if(iso === y)     return 'gestern';
+    const [yy,mm,dd] = iso.split('-');
+    return `${dd}.${mm}.`;
+  };
+  const rows = sessions.map(s => {
+    const lbl = modeIcon[s.mode] || s.mode;
+    let scoreStr;
+    if(s.mode === 'match'){
+      scoreStr = `<span class="history-score">${s.score||0} Pts</span>`;
+    } else {
+      const pct = s.total ? Math.round(100 * s.correct / s.total) : 0;
+      scoreStr = `<span class="history-score">${s.correct}/${s.total}</span><span class="history-score-pct"> · ${pct}%</span>`;
+    }
+    return `<div class="history-row">
+      <span class="history-mode">${lbl}</span>
+      <span class="history-date">${fmtDate(s.date)}</span>
+      ${scoreStr}
+      <span style="color:var(--muted);font-size:12px;">${s.durationMs ? Math.round(s.durationMs/1000)+'s' : ''}</span>
+    </div>`;
+  }).join('');
+  return `<div class="history-box">
+    <div class="history-head">📊 Letzte Sessions</div>
+    ${rows}
+  </div>`;
+}
+
+function editDailyGoal(){
+  const cur = Stats.state.dailyGoal || 20;
+  const v = prompt('Neues Tagesziel (Anzahl Antworten pro Tag):', cur);
+  if(v === null) return;
+  const n = parseInt(v, 10);
+  if(Number.isFinite(n) && n > 0 && n <= 999){
+    Stats.setDailyGoal(n);
+    updateStats();
+    render();
+  }
 }
 
 function renderTrain(){
@@ -2365,6 +2702,7 @@ function rateTrain(wasCorrect){
   const w = trainDeck[trainIdx];
   if(wasCorrect){ SRS.markCorrect(w.id); correct++; }
   else          { SRS.markWrong(w.id);   incorrect++; }
+  Stats.recordAnswer(wasCorrect, 'train');
   updateStats();
   trainIdx++;
   trainFlipped = false;
@@ -2448,6 +2786,7 @@ function markCard(wasCorrect){
     if(wasCorrect) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
   }
   if(wasCorrect){ correct++; } else { incorrect++; }
+  Stats.recordAnswer(wasCorrect, 'flash');
   updateStats();
   idx++;
   flipped = false;
@@ -2464,7 +2803,7 @@ function prevCard(){
 function renderQuiz(){
   const app = document.getElementById('app');
   if(WORDS.length < 2){ app.innerHTML='<p>Mindestens 2 Wörter für den Quiz-Modus benötigt.</p>'; return; }
-  if(idx >= deck.length){ renderSummary(); return; }
+  if(idx >= deck.length){ renderRoundResult('quiz'); return; }
 
   const w = deck[idx];
   // Build choices: 1 correct + up to 3 wrong
@@ -2504,7 +2843,15 @@ function answerQuiz(chosen){
   if(w){
     if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
   }
-  if(isOk){ correct++; } else { incorrect++; }
+  if(isOk){
+    correct++; roundCorrect++; combo++;
+    if(combo > bestComboInRound) bestComboInRound = combo;
+  } else {
+    incorrect++; combo = 0;
+    if(w) roundWrongWords.push(w);
+  }
+  Stats.recordAnswer(isOk, 'quiz');
+  if(combo >= 3) Stats.recordCombo(combo);
   updateStats();
 
   quizChoices.forEach((_,i)=>{
@@ -2516,14 +2863,21 @@ function answerQuiz(chosen){
 
   const fb = document.getElementById('quizFeedback');
   fb.className = `quiz-feedback ${isOk?'ok':'err'}`;
-  fb.textContent = isOk ? '🎉 Richtig! Sehr gut!' : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
+  const comboBadge = (isOk && combo >= 3) ? ` <span class="combo-badge">🔥 ${combo} in Folge</span>` : '';
+  fb.innerHTML = isOk
+    ? `🎉 Richtig! Sehr gut!${comboBadge}`
+    : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
   document.getElementById('nextQuizBtn').style.display = 'inline-flex';
 }
 
 function nextQuiz(){
   idx++;
-  render();
+  if(idx >= deck.length){
+    renderRoundResult('quiz');
+  } else {
+    render();
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -2532,7 +2886,7 @@ function nextQuiz(){
 function renderFill(){
   const app = document.getElementById('app');
   if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
-  if(idx >= deck.length){ renderSummary(); return; }
+  if(idx >= deck.length){ renderRoundResult('fill'); return; }
 
   const w = deck[idx];
   // pick a random example and blank the word
@@ -2560,10 +2914,25 @@ function renderFill(){
       <div id="fillResult"></div>
     </div>
     <div class="nav-row">
-      <button class="btn btn-ghost btn-sm" onclick="idx++;render()" id="skipBtn">Überspringen →</button>
+      <button class="btn btn-ghost btn-sm" onclick="skipFill()" id="skipBtn">Überspringen →</button>
     </div>`;
 
   setTimeout(()=>{ const i=document.getElementById('fillInput'); if(i) i.focus(); },100);
+}
+
+function skipFill(){
+  // beim Überspringen wird die Antwort als „nicht beantwortet" gezählt
+  const w = deck[idx];
+  if(w && !fillChecked){
+    incorrect++;
+    combo = 0;
+    roundWrongWords.push(w);
+    Stats.recordAnswer(false, 'fill');
+    updateStats();
+  }
+  idx++;
+  if(idx >= deck.length) renderRoundResult('fill');
+  else render();
 }
 
 function onFillInput(input){
@@ -2587,7 +2956,15 @@ function checkFill(){
   if(w){
     if(isOk) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
   }
-  if(isOk){ correct++; } else { incorrect++; }
+  if(isOk){
+    correct++; roundCorrect++; combo++;
+    if(combo > bestComboInRound) bestComboInRound = combo;
+  } else {
+    incorrect++; combo = 0;
+    if(w) roundWrongWords.push(w);
+  }
+  Stats.recordAnswer(isOk, 'fill');
+  if(combo >= 3) Stats.recordCombo(combo);
   updateStats();
 
   input.classList.add(isOk?'ok':'err');
@@ -2595,13 +2972,21 @@ function checkFill(){
 
   const res = document.getElementById('fillResult');
   const fullEx = w.examples[0];
+  const comboBadge = (isOk && combo >= 3) ? ` <span class="combo-badge">🔥 ${combo} in Folge</span>` : '';
   res.className = `fill-result ${isOk?'ok':'err'}`;
   res.innerHTML = isOk
-    ? `✓ Richtig! <em>${fullEx}</em>`
+    ? `✓ Richtig!${comboBadge} <em>${fullEx}</em>`
     : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong><br><em>${fullEx}</em>`;
 
   const skip = document.getElementById('skipBtn');
-  if(skip){ skip.textContent = 'Weiter →'; skip.onclick = ()=>{ idx++; render(); }; }
+  if(skip){
+    skip.textContent = 'Weiter →';
+    skip.onclick = ()=>{
+      idx++;
+      if(idx >= deck.length) renderRoundResult('fill');
+      else render();
+    };
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -2719,7 +3104,233 @@ function clearSearch(e){
 }
 
 /* ═══════════════════════════════════════════════
-   🏆 ZUSAMMENFASSUNG
+   🏁 10er-RUNDEN-AUSWERTUNG (Quiz / Lückentext)
+   ═══════════════════════════════════════════════ */
+function renderRoundResult(mode){
+  const app = document.getElementById('app');
+  const total = deck.length || ROUND_SIZE;
+  const ok = roundCorrect;
+  const wrong = total - ok;
+  const pct = total ? Math.round((ok/total)*100) : 0;
+  const isPerfect = ok === total && total > 0;
+  const durationMs = roundStartTs ? (Date.now() - roundStartTs) : 0;
+  const durSec = Math.round(durationMs / 1000);
+
+  // Bonus für perfekte Runde
+  let bonusXP = 0;
+  if(isPerfect){
+    Stats.recordPerfectRound();
+    bonusXP = 50;
+  }
+
+  // Session in History speichern
+  Stats.recordSession({ mode, total, correct: ok, durationMs });
+  updateStats();
+
+  let msg, emoji;
+  if(isPerfect){ emoji = '🌟'; msg = 'Perfekte Runde! 10 von 10. +50 XP Bonus!'; }
+  else if(pct >= 80){ emoji = '🏆'; msg = 'Sehr stark!'; }
+  else if(pct >= 50){ emoji = '💪'; msg = 'Solide Runde – weiter so.'; }
+  else { emoji = '📚'; msg = 'Übung macht den Meister.'; }
+
+  const wrongList = roundWrongWords.length
+    ? `<div class="round-wrong-list">
+        <div class="round-wrong-head">📝 Diese Wörter haben gehakt:</div>
+        ${roundWrongWords.map(w =>
+          `<div class="round-wrong-item">
+             <strong>${w.word}</strong>
+             <span class="muted">— ${w.translation}</span>
+           </div>`).join('')}
+       </div>`
+    : '';
+
+  app.innerHTML = `
+    <div class="round-result">
+      <div class="round-emoji">${emoji}</div>
+      <h2 class="round-title">Runde abgeschlossen!</h2>
+      <p class="round-msg">${msg}</p>
+      <div class="round-score-circle">
+        <div class="round-score-num">${ok}<span class="round-score-of">/${total}</span></div>
+        <div class="round-score-pct">${pct} %</div>
+      </div>
+      <div class="round-mini-stats">
+        <div class="rm"><div class="rm-num">${ok}</div><div class="rm-lbl">Richtig</div></div>
+        <div class="rm rm-err"><div class="rm-num">${wrong}</div><div class="rm-lbl">Falsch</div></div>
+        <div class="rm"><div class="rm-num">🔥 ${bestComboInRound}</div><div class="rm-lbl">Beste Combo</div></div>
+        <div class="rm"><div class="rm-num">${durSec}s</div><div class="rm-lbl">Dauer</div></div>
+        ${bonusXP ? `<div class="rm rm-bonus"><div class="rm-num">+${bonusXP}</div><div class="rm-lbl">XP Bonus</div></div>` : ''}
+      </div>
+      ${wrongList}
+      <div class="round-actions">
+        <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit 10 neuen</button>
+        <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.tab')[0])">🧠 Zurück zum Training</button>
+      </div>
+    </div>`;
+}
+
+function nextRound(m){
+  idx = 0;
+  quizAnswered = false;
+  fillChecked = false;
+  deck = buildRoundDeck();
+  resetRound();
+  render();
+}
+
+/* ═══════════════════════════════════════════════
+   🎮 MATCH-MODUS (Memory-Stil: Bild ↔ Übersetzung)
+   ═══════════════════════════════════════════════ */
+const Match = {
+  PAIRS: 6,
+  cards: [],         // { id, kind:'image'|'text', wordId, content, matched:false, flipped:false }
+  flipped: [],       // Indizes der aktuell offenen Karten (max 2)
+  moves: 0,
+  startTs: 0,
+  durationMs: 0,
+  matchedCount: 0,
+  state: 'idle',     // idle | playing | done
+  busy: false,       // während des Vergleichs gesperrt
+
+  start(){
+    // Wähle Wörter mit Bild bevorzugt; Fallback auf Wörter ohne Bild (mit Emoji-Symbol)
+    const withImg = WORDS.filter(w => getImg(w));
+    const pool = withImg.length >= this.PAIRS ? withImg : WORDS;
+    const picks = shuffle(pool).slice(0, this.PAIRS);
+    this.cards = [];
+    picks.forEach((w,i) => {
+      this.cards.push({ id: 'i'+i, kind:'image', wordId: w.id, word: w, matched:false, flipped:false });
+      this.cards.push({ id: 't'+i, kind:'text',  wordId: w.id, word: w, matched:false, flipped:false });
+    });
+    this.cards = shuffle(this.cards);
+    this.flipped = [];
+    this.moves = 0;
+    this.matchedCount = 0;
+    this.startTs = Date.now();
+    this.state = 'playing';
+    this.busy = false;
+  },
+
+  flip(idx){
+    if(this.busy) return;
+    if(this.state !== 'playing') return;
+    const c = this.cards[idx];
+    if(!c || c.matched || c.flipped) return;
+    c.flipped = true;
+    this.flipped.push(idx);
+    if(this.flipped.length === 2){
+      this.moves++;
+      const [a,b] = this.flipped;
+      const ca = this.cards[a], cb = this.cards[b];
+      if(ca.wordId === cb.wordId){
+        ca.matched = cb.matched = true;
+        this.matchedCount++;
+        this.flipped = [];
+        if(this.matchedCount >= this.PAIRS){
+          this.complete();
+        }
+      } else {
+        this.busy = true;
+        setTimeout(() => {
+          ca.flipped = false; cb.flipped = false;
+          this.flipped = [];
+          this.busy = false;
+          if(mode === 'match') renderMatch();
+        }, 900);
+      }
+    }
+    if(mode === 'match') renderMatch();
+  },
+
+  complete(){
+    this.durationMs = Date.now() - this.startTs;
+    this.state = 'done';
+    const sec = Math.round(this.durationMs / 1000);
+    // Score: Basis 1000, je Sekunde -10, je Move (über Minimum) -5, Minimum 100
+    const minMoves = this.PAIRS;
+    const movePenalty = Math.max(0, this.moves - minMoves) * 5;
+    const score = Math.max(100, 1000 - sec * 10 - movePenalty);
+    this.lastScore = score;
+    const isHigh = Stats.recordMatchScore(score);
+    this.lastIsHigh = isHigh;
+    Stats.recordSession({ mode:'match', total: this.PAIRS, correct: this.PAIRS, durationMs: this.durationMs, score });
+    Stats.awardBonus(30);
+    updateStats();
+  }
+};
+
+function renderMatch(){
+  const app = document.getElementById('app');
+  if(WORDS.length < Match.PAIRS){
+    app.innerHTML = `<p style="text-align:center;padding:40px 20px;">Mindestens ${Match.PAIRS} Wörter sind nötig für den Match-Modus. Aktuell hast du ${WORDS.length}.</p>`;
+    return;
+  }
+
+  if(Match.state === 'done'){
+    const sec = Math.round(Match.durationMs / 1000);
+    app.innerHTML = `
+      <div class="match-result">
+        <div style="font-size:54px;line-height:1;">${Match.lastIsHigh ? '🏆' : '🎉'}</div>
+        <h2>Geschafft!</h2>
+        <div class="big-score">${Match.lastScore}</div>
+        ${Match.lastIsHigh ? '<div class="new-high">⭐ Neuer Highscore!</div>' : `<div style="color:var(--muted);font-size:13px;">Highscore: ${Stats.state.matchHigh}</div>`}
+        <div class="round-mini-stats" style="margin-top:14px;">
+          <div class="rm"><div class="rm-num">${sec}s</div><div class="rm-lbl">Zeit</div></div>
+          <div class="rm"><div class="rm-num">${Match.moves}</div><div class="rm-lbl">Züge</div></div>
+          <div class="rm"><div class="rm-num">${Match.PAIRS}</div><div class="rm-lbl">Paare</div></div>
+          <div class="rm rm-bonus"><div class="rm-num">+30</div><div class="rm-lbl">XP</div></div>
+        </div>
+        <div class="round-actions">
+          <button class="btn btn-primary" onclick="Match.start();renderMatch();">🔄 Neue Runde</button>
+          <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.tab')[0])">🧠 Training</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  if(Match.state === 'idle') Match.start();
+
+  const elapsedSec = Math.round((Date.now() - Match.startTs) / 1000);
+  const cardsHTML = Match.cards.map((c, i) => {
+    const cls = (c.flipped ? ' flipped' : '') + (c.matched ? ' matched' : '');
+    const front = c.kind === 'image'
+      ? (getImg(c.word)
+          ? `<img src="${getImg(c.word)}" alt="${c.word.word}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'match-text',textContent:'${icon(c.word)}'}))">`
+          : `<div class="match-text" style="font-size:38px;">${icon(c.word)}</div>`)
+      : `<div class="match-text">${c.word.translation}</div>`;
+    return `<div class="match-card${cls}" onclick="Match.flip(${i})">
+      <div class="match-card-inner">
+        <div class="match-face match-face-back">?</div>
+        <div class="match-face match-face-front">${front}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="match-meta">
+      <div class="match-meta-item"><div class="match-meta-num">${Match.matchedCount}/${Match.PAIRS}</div><div class="match-meta-lbl">Paare</div></div>
+      <div class="match-meta-item"><div class="match-meta-num">${Match.moves}</div><div class="match-meta-lbl">Züge</div></div>
+      <div class="match-meta-item"><div class="match-meta-num" id="matchTimer">${elapsedSec}s</div><div class="match-meta-lbl">Zeit</div></div>
+      <div class="match-meta-item"><div class="match-meta-num">${Stats.state.matchHigh||0}</div><div class="match-meta-lbl">Highscore</div></div>
+    </div>
+    <div class="match-grid">${cardsHTML}</div>
+    <div class="match-actions">
+      <button class="btn btn-outline btn-sm" onclick="Match.start();renderMatch();">🔄 Neu mischen</button>
+    </div>`;
+
+  // Live-Timer
+  if(Match._timer) clearInterval(Match._timer);
+  Match._timer = setInterval(() => {
+    const t = document.getElementById('matchTimer');
+    if(!t || mode !== 'match' || Match.state !== 'playing'){
+      clearInterval(Match._timer);
+      return;
+    }
+    t.textContent = Math.round((Date.now() - Match.startTs) / 1000) + 's';
+  }, 1000);
+}
+
+/* ═══════════════════════════════════════════════
+   🏆 ZUSAMMENFASSUNG (alt — Karteikarten-Modus)
    ═══════════════════════════════════════════════ */
 function renderSummary(){
   const app = document.getElementById('app');
