@@ -422,6 +422,97 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 .match-result .big-score{font-size:48px;font-weight:800;color:var(--primary);letter-spacing:-.02em;margin:8px 0;}
 .match-result .new-high{color:var(--warn-text);background:var(--warn-bg);padding:6px 14px;border-radius:var(--radius-full);display:inline-block;font-size:13px;font-weight:700;margin:6px 0;}
 
+/* ═══════════════════════════════════════════════
+   📱 MOBILE UX (Sticky Action Bar, kompakte Tabs, Touch-Targets, Übergänge)
+   ═══════════════════════════════════════════════ */
+/* Sanfte Karten-Übergänge (auf allen Bildschirmgrößen) */
+.scene, .quiz-question, .fill-card, .round-result, .summary-card, .srs-empty, .match-result, .match-grid {
+  animation: cardIn .25s cubic-bezier(.4,0,.2,1);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile (< 540px): Aktions-Buttons kleben am unteren Bildschirmrand */
+@media (max-width: 540px) {
+  .mobile-action-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 100;
+    background: var(--card);
+    border-top: 1px solid var(--border-strong);
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    box-shadow: 0 -6px 18px rgba(15,23,42,.10);
+    margin: 0 !important;
+    gap: 10px;
+    justify-content: stretch !important;
+  }
+  body.dark .mobile-action-bar {
+    box-shadow: 0 -6px 18px rgba(0,0,0,.5);
+  }
+  .mobile-action-bar .btn,
+  .mobile-action-bar button {
+    min-height: 48px;
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* Auf Mobile bekommt die Bar eine Mini-Animation beim Erscheinen */
+  .mobile-action-bar:not([style*="display:none"]):not([style*="display: none"]) {
+    animation: barSlideUp .22s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes barSlideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Inhalt nicht unter der Bar verstecken */
+  main {
+    padding: 18px 14px 110px !important;
+  }
+
+  /* Tab-Bar: Icons-only auf Handy, große Touch-Targets */
+  nav { justify-content: space-around; overflow-x: visible; }
+  .tab {
+    padding: 12px 4px;
+    font-size: 22px;
+    min-height: 48px;
+    flex: 1;
+    text-align: center;
+  }
+  .tab-label { display: none; }
+
+  /* Header kompakter */
+  header { padding: 10px 14px; }
+  .hd-title h1 { font-size: 15px; }
+  .hd-title small { display: none; }
+  .hd-stats { gap: 5px; }
+  .hd-stats .stat { padding: 4px 8px; font-size: 11px; }
+  .logo { font-size: 22px; }
+  .theme-toggle { width: 32px; height: 32px; font-size: 14px; }
+
+  /* Touch-Targets vergrößern */
+  .btn-sm { min-height: 40px; padding: 10px 16px; font-size: 13px; }
+  .sync-manual-btn { min-height: 40px; padding: 9px 14px; }
+  .srs-reset-btn { min-height: 40px; padding: 9px 14px; }
+  .goal-edit { min-height: 32px; padding: 4px 10px; }
+
+  /* Quiz-Choices größer, mehr tap-tolerant */
+  .choice { min-height: 52px; padding: 12px 14px !important; font-size: 14.5px !important; }
+
+  /* Fill-Input + Prüfen großzügiger */
+  .fill-input { min-height: 44px; }
+  .fill-input-row .btn { min-height: 44px; }
+
+  /* Karteikarte kleiner, damit alles auf den Schirm passt */
+  .scene { min-height: 360px; }
+
+  /* Round-Result Buttons größer */
+  .round-actions .btn { min-height: 48px; }
+}
+
 /* Karteikarten: SRS-Bewertungszeile */
 .srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 .srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
@@ -448,12 +539,12 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 </header>
 
 <nav>
-  <button class="tab active" onclick="setMode('train',this)">🧠 Training</button>
-  <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
-  <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
-  <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
-  <button class="tab" onclick="setMode('match',this)">🎮 Match</button>
-  <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
+  <button class="tab active" onclick="setMode('train',this)" aria-label="Training">🧠 <span class="tab-label">Training</span></button>
+  <button class="tab" onclick="setMode('flash',this)" aria-label="Karteikarten">🃏 <span class="tab-label">Karteikarten</span></button>
+  <button class="tab" onclick="setMode('quiz',this)" aria-label="Quiz">❓ <span class="tab-label">Quiz</span></button>
+  <button class="tab" onclick="setMode('fill',this)" aria-label="Lückentext">✏️ <span class="tab-label">Lückentext</span></button>
+  <button class="tab" onclick="setMode('match',this)" aria-label="Match-Spiel">🎮 <span class="tab-label">Match</span></button>
+  <button class="tab" onclick="setMode('list',this)" aria-label="Wortliste">📋 <span class="tab-label">Wortliste</span></button>
 </nav>
 
 <main id="app"></main>
@@ -2483,6 +2574,7 @@ function setMode(m, btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
   render();
+  if(typeof scrollToTop === 'function') scrollToTop();
 }
 
 /* ═══════════════════════════════════════════════
@@ -2676,7 +2768,7 @@ function renderTrain(){
         </div>
       </div>
     </div>
-    <div class="srs-rate-row" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
+    <div class="srs-rate-row mobile-action-bar" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
       <button class="btn btn-srs-err" onclick="rateTrain(false)">✗ Nicht gewusst</button>
       <button class="btn btn-srs-ok" onclick="rateTrain(true)">✓ Gewusst</button>
     </div>
@@ -2707,6 +2799,7 @@ function rateTrain(wasCorrect){
   trainIdx++;
   trainFlipped = false;
   render();
+  scrollToTop();
 }
 
 function resetSRS(){
@@ -2761,7 +2854,7 @@ function renderFlash(){
         </div>
       </div>
     </div>
-    <div class="fc-actions" id="fcActions" style="display:none">
+    <div class="fc-actions mobile-action-bar" id="fcActions" style="display:none">
       <button class="btn btn-err" onclick="markCard(false)">✗ Nochmal</button>
       <button class="btn btn-ok" onclick="markCard(true)">✓ Gewusst!</button>
     </div>
@@ -2791,6 +2884,7 @@ function markCard(wasCorrect){
   idx++;
   flipped = false;
   render();
+  scrollToTop();
 }
 
 function prevCard(){
@@ -2830,8 +2924,8 @@ function renderQuiz(){
     </div>
     <div class="quiz-choices">${choicesHTML}</div>
     <div id="quizFeedback"></div>
-    <div class="nav-row">
-      <button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button>
+    <div class="nav-row mobile-action-bar" id="quizActionBar" style="display:none">
+      <button class="btn btn-primary" onclick="nextQuiz()" id="nextQuizBtn">Weiter →</button>
     </div>`;
 }
 
@@ -2868,7 +2962,12 @@ function answerQuiz(chosen){
     ? `🎉 Richtig! Sehr gut!${comboBadge}`
     : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
-  document.getElementById('nextQuizBtn').style.display = 'inline-flex';
+  document.getElementById('quizActionBar').style.display = 'flex';
+}
+
+function scrollToTop(){
+  // Nach jeder Aktion sanft nach oben, damit die nächste Karte komplett sichtbar startet
+  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) { window.scrollTo(0, 0); }
 }
 
 function nextQuiz(){
@@ -2878,6 +2977,7 @@ function nextQuiz(){
   } else {
     render();
   }
+  scrollToTop();
 }
 
 /* ═══════════════════════════════════════════════
@@ -2913,7 +3013,7 @@ function renderFill(){
       </div>
       <div id="fillResult"></div>
     </div>
-    <div class="nav-row">
+    <div class="nav-row mobile-action-bar" id="fillActionBar">
       <button class="btn btn-ghost btn-sm" onclick="skipFill()" id="skipBtn">Überspringen →</button>
     </div>`;
 
@@ -2933,6 +3033,7 @@ function skipFill(){
   idx++;
   if(idx >= deck.length) renderRoundResult('fill');
   else render();
+  scrollToTop();
 }
 
 function onFillInput(input){
@@ -2981,10 +3082,14 @@ function checkFill(){
   const skip = document.getElementById('skipBtn');
   if(skip){
     skip.textContent = 'Weiter →';
+    skip.classList.remove('btn-ghost');
+    skip.classList.remove('btn-sm');
+    skip.classList.add('btn-primary');
     skip.onclick = ()=>{
       idx++;
       if(idx >= deck.length) renderRoundResult('fill');
       else render();
+      scrollToTop();
     };
   }
 }
@@ -3175,6 +3280,7 @@ function nextRound(m){
   deck = buildRoundDeck();
   resetRound();
   render();
+  scrollToTop();
 }
 
 /* ═══════════════════════════════════════════════
