@@ -331,6 +331,54 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
 .modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
 
+/* Select-Element styling (für Add-Word-Modal) */
+.modal select.input {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 38px;
+}
+
+/* Floating Action Button: neues Wort hinzufügen */
+.fab-add {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px 12px 14px;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .01em;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(79,70,229,.35), 0 2px 6px rgba(15,23,42,.1);
+  z-index: 90;
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
+}
+.fab-add:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(79,70,229,.45), 0 3px 8px rgba(15,23,42,.12); }
+.fab-add:active { transform: translateY(0); }
+.fab-icon { font-size: 22px; line-height: 1; font-weight: 700; }
+body.focus-mode .fab-add { display: none; }
+@media (max-width: 540px) {
+  .fab-add {
+    right: 16px;
+    bottom: 18px;
+    padding: 12px 16px 12px 12px;
+  }
+  .fab-label { display: none; }
+  .fab-add { padding: 14px 14px; }
+}
+
 /* ── Header-Stat-Badges (Streak, XP, Tagesziel) ── */
 .hd-stats{flex-wrap:wrap;}
 .stat-streak{color:#ea580c;border-color:rgba(234,88,12,.25);background:#fff7ed;}
@@ -586,6 +634,139 @@ body.focus-mode .focus-bar {
   .quiz-choices-grid .choice { min-height: 56px; font-size: 13.5px; }
 }
 
+/* ═══════════════════════════════════════════════
+   📊 STATS-TAB (Heatmap, Badge-Gallery, Übersichts-Karten)
+   ═══════════════════════════════════════════════ */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.stats-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--sh-sm); }
+.stats-card-xp { background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(99,102,241,.08)); border-color: rgba(124,58,237,.2); }
+.stats-card-streak { background: linear-gradient(135deg, rgba(234,88,12,.08), rgba(245,158,11,.08)); border-color: rgba(234,88,12,.2); }
+.stats-num { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -.02em; }
+.stats-lbl { font-size: 12.5px; color: var(--muted); font-weight: 600; margin-top: 6px; letter-spacing: .02em; }
+
+.heatmap-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 24px; box-shadow: var(--sh-sm); }
+.heatmap-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 12px; font-weight: 600; letter-spacing: .02em; }
+.heatmap-legend { display: inline-flex; gap: 3px; align-items: center; }
+.heatmap-legend::before { content: 'wenig'; font-size: 11px; color: var(--muted); margin-right: 4px; }
+.heatmap-legend::after { content: 'viel'; font-size: 11px; color: var(--muted); margin-left: 4px; }
+
+.heatmap-grid { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.hm-day-labels { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; padding-top: 0; }
+.hm-day-label { height: 11px; font-size: 10px; color: var(--muted); line-height: 11px; }
+.hm-weeks { display: flex; gap: 2px; flex-shrink: 0; }
+.hm-week { display: flex; flex-direction: column; gap: 2px; }
+.hm-cell { width: 11px; height: 11px; border-radius: 2px; background: var(--border); transition: transform .12s ease; }
+.hm-cell:hover { transform: scale(1.4); }
+.hm-lv0 { background: var(--border); }
+.hm-lv1 { background: #c0dd97; }
+.hm-lv2 { background: #97c459; }
+.hm-lv3 { background: #639922; }
+.hm-lv4 { background: #3b6d11; }
+body.dark .hm-lv0 { background: rgba(255,255,255,.06); }
+body.dark .hm-lv1 { background: rgba(99,153,34,.35); }
+body.dark .hm-lv2 { background: rgba(99,153,34,.55); }
+body.dark .hm-lv3 { background: rgba(99,153,34,.75); }
+body.dark .hm-lv4 { background: rgba(99,153,34,.95); }
+.hm-today { box-shadow: inset 0 0 0 1px var(--primary); }
+
+.badge-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.badge-head h3 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+.badge-count { font-size: 13px; color: var(--muted); font-weight: 600; }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.badge-tile { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 12px; text-align: center; box-shadow: var(--sh-sm); transition: transform .15s ease, box-shadow .15s ease; }
+.badge-tile.unlocked { background: linear-gradient(135deg, rgba(99,102,241,.06), rgba(168,85,247,.06)); border-color: rgba(99,102,241,.25); }
+.badge-tile.locked { opacity: .55; filter: grayscale(.5); }
+.badge-tile.unlocked:hover { transform: translateY(-2px); box-shadow: var(--sh); }
+.bt-emoji { font-size: 34px; line-height: 1; margin-bottom: 6px; }
+.bt-name { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; letter-spacing: -.01em; }
+.bt-desc { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+
+@media (max-width: 540px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stats-card { padding: 12px 14px; }
+  .stats-num { font-size: 22px; }
+  .stats-lbl { font-size: 11px; }
+  .badge-grid { grid-template-columns: repeat(2, 1fr); }
+  .hm-cell { width: 9px; height: 9px; }
+  .hm-day-label { height: 9px; line-height: 9px; font-size: 9px; }
+}
+
+/* Hör-Button für TTS (Aussprache) */
+.speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  color: var(--primary);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform .15s ease, background .15s ease;
+  box-shadow: 0 2px 8px rgba(15,23,42,.15);
+}
+.speak-btn:hover { transform: scale(1.08); background: #fff; }
+.speak-btn:active { transform: scale(.95); }
+.speak-btn.speaking { animation: speakPulse .9s ease-in-out infinite; }
+@keyframes speakPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); box-shadow: 0 4px 14px rgba(79,70,229,.4); }
+}
+.speak-btn-hero {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+}
+.speak-btn-inline {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  background: var(--primary-bg);
+  color: var(--primary);
+  margin-left: 8px;
+  vertical-align: middle;
+  box-shadow: none;
+}
+
+/* Lückentext im Hero-Layout B */
+.fill-sentence-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 0 0 14px;
+  box-shadow: var(--sh-sm);
+}
+.fill-sentence-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.fill-sentence-card .fill-sentence {
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.fill-sentence-card .blank {
+  display: inline-block;
+  min-width: 80px;
+  border-bottom: 2px solid var(--primary);
+  color: transparent;
+  font-weight: 700;
+  letter-spacing: .15em;
+  padding: 0 4px;
+}
+@media (max-width: 540px) {
+  .fill-sentence-card { padding: 14px 16px; }
+  .fill-sentence-card .fill-sentence { font-size: 15.5px; }
+}
+
 /* Quiz Reveal-Karte: Beispielsatz und Weiter-Button zusammen, erscheint erst nach Antwort */
 .quiz-reveal-card {
   background: var(--card);
@@ -770,6 +951,7 @@ body.focus-mode .focus-bar {
   <button class="tab" onclick="setMode('quiz',this)" aria-label="Quiz">❓ <span class="tab-label">Quiz</span></button>
   <button class="tab" onclick="setMode('fill',this)" aria-label="Lückentext">✏️ <span class="tab-label">Lückentext</span></button>
   <button class="tab" onclick="setMode('match',this)" aria-label="Match-Spiel">🎮 <span class="tab-label">Match</span></button>
+  <button class="tab" onclick="setMode('stats',this)" aria-label="Statistik und Erfolge">📊 <span class="tab-label">Stats</span></button>
   <button class="tab" onclick="setMode('list',this)" aria-label="Wortliste">📋 <span class="tab-label">Wortliste</span></button>
 </nav>
 
@@ -2531,6 +2713,53 @@ const Stats = {
 Stats.load();
 
 /* ═══════════════════════════════════════════════
+   🔊 SPEECH (Browser-Text-to-Speech, läuft offline)
+   ═══════════════════════════════════════════════ */
+const Speech = {
+  available(){ return typeof window !== 'undefined' && 'speechSynthesis' in window; },
+  // Bevorzugte Stimme: britisches Englisch, sonst US, sonst irgendein Englisch
+  pickVoice(){
+    if(!this.available()) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if(!voices || !voices.length) return null;
+    return voices.find(v => v.lang === 'en-GB')
+        || voices.find(v => v.lang === 'en-US')
+        || voices.find(v => v.lang && v.lang.startsWith('en'))
+        || null;
+  },
+  speak(text, opts){
+    if(!this.available()) return false;
+    if(!text) return false;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(text));
+      u.lang = (opts && opts.lang) || 'en-GB';
+      u.rate = (opts && opts.rate) || 1;
+      const voice = this.pickVoice();
+      if(voice) u.voice = voice;
+      // Visuelles Feedback auf dem Auslöse-Button (falls vorhanden)
+      const btn = opts && opts.btnId ? document.getElementById(opts.btnId) : null;
+      if(btn){
+        btn.classList.add('speaking');
+        u.onend = () => btn.classList.remove('speaking');
+        u.onerror = () => btn.classList.remove('speaking');
+      }
+      window.speechSynthesis.speak(u);
+      return true;
+    } catch(e){ return false; }
+  }
+};
+// Vorladen der Stimmen (manche Browser laden async)
+if(Speech.available() && typeof window.speechSynthesis.onvoiceschanged !== 'undefined'){
+  window.speechSynthesis.onvoiceschanged = () => { /* trigger voices fetch */ Speech.pickVoice(); };
+}
+
+// Hilfsfunktion für inline-Aufruf aus HTML
+function speakWord(text, btnId){
+  Speech.speak(text, { btnId });
+}
+
+/* ═══════════════════════════════════════════════
    ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
    Speicherort: Ein privater Gist im GitHub-Account des Users.
    Token: fine-grained PAT mit "Gist"-Scope, lokal in localStorage.
@@ -2787,6 +3016,86 @@ async function manualSyncNow(){
   await Sync.push();
 }
 
+/* ═══════════════════════════════════════════════
+   ➕ ADD WORD (Issue via GitHub-API erstellen — ETA-Bot übernimmt Rest)
+   ═══════════════════════════════════════════════ */
+const AddWord = {
+  REPO_OWNER: 'timlbclaude',
+  REPO_NAME:  'Englishtrainer',
+  busy: false,
+  async submit(word, category){
+    if(this.busy) return false;
+    const token = Sync.token();
+    if(!token) throw new Error('Kein Token. Bitte zuerst den Sync einrichten.');
+    this.busy = true;
+    try {
+      const title = 'ETA: ' + word.trim() + (category && category !== 'Allgemein' ? ' #' + category : '');
+      const res = await fetch('https://api.github.com/repos/' + this.REPO_OWNER + '/' + this.REPO_NAME + '/issues', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': 'Bearer ' + token,
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, body: 'Hinzugefügt aus der App.' })
+      });
+      if(!res.ok){
+        const txt = await res.text().catch(()=> '');
+        if(res.status === 403 || res.status === 404){
+          throw new Error('Token hat keine Repo-Zugriffsrechte. Bearbeite deinen GitHub-Token und füge Scope „Issues: Read and write" hinzu (github.com/settings/tokens). HTTP ' + res.status);
+        }
+        throw new Error('GitHub ' + res.status + ': ' + txt.slice(0, 160));
+      }
+      const issue = await res.json();
+      return issue;
+    } finally {
+      this.busy = false;
+    }
+  }
+};
+
+function openAddWordModal(){
+  const m = document.getElementById('addWordModal');
+  if(!m) return;
+  document.getElementById('addWordInput').value = '';
+  document.getElementById('addWordCategory').value = 'Allgemein';
+  document.getElementById('addWordMsg').innerHTML = '';
+  if(!Sync.isConfigured()){
+    document.getElementById('addWordMsg').innerHTML = '<span style="color:var(--err)">⚠️ Noch kein GitHub-Token. Richte erst den Sync ein (oben rechts im Training).</span>';
+  }
+  m.classList.add('open');
+  setTimeout(() => { const i = document.getElementById('addWordInput'); if(i) i.focus(); }, 50);
+}
+function closeAddWordModal(){
+  const m = document.getElementById('addWordModal');
+  if(m) m.classList.remove('open');
+}
+async function submitNewWord(){
+  const wordEl = document.getElementById('addWordInput');
+  const catEl  = document.getElementById('addWordCategory');
+  const msgEl  = document.getElementById('addWordMsg');
+  const btn    = document.getElementById('addWordSubmit');
+  const word = (wordEl && wordEl.value || '').trim();
+  const category = catEl ? catEl.value : 'Allgemein';
+  if(!word){
+    msgEl.innerHTML = '<span style="color:var(--err)">Bitte ein Wort eingeben.</span>';
+    return;
+  }
+  btn.disabled = true;
+  msgEl.innerHTML = '<span style="color:var(--muted)">Sende an GitHub…</span>';
+  try {
+    const issue = await AddWord.submit(word, category);
+    msgEl.innerHTML = '<span style="color:var(--ok)">✓ Issue #' + issue.number + ' erstellt. Der Bot verarbeitet das Wort jetzt — in ~30 Sekunden ist es in der App. Lade die Seite dann neu (oder ziehe von oben nach unten zum Aktualisieren).</span>';
+    wordEl.value = '';
+    setTimeout(() => { closeAddWordModal(); }, 3500);
+  } catch(e){
+    msgEl.innerHTML = '<span style="color:var(--err)">Fehler: ' + (e.message || e) + '</span>';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 let trainDeck = [];
 let trainIdx = 0;
 let trainFlipped = false;
@@ -2854,6 +3163,7 @@ function render(){
   else if(mode==='quiz') renderQuiz();
   else if(mode==='fill') renderFill();
   else if(mode==='match') renderMatch();
+  else if(mode==='stats') renderStats();
   else renderList();
   if(typeof updateFocusBar === 'function') updateFocusBar();
 }
@@ -3018,7 +3328,7 @@ function renderTrain(){
       <div class="flashcard ${trainFlipped?'flipped':''}" id="trainFc" onclick="flipTrain()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}</div>
+          <div class="fc-word">${w.word}<button class="speak-btn speak-btn-inline" id="srsSpeakBtn" onclick="event.stopPropagation();speakWord(${JSON.stringify(w.word)}, 'srsSpeakBtn')" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3105,7 +3415,7 @@ function renderFlash(){
       <div class="flashcard" id="fc" onclick="flipCard()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}</div>
+          <div class="fc-word">${w.word}<button class="speak-btn speak-btn-inline" id="flashSpeakBtn" onclick="event.stopPropagation();speakWord(${JSON.stringify(w.word)}, 'flashSpeakBtn')" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3188,6 +3498,7 @@ function renderQuiz(){
     <div class="quiz-sub-prompt">Was bedeutet dieses Wort?</div>
     <div class="quiz-hero">
       ${heroVisual}
+      <button class="speak-btn speak-btn-hero" id="quizSpeakBtn" onclick="speakWord(${JSON.stringify(w.word)}, 'quizSpeakBtn')" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>
       <div class="quiz-hero-badge">${w.difficulty}</div>
       <div class="quiz-hero-overlay">
         <div class="quiz-hero-word">${w.word}</div>
@@ -3266,35 +3577,58 @@ function renderFill(){
   if(idx >= deck.length){ renderRoundResult('fill'); return; }
 
   const w = deck[idx];
-  // pick a random example and blank the word
+  // Zufälliger Beispielsatz mit der Lücke
   const ex = w.examples[Math.floor(Math.random()*w.examples.length)];
   const regex = new RegExp(w.word, 'gi');
   const blanked = ex.replace(regex, '<span class="blank">_____</span>');
   fillChecked = false;
 
+  // Hero-Layout B: Bild oben, deutsche Übersetzung als großes Wort (als Hint)
+  const heroVisual = getImg(w)
+    ? `<img class="quiz-hero-img" src="${getImg(w)}" alt="${w.translation}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-hero-emoji',textContent:'${icon(w)}'}))">`
+    : `<div class="quiz-hero-emoji">${icon(w)}</div>`;
+
   app.innerHTML = `
-    ${progressHTML(idx+1, deck.length)}
-    <div class="fill-card">
-      <div class="fill-label">🇩🇪 Übersetzung: <strong>${w.translation}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;
-        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+    <div class="quiz-sub-prompt">Wie heißt dieses Wort auf Englisch?</div>
+    <div class="quiz-hero">
+      ${heroVisual}
+      <div class="quiz-hero-badge">${w.difficulty}</div>
+      <div class="quiz-hero-overlay">
+        <div class="quiz-hero-word">${w.translation}</div>
+        <div class="quiz-hero-meta">${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Pronunciation: ${w.pronunciation}</div>
-      <div class="fill-label">Ergänze den Satz mit dem richtigen Wort:</div>
+    </div>
+    <div class="fill-sentence-card">
+      <div class="fill-sentence-label">Ergänze den Satz:</div>
       <div class="fill-sentence">${blanked}</div>
-      <div class="fill-input-row">
-        <input class="fill-input" id="fillInput" type="text" placeholder="Deine Antwort…"
-          onkeydown="if(event.key==='Enter')checkFill()"
-          oninput="onFillInput(this)"
-          autocomplete="off" autocorrect="off" spellcheck="false">
-        <button class="btn btn-primary" onclick="checkFill()">Prüfen</button>
+    </div>
+    <div class="fill-input-row">
+      <input class="fill-input" id="fillInput" type="text" placeholder="Englisches Wort eintippen…"
+        onkeydown="if(event.key==='Enter')checkFill()"
+        oninput="onFillInput(this)"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="btn btn-primary" onclick="checkFill()">Prüfen</button>
+    </div>
+    <div id="fillResult"></div>
+    <div class="quiz-reveal-card" id="fillReveal" style="display:none">
+      <div>
+        <span class="quiz-reveal-label" id="fillRevealLabel">📝 Lösung</span>
+        <div class="quiz-reveal-example" id="fillRevealExample"></div>
       </div>
-      <div id="fillResult"></div>
+      <button class="btn btn-primary" onclick="fillNext()" id="fillNextBtn">Weiter →</button>
     </div>
     <div class="nav-row mobile-action-bar" id="fillActionBar">
       <button class="btn btn-ghost btn-sm" onclick="skipFill()" id="skipBtn">Überspringen →</button>
     </div>`;
 
   setTimeout(()=>{ const i=document.getElementById('fillInput'); if(i) i.focus(); },100);
+}
+
+function fillNext(){
+  idx++;
+  if(idx >= deck.length) renderRoundResult('fill');
+  else render();
+  scrollToTop();
 }
 
 function skipFill(){
@@ -3349,26 +3683,21 @@ function checkFill(){
   input.disabled = true;
 
   const res = document.getElementById('fillResult');
-  const fullEx = w.examples[0];
   const comboBadge = (isOk && combo >= 3) ? ` <span class="combo-badge">🔥 ${combo} in Folge</span>` : '';
   res.className = `fill-result ${isOk?'ok':'err'}`;
   res.innerHTML = isOk
-    ? `✓ Richtig!${comboBadge} <em>${fullEx}</em>`
-    : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong><br><em>${fullEx}</em>`;
+    ? `✓ Richtig!${comboBadge}`
+    : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong>`;
 
-  const skip = document.getElementById('skipBtn');
-  if(skip){
-    skip.textContent = 'Weiter →';
-    skip.classList.remove('btn-ghost');
-    skip.classList.remove('btn-sm');
-    skip.classList.add('btn-primary');
-    skip.onclick = ()=>{
-      idx++;
-      if(idx >= deck.length) renderRoundResult('fill');
-      else render();
-      scrollToTop();
-    };
-  }
+  // Reveal-Karte mit komplettem Beispielsatz einblenden, Skip-Bar verstecken
+  const reveal = document.getElementById('fillReveal');
+  const labelEl = document.getElementById('fillRevealLabel');
+  const exEl = document.getElementById('fillRevealExample');
+  if(labelEl) labelEl.textContent = isOk ? '✓ Richtig — Beispielsatz komplett' : '📝 Beispiel mit korrekter Lösung';
+  if(exEl) exEl.innerHTML = '„' + w.examples[0].replace(new RegExp(w.word,'gi'), '<strong style="color:var(--primary)">'+w.word+'</strong>') + '"';
+  if(reveal) reveal.style.display = 'flex';
+  const skipBar = document.getElementById('fillActionBar');
+  if(skipBar) skipBar.style.display = 'none';
 }
 
 /* ═══════════════════════════════════════════════
@@ -3713,6 +4042,157 @@ function renderMatch(){
 }
 
 /* ═══════════════════════════════════════════════
+   📊 STATS-TAB (Activity-Heatmap, Badges, Übersicht)
+   ═══════════════════════════════════════════════ */
+function countMastered(){
+  let n = 0;
+  for(const w of WORDS){
+    const e = SRS.state[w.id];
+    if(e && (e.level||0) >= 7) n++;
+  }
+  return n;
+}
+
+const BADGES = [
+  { id:'first-xp',     emoji:'🌱', name:'Erste Schritte',     desc:'Erste 50 XP gesammelt',          check: s => (s.xp||0) >= 50 },
+  { id:'xp-500',       emoji:'⭐', name:'Fleißig',             desc:'500 XP gesammelt',               check: s => (s.xp||0) >= 500 },
+  { id:'xp-2000',      emoji:'🏆', name:'Wortschatzheld',      desc:'2000 XP gesammelt',              check: s => (s.xp||0) >= 2000 },
+  { id:'streak-3',     emoji:'🔥', name:'Dranbleiber',         desc:'3 Tage in Folge trainiert',      check: s => (s.longestStreak||0) >= 3 },
+  { id:'streak-7',     emoji:'🔥', name:'Konstanz',            desc:'7 Tage in Folge trainiert',      check: s => (s.longestStreak||0) >= 7 },
+  { id:'streak-30',    emoji:'🔥', name:'Monatsmeister',       desc:'30 Tage in Folge trainiert',     check: s => (s.longestStreak||0) >= 30 },
+  { id:'mastered-10',  emoji:'🎓', name:'Erste 10',            desc:'10 Wörter auf Stufe 7',          check: () => countMastered() >= 10 },
+  { id:'mastered-50',  emoji:'🎓', name:'Fortgeschritten',     desc:'50 Wörter auf Stufe 7',          check: () => countMastered() >= 50 },
+  { id:'mastered-100', emoji:'🎓', name:'Wortmeister',         desc:'100 Wörter auf Stufe 7',         check: () => countMastered() >= 100 },
+  { id:'perfect-1',    emoji:'🌟', name:'Erste perfekte Runde',desc:'10 von 10 richtig in einer Runde',check: s => (s.perfectRounds||0) >= 1 },
+  { id:'perfect-10',   emoji:'🌟', name:'Perfektionist',       desc:'10 perfekte Runden insgesamt',   check: s => (s.perfectRounds||0) >= 10 },
+  { id:'combo-5',      emoji:'⚡', name:'Combo-Master',        desc:'5er-Combo erreicht',             check: s => (s.bestCombo||0) >= 5 },
+  { id:'combo-10',     emoji:'⚡', name:'Unaufhaltsam',        desc:'10er-Combo erreicht',            check: s => (s.bestCombo||0) >= 10 },
+  { id:'match-500',    emoji:'🎮', name:'Match-Spieler',       desc:'Match-Score 500+',               check: s => (s.matchHigh||0) >= 500 },
+  { id:'match-800',    emoji:'🎮', name:'Match-Profi',         desc:'Match-Score 800+',               check: s => (s.matchHigh||0) >= 800 },
+];
+
+function heatmapHTML(){
+  // 52 Wochen × 7 Tage, jüngster Tag rechts unten
+  const today = new Date();
+  const todayISO = SRS.todayISO();
+  // Start: 52 Wochen zurück, ausgerichtet auf Wochenbeginn (Montag)
+  const DAYS = 52 * 7;
+  const cells = [];
+  for(let i = DAYS - 1; i >= 0; i--){
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const iso = SRS.localISO(d);
+    const count = Stats.state.dailyProgress[iso] || 0;
+    let level = 0;
+    if(count >= 1)  level = 1;
+    if(count >= 6)  level = 2;
+    if(count >= 16) level = 3;
+    if(count >= 30) level = 4;
+    cells.push({ iso, count, level, isToday: iso === todayISO });
+  }
+  // Renderung als CSS-Grid: 7 Zeilen (Tage), 52 Spalten (Wochen)
+  // Aber Zellen-Anordnung: Spalte für Spalte (Sonntag..Samstag)
+  // Wir gehen einfacher: Wochen-Spalten, je 7 Zellen
+  const weeks = [];
+  for(let w = 0; w < 52; w++){
+    const week = [];
+    for(let d = 0; d < 7; d++){
+      const idx = w * 7 + d;
+      if(idx < cells.length) week.push(cells[idx]);
+    }
+    weeks.push(week);
+  }
+  const weeksHTML = weeks.map(week =>
+    `<div class="hm-week">${week.map(c =>
+      `<div class="hm-cell hm-lv${c.level}${c.isToday?' hm-today':''}" title="${c.iso}: ${c.count} Antworten"></div>`
+    ).join('')}</div>`
+  ).join('');
+  // Tagesnamen-Spalte (Mo, Mi, Fr)
+  const dayLabels = ['Mo','','Mi','','Fr','',''];
+  const labelsHTML = dayLabels.map((l,i) =>
+    `<div class="hm-day-label">${l}</div>`
+  ).join('');
+  return `
+    <div class="heatmap-wrap">
+      <div class="heatmap-head">
+        <span>Letzte 52 Wochen</span>
+        <span class="heatmap-legend">
+          <span class="hm-cell hm-lv0"></span>
+          <span class="hm-cell hm-lv1"></span>
+          <span class="hm-cell hm-lv2"></span>
+          <span class="hm-cell hm-lv3"></span>
+          <span class="hm-cell hm-lv4"></span>
+        </span>
+      </div>
+      <div class="heatmap-grid">
+        <div class="hm-day-labels">${labelsHTML}</div>
+        <div class="hm-weeks">${weeksHTML}</div>
+      </div>
+    </div>`;
+}
+
+function badgesHTML(){
+  const s = Stats.state;
+  const items = BADGES.map(b => {
+    let unlocked = false;
+    try { unlocked = !!b.check(s); } catch(e){ unlocked = false; }
+    return `<div class="badge-tile ${unlocked?'unlocked':'locked'}" title="${b.desc}">
+      <div class="bt-emoji">${unlocked?b.emoji:'🔒'}</div>
+      <div class="bt-name">${b.name}</div>
+      <div class="bt-desc">${b.desc}</div>
+    </div>`;
+  }).join('');
+  const unlockedCount = BADGES.filter(b => { try { return b.check(s); } catch(e){ return false; } }).length;
+  return `
+    <div class="badge-head">
+      <h3>🏆 Erfolge</h3>
+      <span class="badge-count">${unlockedCount} / ${BADGES.length}</span>
+    </div>
+    <div class="badge-grid">${items}</div>`;
+}
+
+function renderStats(){
+  const app = document.getElementById('app');
+  const s = Stats.state;
+  const mastered = countMastered();
+  const trend = Stats.accuracyTrend();
+  const trendStr = (trend.curPct !== null && trend.prevPct !== null)
+    ? (trend.diff > 0 ? `<span style="color:var(--ok)">↗ +${trend.diff}%</span>` :
+       trend.diff < 0 ? `<span style="color:var(--err)">↘ ${trend.diff}%</span>` :
+                        `<span style="color:var(--muted)">→ stabil</span>`)
+    : `<span style="color:var(--muted)">noch keine Daten</span>`;
+  app.innerHTML = `
+    <div class="stats-grid">
+      <div class="stats-card stats-card-xp">
+        <div class="stats-num">${s.xp||0}</div>
+        <div class="stats-lbl">⭐ XP gesamt</div>
+      </div>
+      <div class="stats-card stats-card-streak">
+        <div class="stats-num">${s.streak||0}</div>
+        <div class="stats-lbl">🔥 Streak (Rekord ${s.longestStreak||0})</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-num">${mastered}</div>
+        <div class="stats-lbl">🎓 Wörter gemeistert</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-num">${s.perfectRounds||0}</div>
+        <div class="stats-lbl">🌟 Perfekte Runden</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-num">${s.matchHigh||0}</div>
+        <div class="stats-lbl">🎮 Match-Highscore</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-num">${trend.curPct !== null ? trend.curPct + '%' : '—'}</div>
+        <div class="stats-lbl">📈 Accuracy 7d ${trendStr}</div>
+      </div>
+    </div>
+    ${heatmapHTML()}
+    ${badgesHTML()}`;
+}
+
+/* ═══════════════════════════════════════════════
    🏆 ZUSAMMENFASSUNG (alt — Karteikarten-Modus)
    ═══════════════════════════════════════════════ */
 function renderSummary(){
@@ -3780,6 +4260,39 @@ prefetchImages();
 // Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
 Sync.init();
 </script>
+
+<!-- Wort-Hinzufügen Floating Action Button und Modal -->
+<button class="fab-add" id="fabAdd" onclick="openAddWordModal()" aria-label="Neues Wort hinzufügen" title="Neues Wort hinzufügen">
+  <span class="fab-icon">+</span>
+  <span class="fab-label">Wort</span>
+</button>
+
+<div class="modal-overlay" id="addWordModal" onclick="if(event.target===this) closeAddWordModal()">
+  <div class="modal" role="dialog" aria-labelledby="addWordTitle">
+    <h2 id="addWordTitle">➕ Neues Wort hinzufügen</h2>
+    <p class="modal-sub">Trag das englische Wort ein. Der ETA-Bot ergänzt automatisch Übersetzung, IPA, Definition, Beispielsätze und Bild — und committet es ins Repo. In ~30 Sekunden ist es in der App.</p>
+
+    <div class="hint" id="addWordHint">Du nutzt denselben GitHub-Token wie für den Sync. Der Token braucht zusätzlich „Issues: write" — falls noch nicht, erweitern unter <code>github.com/settings/tokens</code>.</div>
+
+    <label for="addWordInput">Englisches Wort</label>
+    <input type="text" id="addWordInput" class="input" placeholder="z.B. brick" autocomplete="off" spellcheck="false" autocapitalize="off">
+
+    <label for="addWordCategory">Kategorie</label>
+    <select id="addWordCategory" class="input">
+      <option value="Allgemein">Allgemein</option>
+      <option value="TV">TV</option>
+      <option value="Books">Books</option>
+      <option value="Kitchen">Kitchen / Cooking</option>
+    </select>
+
+    <div class="modal-msg" id="addWordMsg"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeAddWordModal()">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" id="addWordSubmit" onclick="submitNewWord()">Hinzufügen</button>
+    </div>
+  </div>
+</div>
 
 <!-- Sync-Einrichtungs-Modal -->
 <div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
