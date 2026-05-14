@@ -586,18 +586,66 @@ body.focus-mode .focus-bar {
   .quiz-choices-grid .choice { min-height: 56px; font-size: 13.5px; }
 }
 
-/* Beispielsatz erscheint erst nach Antwort */
-.quiz-example-reveal {
+/* Quiz Reveal-Karte: Beispielsatz und Weiter-Button zusammen, erscheint erst nach Antwort */
+.quiz-reveal-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--primary);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  font-size: 14px;
-  color: var(--text-soft);
-  font-style: italic;
-  margin: 10px 0 14px;
+  border-top: 2px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 14px 16px 14px;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--sh-sm);
   animation: cardIn .3s cubic-bezier(.4,0,.2,1);
+}
+.quiz-reveal-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.quiz-reveal-example {
+  font-size: 14.5px;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.45;
+}
+.quiz-reveal-card .btn {
+  min-height: 44px;
+  width: 100%;
+  font-weight: 600;
+}
+@media (max-width: 540px) {
+  .quiz-reveal-card {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 100;
+    margin: 0 !important;
+    border-radius: 16px 16px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: 2px solid var(--primary);
+    box-shadow: 0 -10px 28px rgba(15,23,42,.15);
+    padding: 14px 16px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    max-height: 55vh;
+    overflow-y: auto;
+    animation: revealSlideUp .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  body.dark .quiz-reveal-card { box-shadow: 0 -10px 28px rgba(0,0,0,.5); }
+  .quiz-reveal-card .btn { min-height: 48px; font-size: 14.5px; }
+  @keyframes revealSlideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  /* Mehr Polster unten im Quiz-Modus, damit die Reveal-Karte den Inhalt nicht überlappt */
+  body.focus-mode main { padding-bottom: 180px !important; }
 }
 
 /* ═══════════════════════════════════════════════
@@ -3148,8 +3196,11 @@ function renderQuiz(){
     </div>
     <div class="quiz-choices-grid">${choicesHTML}</div>
     <div id="quizFeedback"></div>
-    <div class="quiz-example-reveal" id="quizExample" style="display:none">📝 „${w.examples[0]}"</div>
-    <div class="nav-row mobile-action-bar" id="quizActionBar" style="display:none">
+    <div class="quiz-reveal-card" id="quizReveal" style="display:none">
+      <div>
+        <span class="quiz-reveal-label">📝 Beispiel</span>
+        <div class="quiz-reveal-example">„${w.examples[0]}"</div>
+      </div>
       <button class="btn btn-primary" onclick="nextQuiz()" id="nextQuizBtn">Weiter →</button>
     </div>`;
 }
@@ -3187,9 +3238,8 @@ function answerQuiz(chosen){
     ? `🎉 Richtig! Sehr gut!${comboBadge}`
     : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
-  document.getElementById('quizActionBar').style.display = 'flex';
-  const exEl = document.getElementById('quizExample');
-  if(exEl){ exEl.style.display = 'block'; }
+  const revealEl = document.getElementById('quizReveal');
+  if(revealEl){ revealEl.style.display = 'flex'; }
 }
 
 function scrollToTop(){
