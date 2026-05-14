@@ -423,35 +423,181 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 .match-result .new-high{color:var(--warn-text);background:var(--warn-bg);padding:6px 14px;border-radius:var(--radius-full);display:inline-block;font-size:13px;font-weight:700;margin:6px 0;}
 
 /* ═══════════════════════════════════════════════
-   🖼️ QUIZ-BILD (Wikimedia-Foto oder Emoji-Fallback)
+   🎯 FOCUS MODE (Lern-Modi blenden Header und Tabs aus)
    ═══════════════════════════════════════════════ */
-.quiz-image,
-.quiz-img-placeholder {
-  display: block;
-  max-width: 280px;
-  width: 100%;
-  height: 160px;
-  margin: 8px auto 14px;
-  border-radius: var(--radius);
-  object-fit: cover;
-  background: var(--primary-bg);
-  border: 1px solid var(--border);
-  box-shadow: var(--sh-sm);
+body.focus-mode > header,
+body.focus-mode > nav { display: none !important; }
+body.focus-mode main { padding-top: 0; }
+
+.focus-bar { display: none; }
+body.focus-mode .focus-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 8px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  margin: 0 -24px 16px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
-.quiz-img-placeholder {
+.focus-exit {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .15s ease;
+}
+.focus-exit:hover { background: var(--card-hover); border-color: var(--border-strong); }
+.focus-prog-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.focus-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-soft), var(--primary));
+  border-radius: 3px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+.focus-stats {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.focus-stats .stat { font-size: 12px; padding: 3px 9px; }
+
+@media (max-width: 540px) {
+  body.focus-mode .focus-bar {
+    padding: 10px 14px 6px;
+    margin: 0 -14px 12px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   🖼️ QUIZ HERO (Layout B — Bild als große Card mit Overlay)
+   ═══════════════════════════════════════════════ */
+.quiz-hero {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-soft), var(--primary));
+  margin: 8px 0 16px;
+  box-shadow: var(--sh);
+}
+.quiz-hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.quiz-hero-emoji {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 90px;
+  color: rgba(255,255,255,.85);
+  line-height: 1;
+}
+.quiz-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.55) 75%, rgba(0,0,0,.78) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 18px 22px;
+  color: #fff;
+}
+.quiz-hero-word {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+.quiz-hero-meta {
+  font-size: 13.5px;
+  opacity: .95;
+  margin-top: 5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+  letter-spacing: .01em;
+}
+.quiz-hero-meta .hero-dot { opacity: .55; margin: 0 6px; }
+
+.quiz-hero-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: rgba(255,255,255,.92);
+  color: var(--text);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  backdrop-filter: blur(8px);
+}
+
+.quiz-sub-prompt {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.quiz-choices-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.quiz-choices-grid .choice {
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 60px;
-  line-height: 1;
+  text-align: center;
+  font-size: 14.5px;
+  padding: 12px 12px;
+  line-height: 1.25;
+}
+@media (max-width: 380px) {
+  .quiz-choices-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 540px) {
-  .quiz-image,
-  .quiz-img-placeholder {
-    height: 130px;
-    max-width: 100%;
-  }
-  .quiz-img-placeholder { font-size: 50px; }
+  .quiz-hero { height: 180px; }
+  .quiz-hero-word { font-size: 26px; }
+  .quiz-hero-emoji { font-size: 70px; }
+  .quiz-choices-grid .choice { min-height: 56px; font-size: 13.5px; }
+}
+
+/* Beispielsatz erscheint erst nach Antwort */
+.quiz-example-reveal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-soft);
+  font-style: italic;
+  margin: 10px 0 14px;
+  animation: cardIn .3s cubic-bezier(.4,0,.2,1);
 }
 
 /* ═══════════════════════════════════════════════
@@ -579,7 +725,17 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
   <button class="tab" onclick="setMode('list',this)" aria-label="Wortliste">📋 <span class="tab-label">Wortliste</span></button>
 </nav>
 
-<main id="app"></main>
+<main>
+  <div class="focus-bar" id="focusBar">
+    <button class="focus-exit" onclick="exitFocusMode()" aria-label="Lernmodus verlassen" title="Verlassen">✕</button>
+    <div class="focus-prog-bar"><div class="focus-prog-fill" id="focusProg" style="width:0%"></div></div>
+    <div class="focus-stats">
+      <span class="stat stat-streak" id="focusStreak">🔥 0</span>
+      <span class="stat stat-goal" id="focusGoal">🎯 0/20</span>
+    </div>
+  </div>
+  <div id="app"></div>
+</main>
 
 <script>
 /* ═══════════════════════════════════════════════
@@ -1930,7 +2086,8 @@ const WORDS = [
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
   },
-  {"id":85,"word":"Pitfall","translation":"Falle, Fallstrick","pronunciation":"/ˈpɪtfɔːl/","wordType":"Nomen","definition":"A hidden or unexpected danger or difficulty.","examples":["One pitfall of online shopping is hidden delivery costs.","Avoid the common pitfall of studying only the night before exams."],"imageUrl":"https://commons.wikimedia.org/wiki/Special:FilePath/Insect_trap_hidden_in_a_tree_trunk_in_Junkerdalsura.jpg?width=400","difficulty":2,"dateAdded":"2026-05-10","notes":"","category":"Allgemein"}
+  {"id":85,"word":"Pitfall","translation":"Falle, Fallstrick","pronunciation":"/ˈpɪtfɔːl/","wordType":"Nomen","definition":"A hidden or unexpected danger or difficulty.","examples":["One pitfall of online shopping is hidden delivery costs.","Avoid the common pitfall of studying only the night before exams."],"imageUrl":"https://commons.wikimedia.org/wiki/Special:FilePath/Insect_trap_hidden_in_a_tree_trunk_in_Junkerdalsura.jpg?width=400","difficulty":2,"dateAdded":"2026-05-10","notes":"","category":"Allgemein"},
+  {"id":86,"word":"effortless","translation":"mühelos","pronunciation":"/ˈefətləs/","wordType":"Adjektiv","definition":"Requiring no physical or mental effort; done with ease.","examples":["She made the difficult task look effortless.","His effortless style impressed everyone at the party."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-11","notes":"","category":"Allgemein"}
 ];
 
 /* ═══════════════════════════════════════════════
@@ -2606,8 +2763,38 @@ function setMode(m, btn){
   }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  // Focus Mode aktivieren für Lern-Tabs (alles ausser Training-Dashboard und Wortliste)
+  const focusModes = ['quiz', 'fill', 'flash', 'match'];
+  document.body.classList.toggle('focus-mode', focusModes.includes(m));
   render();
+  updateFocusBar();
   if(typeof scrollToTop === 'function') scrollToTop();
+}
+
+function exitFocusMode(){
+  // Zurück zum Training-Dashboard (Standard-Übersicht)
+  const trainTab = document.querySelectorAll('.tab')[0];
+  setMode('train', trainTab);
+}
+
+function updateFocusBar(){
+  if(!document.body.classList.contains('focus-mode')) return;
+  const streakEl = document.getElementById('focusStreak');
+  const goalEl   = document.getElementById('focusGoal');
+  const progEl   = document.getElementById('focusProg');
+  if(streakEl) streakEl.textContent = '🔥 ' + (Stats.state.streak || 0);
+  if(goalEl)   goalEl.textContent   = '🎯 ' + Stats.todayProgress() + '/' + Stats.state.dailyGoal;
+  if(progEl){
+    let pct = 0;
+    if(mode === 'quiz' || mode === 'fill'){
+      pct = deck.length ? Math.round((idx / deck.length) * 100) : 0;
+    } else if(mode === 'flash'){
+      pct = deck.length ? Math.round((idx / deck.length) * 100) : 0;
+    } else if(mode === 'match'){
+      pct = Match.PAIRS ? Math.round((Match.matchedCount / Match.PAIRS) * 100) : 0;
+    }
+    progEl.style.width = pct + '%';
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -2620,6 +2807,7 @@ function render(){
   else if(mode==='fill') renderFill();
   else if(mode==='match') renderMatch();
   else renderList();
+  if(typeof updateFocusBar === 'function') updateFocusBar();
 }
 
 /* ═══════════════════════════════════════════════
@@ -2943,25 +3131,24 @@ function renderQuiz(){
     `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
   ).join('');
 
-  const imgHTML = getImg(w)
-    ? `<img class="quiz-image" src="${getImg(w)}" alt="${w.word}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-img-placeholder',textContent:'${icon(w)}'}))">`
-    : `<div class="quiz-img-placeholder">${icon(w)}</div>`;
+  // Hero-Bild: entweder Foto oder Emoji-Fallback mit Gradient-Hintergrund
+  const heroVisual = getImg(w)
+    ? `<img class="quiz-hero-img" src="${getImg(w)}" alt="${w.word}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-hero-emoji',textContent:'${icon(w)}'}))">`
+    : `<div class="quiz-hero-emoji">${icon(w)}</div>`;
 
   app.innerHTML = `
-    ${progressHTML(idx+1, deck.length)}
-    <div class="quiz-question">
-      <div class="quiz-sub">Was bedeutet dieses Wort?</div>
-      ${imgHTML}
-      <div class="quiz-word">${w.word}</div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
-        <span class="badge badge-type">${w.wordType}</span>
-        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+    <div class="quiz-sub-prompt">Was bedeutet dieses Wort?</div>
+    <div class="quiz-hero">
+      ${heroVisual}
+      <div class="quiz-hero-badge">${w.difficulty}</div>
+      <div class="quiz-hero-overlay">
+        <div class="quiz-hero-word">${w.word}</div>
+        <div class="quiz-hero-meta">${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}</div>
       </div>
-      <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
-      <div class="fc-front-example" style="margin-top:14px;text-align:center;">📝 „${w.examples[0]}"</div>
     </div>
-    <div class="quiz-choices">${choicesHTML}</div>
+    <div class="quiz-choices-grid">${choicesHTML}</div>
     <div id="quizFeedback"></div>
+    <div class="quiz-example-reveal" id="quizExample" style="display:none">📝 „${w.examples[0]}"</div>
     <div class="nav-row mobile-action-bar" id="quizActionBar" style="display:none">
       <button class="btn btn-primary" onclick="nextQuiz()" id="nextQuizBtn">Weiter →</button>
     </div>`;
@@ -3001,6 +3188,8 @@ function answerQuiz(chosen){
     : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
   document.getElementById('quizActionBar').style.display = 'flex';
+  const exEl = document.getElementById('quizExample');
+  if(exEl){ exEl.style.display = 'block'; }
 }
 
 function scrollToTop(){
