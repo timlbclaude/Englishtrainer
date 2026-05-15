@@ -59,24 +59,34 @@ kbd{font-family:'SFMono-Regular',Menlo,monospace;background:#f1f5f9;border:1px s
 
 <h2><span class="step-num">1</span>Token bei GitHub erstellen</h2>
 
-<p>Der Token ist ein Passwort, mit dem die App auf deinen Gist zugreifen darf. Er braucht <strong>nur Gist-Zugriff</strong> – kein Zugriff auf deine Repos.</p>
+<p>Der Token ist ein Passwort, mit dem die App auf deinen Gist (für den Lernfortschritt-Sync) und auf dein Repo (für die Add-Word-Funktion) zugreifen darf.</p>
 
 <ol>
   <li>Öffne <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (Fine-grained Token).</li>
   <li><strong>Token name:</strong> <code>English-Trainer-Sync</code></li>
   <li><strong>Expiration:</strong> wähle <em>Custom</em> → ein Datum in 1 Jahr. (Erinnerung: rechtzeitig vor Ablauf neuen Token erstellen.)</li>
   <li><strong>Resource owner:</strong> dein eigener Account (<em>timlbclaude</em>).</li>
-  <li><strong>Repository access:</strong> <em>Public Repositories (read-only)</em> — Gists werden separat behandelt, die App braucht keine Repo-Rechte.</li>
-  <li><strong>Account permissions</strong> → Gists → <em>Access: Read and write</em>. Das ist die einzige Berechtigung, die du setzen musst.</li>
+  <li><strong>Repository access:</strong> <em>Only select repositories</em> → wähle <code>Englishtrainer</code>. (Wird für das Add-Word-Feature benötigt — die App legt damit Issues an, die dein Bot verarbeitet.)</li>
+  <li><strong>Repository permissions</strong> → setze:
+    <ul>
+      <li><em>Contents:</em> Read and write</li>
+      <li><em>Issues:</em> Read and write</li>
+    </ul>
+  </li>
+  <li><strong>Account permissions</strong> → <em>Gists:</em> Read and write. (Wird für den Lernfortschritt-Sync verwendet.)</li>
   <li>Klicke <em>Generate token</em>. Der Token wird einmalig angezeigt — sofort kopieren. Er beginnt mit <code>github_pat_</code>.</li>
 </ol>
 
 <div class="warn">
-  <strong>Wichtig:</strong> Der Token ist ein Passwort. Nicht in Chats posten, nicht in Screenshots zeigen. Der Token wird nur in localStorage deines Browsers gespeichert und bei jedem Sync direkt an GitHub geschickt — er landet nirgendwo sonst.
+  <strong>Wichtig:</strong> Der Token ist ein Passwort. Nicht in Chats posten, nicht in Screenshots zeigen. Der Token wird nur in localStorage deines Browsers gespeichert und bei jedem Sync/Add-Word-Aufruf direkt an GitHub geschickt — er landet nirgendwo sonst.
 </div>
 
 <div class="tip">
-  <strong>Alternative – Classic Token:</strong> Wenn der Fine-grained-Flow zickt, funktioniert auch ein klassischer Token unter <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a> mit einzigem Scope <code>gist</code>.
+  <strong>Alternative – Classic Token:</strong> Wenn der Fine-grained-Flow zickt, funktioniert auch ein klassischer Token unter <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a> mit den Scopes <code>gist</code> + <code>repo</code> (bzw. mindestens <code>public_repo</code>).
+</div>
+
+<div class="tip">
+  <strong>Token vergessen oder ungültig (401 „Bad credentials")?</strong> Auf <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a> den vorhandenen Token öffnen → roter Button <em>„Regenerate token"</em> → der neue Wert wird einmalig gezeigt, sofort auf beiden Geräten im Sync-Modal ersetzen. Die Gist-ID bleibt gleich — findest du auf <a href="https://gist.github.com" target="_blank" rel="noopener">gist.github.com</a> beim Gist „English Trainer – SRS Sync (Lernfortschritt)" in der URL.
 </div>
 
 <h2><span class="step-num">2</span>Auf dem ersten Gerät einrichten (z.B. Laptop)</h2>
