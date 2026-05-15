@@ -2812,13 +2812,36 @@ const Speech = {
     return this._voicesPromise;
   },
 
+  // Manuell gewählte Stimme (überschreibt Auto-Pick)
+  preferredVoiceName(){
+    try { return localStorage.getItem('etPreferredVoice') || ''; } catch(e){ return ''; }
+  },
+  setPreferredVoiceName(name){
+    try {
+      if(name) localStorage.setItem('etPreferredVoice', name);
+      else localStorage.removeItem('etPreferredVoice');
+    } catch(e){}
+  },
+
   pickVoice(voices){
     if(!voices || !voices.length) return null;
-    return voices.find(v => v.lang === 'en-GB')
-        || voices.find(v => v.lang === 'en-US')
-        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en-'))
-        || voices.find(v => v.lang === 'en')
-        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en'))
+    // Erst: Wenn der User manuell eine Stimme festgelegt hat, immer die nehmen
+    const preferred = this.preferredVoiceName();
+    if(preferred){
+      const found = voices.find(v => v.name === preferred);
+      if(found) return found;
+    }
+    // Sonst Auto-Pick: lokale (offline) Stimmen bevorzugen, weil Online-Stimmen oft stumm bleiben
+    const en = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+    const local = en.filter(v => v.localService === true);
+    const online = en.filter(v => v.localService !== true);
+    // Wenn lokale Stimmen verfügbar: nur die berücksichtigen
+    const pool = local.length ? local : en;
+    return pool.find(v => v.lang === 'en-GB')
+        || pool.find(v => v.lang === 'en-US')
+        || pool.find(v => v.lang && v.lang.toLowerCase().startsWith('en-'))
+        || pool.find(v => v.lang === 'en')
+        || pool[0]
         || null;
   },
 
@@ -2885,8 +2908,9 @@ const Speech = {
     return {
       ok: voices.length > 0,
       voiceCount: voices.length,
-      enVoices: enVoices.map(v => ({ name: v.name, lang: v.lang, isDefault: v.default || false })),
-      selected: selected ? { name: selected.name, lang: selected.lang } : null
+      enVoices: enVoices.map(v => ({ name: v.name, lang: v.lang, isDefault: v.default || false, localService: v.localService === true })),
+      selected: selected ? { name: selected.name, lang: selected.lang, localService: selected.localService === true } : null,
+      preferredName: this.preferredVoiceName()
     };
   }
 };
@@ -2906,20 +2930,38 @@ async function runTTSTest(){
     return;
   }
   let html = '<strong>Stimmen-Diagnose:</strong><br>';
-  html += '<span style="color:var(--muted)">• ' + result.voiceCount + ' Stimmen insgesamt verfügbar</span><br>';
-  html += '<span style="color:var(--muted)">• ' + result.enVoices.length + ' englische Stimmen</span><br>';
+  html += '<span style="color:var(--muted)">• ' + result.voiceCount + ' Stimmen insgesamt verfügbar, ' + result.enVoices.length + ' englische</span><br>';
   if(result.selected){
-    html += '<span style="color:var(--ok)">• Verwendete Stimme: <code>' + result.selected.name + '</code> (' + result.selected.lang + ')</span>';
+    const kind = result.selected.localService ? '<span style="color:var(--ok)">lokal (offline)</span>' : '<span style="color:var(--warn-text)">online — kann stumm bleiben!</span>';
+    html += '<span>• Verwendete Stimme: <code>' + result.selected.name + '</code> (' + result.selected.lang + ') — ' + kind + '</span>';
   } else {
-    html += '<strong style="color:var(--err)">• Keine englische Stimme gefunden!</strong><br><span style="font-size:12.5px">Installation: Windows → Einstellungen → Zeit und Sprache → Sprache → Englisch hinzufügen. Android → Einstellungen → System → Sprachen → Text-zu-Sprache-Engine. iPhone → Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Englisch.</span>';
+    html += '<strong style="color:var(--err)">• Keine englische Stimme gefunden!</strong>';
   }
+  // Stimmen-Picker für manuelle Auswahl
   if(result.enVoices.length){
-    const list = result.enVoices.map(v => '<li>' + v.name + ' <span style="color:var(--muted)">(' + v.lang + ')</span></li>').join('');
-    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--muted)">Alle englischen Stimmen anzeigen</summary><ul style="margin:8px 0 0 18px;font-size:12.5px">' + list + '</ul></details>';
+    const localCount = result.enVoices.filter(v => v.localService).length;
+    const onlineCount = result.enVoices.filter(v => !v.localService).length;
+    const opts = result.enVoices.map(v => {
+      const tag = v.localService ? ' [lokal]' : ' [online]';
+      const sel = result.preferredName === v.name ? ' selected' : '';
+      return '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + sel + '>' + v.name + ' (' + v.lang + ')' + tag + '</option>';
+    }).join('');
+    html += '<div style="margin-top:14px"><label style="display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase">Stimme manuell wählen:</label>';
+    html += '<select id="ttsVoiceSelect" class="input" style="font-size:13px" onchange="setPreferredVoice(this.value)">';
+    html += '<option value="">Auto (lokale bevorzugen)</option>' + opts + '</select>';
+    html += '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">Lokale Stimmen funktionieren offline. „Online"-Stimmen (z.B. „Microsoft … Online (Natural)") werden in manchen Browsern wie Brave still blockiert — falls dein Test stumm bleibt, wechsle hier auf eine lokale Stimme.</div></div>';
+    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--muted)">Alle ' + result.enVoices.length + ' Stimmen (' + localCount + ' lokal, ' + onlineCount + ' online) anzeigen</summary>';
+    html += '<ul style="margin:8px 0 0 18px;font-size:12.5px">' + result.enVoices.map(v => '<li>' + v.name + ' <span style="color:var(--muted)">(' + v.lang + ')</span> ' + (v.localService ? '<em style="color:var(--ok)">lokal</em>' : '<em style="color:var(--warn-text)">online</em>') + '</li>').join('') + '</ul></details>';
   }
   resEl.innerHTML = html;
-  // Eigentlich abspielen
+  // Test abspielen
   Speech.speak('Hello, this is a test. Can you hear me?');
+}
+
+function setPreferredVoice(name){
+  Speech.setPreferredVoiceName(name);
+  // Sofort neu testen
+  setTimeout(() => Speech.speak('Hello, this is a test. Can you hear me?'), 100);
 }
 
 /* ═══════════════════════════════════════════════
