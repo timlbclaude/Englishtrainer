@@ -2919,10 +2919,25 @@ const Speech = {
   }
 };
 
-// Hilfsfunktion für inline-Aufruf aus HTML
+// Hilfsfunktion für inline-Aufruf aus HTML (Legacy — neue Buttons nutzen delegierten Handler)
 function speakWord(text, btnId){
   Speech.speak(text, { btnId });
 }
+
+// Delegierter Klick-Handler für alle Speak-Buttons (mit data-speak)
+// Vorteil: keine HTML-Escape-Probleme mit JSON.stringify, klare Diagnose
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('button[data-speak]');
+  if(!btn) return;
+  e.stopPropagation();
+  e.preventDefault();
+  let text = '';
+  try { text = decodeURIComponent(btn.dataset.speak || ''); } catch(_){ text = btn.dataset.speak || ''; }
+  if(!text) return;
+  // Sofortiges visuelles Feedback, damit man weiss: Klick angekommen
+  showToast('🔊 „' + text + '"', 'ok');
+  Speech.speak(text, { btnId: btn.id });
+}, true); // capture phase, damit andere Click-Handler (z.B. Flip-Card) nicht stören
 
 async function runTTSTest(){
   const resEl = document.getElementById('ttsDiagResult');
@@ -3537,7 +3552,7 @@ function renderTrain(){
       <div class="flashcard ${trainFlipped?'flipped':''}" id="trainFc" onclick="flipTrain()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}<button class="speak-btn speak-btn-inline" id="srsSpeakBtn" onclick="event.stopPropagation();speakWord(${JSON.stringify(w.word)}, 'srsSpeakBtn')" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
+          <div class="fc-word">${w.word}<button type="button" class="speak-btn speak-btn-inline" id="srsSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3624,7 +3639,7 @@ function renderFlash(){
       <div class="flashcard" id="fc" onclick="flipCard()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}<button class="speak-btn speak-btn-inline" id="flashSpeakBtn" onclick="event.stopPropagation();speakWord(${JSON.stringify(w.word)}, 'flashSpeakBtn')" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
+          <div class="fc-word">${w.word}<button type="button" class="speak-btn speak-btn-inline" id="flashSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3707,7 +3722,7 @@ function renderQuiz(){
     <div class="quiz-sub-prompt">Was bedeutet dieses Wort?</div>
     <div class="quiz-hero">
       ${heroVisual}
-      <button class="speak-btn speak-btn-hero" id="quizSpeakBtn" onclick="speakWord(${JSON.stringify(w.word)}, 'quizSpeakBtn')" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>
+      <button type="button" class="speak-btn speak-btn-hero" id="quizSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>
       <div class="quiz-hero-badge">${w.difficulty}</div>
       <div class="quiz-hero-overlay">
         <div class="quiz-hero-word">${w.word}</div>
