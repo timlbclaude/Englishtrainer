@@ -635,6 +635,52 @@ body.focus-mode .focus-bar {
 }
 
 /* ═══════════════════════════════════════════════
+   🍞 TOAST (Benachrichtigungen)
+   ═══════════════════════════════════════════════ */
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(150%);
+  z-index: 200;
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: var(--sh-lg);
+  max-width: calc(100vw - 40px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+  line-height: 1.4;
+}
+.app-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.app-toast.toast-warn { background: var(--warn); color: #fff; }
+.app-toast.toast-err  { background: var(--err);  color: #fff; }
+.app-toast.toast-ok   { background: var(--ok);   color: #fff; }
+@media (max-width: 540px) {
+  .app-toast { bottom: 90px; font-size: 13px; padding: 10px 16px; }
+  body.focus-mode .app-toast { bottom: 110px; }
+}
+
+/* TTS-Diagnose-Sektion */
+.tts-diag {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 24px;
+  box-shadow: var(--sh-sm);
+}
+.tts-diag h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.tts-diag .tts-diag-text { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; }
+.tts-diag #ttsDiagResult { font-size: 13px; line-height: 1.5; padding: 12px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border); min-height: 40px; }
+.tts-diag #ttsDiagResult code { background: var(--primary-bg); color: var(--primary); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+
+/* ═══════════════════════════════════════════════
    📊 STATS-TAB (Heatmap, Badge-Gallery, Übersichts-Karten)
    ═══════════════════════════════════════════════ */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
@@ -2713,50 +2759,167 @@ const Stats = {
 Stats.load();
 
 /* ═══════════════════════════════════════════════
+   🍞 TOAST (App-weite Mini-Benachrichtigungen)
+   ═══════════════════════════════════════════════ */
+function showToast(msg, type){
+  if(!msg) return;
+  let toast = document.getElementById('appToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'appToast';
+    toast.className = 'app-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.className = 'app-toast toast-' + (type || 'warn') + ' show';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.classList.remove('show'); }, 4500);
+}
+
+/* ═══════════════════════════════════════════════
    🔊 SPEECH (Browser-Text-to-Speech, läuft offline)
    ═══════════════════════════════════════════════ */
 const Speech = {
-  available(){ return typeof window !== 'undefined' && 'speechSynthesis' in window; },
-  // Bevorzugte Stimme: britisches Englisch, sonst US, sonst irgendein Englisch
-  pickVoice(){
-    if(!this.available()) return null;
-    const voices = window.speechSynthesis.getVoices();
+  _voicesPromise: null,
+  lastError: null,
+
+  available(){
+    return typeof window !== 'undefined'
+        && 'speechSynthesis' in window
+        && typeof SpeechSynthesisUtterance !== 'undefined';
+  },
+
+  // Promise-basiertes Laden der Stimmen-Liste (manche Browser laden async)
+  ready(){
+    if(!this.available()) return Promise.resolve([]);
+    if(this._voicesPromise) return this._voicesPromise;
+    this._voicesPromise = new Promise((resolve) => {
+      const get = () => window.speechSynthesis.getVoices() || [];
+      const initial = get();
+      if(initial.length){ resolve(initial); return; }
+      // Browser lädt asynchron — auf voiceschanged warten
+      const handler = () => {
+        const v = get();
+        if(v.length){
+          window.speechSynthesis.removeEventListener('voiceschanged', handler);
+          resolve(v);
+        }
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', handler);
+      // Fallback nach 1,5 s: nehmen was da ist
+      setTimeout(() => resolve(get()), 1500);
+    });
+    return this._voicesPromise;
+  },
+
+  pickVoice(voices){
     if(!voices || !voices.length) return null;
     return voices.find(v => v.lang === 'en-GB')
         || voices.find(v => v.lang === 'en-US')
-        || voices.find(v => v.lang && v.lang.startsWith('en'))
+        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en-'))
+        || voices.find(v => v.lang === 'en')
+        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en'))
         || null;
   },
-  speak(text, opts){
-    if(!this.available()) return false;
+
+  async speak(text, opts){
+    opts = opts || {};
+    if(!this.available()){
+      this.lastError = 'Dein Browser unterstützt keine Sprachausgabe.';
+      showToast(this.lastError, 'err');
+      return false;
+    }
     if(!text) return false;
     try {
+      const voices = await this.ready();
+      const voice = this.pickVoice(voices);
       window.speechSynthesis.cancel();
+      // Kurze Verzögerung, damit cancel() durch ist (manche Browser sonst inkonsistent)
+      await new Promise(r => setTimeout(r, 60));
       const u = new SpeechSynthesisUtterance(String(text));
-      u.lang = (opts && opts.lang) || 'en-GB';
-      u.rate = (opts && opts.rate) || 1;
-      const voice = this.pickVoice();
-      if(voice) u.voice = voice;
-      // Visuelles Feedback auf dem Auslöse-Button (falls vorhanden)
-      const btn = opts && opts.btnId ? document.getElementById(opts.btnId) : null;
-      if(btn){
-        btn.classList.add('speaking');
-        u.onend = () => btn.classList.remove('speaking');
-        u.onerror = () => btn.classList.remove('speaking');
+      if(voice){
+        u.voice = voice;
+        u.lang = voice.lang;
+      } else {
+        u.lang = 'en-US';
       }
+      u.rate = opts.rate || 1;
+      u.pitch = 1;
+      u.volume = 1;
+      const btn = opts.btnId ? document.getElementById(opts.btnId) : null;
+      let started = false;
+      u.onstart = () => { started = true; if(btn) btn.classList.add('speaking'); };
+      u.onend   = () => { if(btn) btn.classList.remove('speaking'); };
+      u.onerror = (e) => {
+        if(btn) btn.classList.remove('speaking');
+        this.lastError = 'TTS-Fehler: ' + (e.error || 'unbekannt');
+        showToast(this.lastError, 'err');
+      };
       window.speechSynthesis.speak(u);
+      // Diagnose: nach 900 ms prüfen, ob wirklich was abgespielt wurde
+      setTimeout(() => {
+        if(!started && !window.speechSynthesis.speaking && !window.speechSynthesis.pending){
+          if(!voice){
+            showToast('Keine englische Stimme installiert. Im Stats-Tab unter „Aussprache testen" findest du Hinweise zur Installation.', 'warn');
+          } else {
+            showToast('Aussprache wurde nicht abgespielt. Bitte Lautstärke und Browser-Einstellungen prüfen.', 'warn');
+          }
+        }
+      }, 900);
       return true;
-    } catch(e){ return false; }
+    } catch(e){
+      this.lastError = 'Fehler: ' + (e.message || e);
+      showToast(this.lastError, 'err');
+      return false;
+    }
+  },
+
+  // Diagnose-Methode für den Stats-Tab
+  async diagnostic(){
+    if(!this.available()){
+      return { ok: false, error: 'speechSynthesis nicht im Browser verfügbar' };
+    }
+    const voices = await this.ready();
+    const enVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+    const selected = this.pickVoice(voices);
+    return {
+      ok: voices.length > 0,
+      voiceCount: voices.length,
+      enVoices: enVoices.map(v => ({ name: v.name, lang: v.lang, isDefault: v.default || false })),
+      selected: selected ? { name: selected.name, lang: selected.lang } : null
+    };
   }
 };
-// Vorladen der Stimmen (manche Browser laden async)
-if(Speech.available() && typeof window.speechSynthesis.onvoiceschanged !== 'undefined'){
-  window.speechSynthesis.onvoiceschanged = () => { /* trigger voices fetch */ Speech.pickVoice(); };
-}
 
 // Hilfsfunktion für inline-Aufruf aus HTML
 function speakWord(text, btnId){
   Speech.speak(text, { btnId });
+}
+
+async function runTTSTest(){
+  const resEl = document.getElementById('ttsDiagResult');
+  if(!resEl) return;
+  resEl.innerHTML = '<span style="color:var(--muted)">Teste …</span>';
+  const result = await Speech.diagnostic();
+  if(!result.ok){
+    resEl.innerHTML = '<strong style="color:var(--err)">' + (result.error || 'Keine Stimmen verfügbar.') + '</strong><br><span style="font-size:12px">Dein Browser oder System hat keine TTS-Engine installiert.</span>';
+    return;
+  }
+  let html = '<strong>Stimmen-Diagnose:</strong><br>';
+  html += '<span style="color:var(--muted)">• ' + result.voiceCount + ' Stimmen insgesamt verfügbar</span><br>';
+  html += '<span style="color:var(--muted)">• ' + result.enVoices.length + ' englische Stimmen</span><br>';
+  if(result.selected){
+    html += '<span style="color:var(--ok)">• Verwendete Stimme: <code>' + result.selected.name + '</code> (' + result.selected.lang + ')</span>';
+  } else {
+    html += '<strong style="color:var(--err)">• Keine englische Stimme gefunden!</strong><br><span style="font-size:12.5px">Installation: Windows → Einstellungen → Zeit und Sprache → Sprache → Englisch hinzufügen. Android → Einstellungen → System → Sprachen → Text-zu-Sprache-Engine. iPhone → Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Englisch.</span>';
+  }
+  if(result.enVoices.length){
+    const list = result.enVoices.map(v => '<li>' + v.name + ' <span style="color:var(--muted)">(' + v.lang + ')</span></li>').join('');
+    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--muted)">Alle englischen Stimmen anzeigen</summary><ul style="margin:8px 0 0 18px;font-size:12.5px">' + list + '</ul></details>';
+  }
+  resEl.innerHTML = html;
+  // Eigentlich abspielen
+  Speech.speak('Hello, this is a test. Can you hear me?');
 }
 
 /* ═══════════════════════════════════════════════
@@ -4189,7 +4352,13 @@ function renderStats(){
       </div>
     </div>
     ${heatmapHTML()}
-    ${badgesHTML()}`;
+    ${badgesHTML()}
+    <div class="tts-diag">
+      <h3>🔊 Aussprache testen</h3>
+      <p class="tts-diag-text">Falls die Lautsprecher-Buttons im Quiz oder bei den Karteikarten still bleiben, klick hier den Test-Button — du bekommst eine Diagnose, welche Stimme verwendet wird (oder ob keine englische Stimme installiert ist).</p>
+      <button class="btn btn-primary" onclick="runTTSTest()">🔊 Test "Hello, this is a test"</button>
+      <div id="ttsDiagResult" style="margin-top:12px">Noch nicht getestet.</div>
+    </div>`;
 }
 
 /* ═══════════════════════════════════════════════
