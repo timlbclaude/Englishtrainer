@@ -1,4 +1,4 @@
-name: ETA - Neues Wort hinzufuegen
+name: ETA - Neues Wort hinzufuegen oder Bild fixen
 
 on:
   issues:
@@ -9,8 +9,8 @@ permissions:
   issues: write
 
 jobs:
-  add-word:
-    if: startsWith(github.event.issue.title, 'ETA:')
+  add-or-fix-word:
+    if: startsWith(github.event.issue.title, 'ETA:') || startsWith(github.event.issue.title, 'ETA-FIX:')
     runs-on: ubuntu-latest
     steps:
       - name: Repo auschecken
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install anthropic openpyxl requests
 
-      - name: Wort hinzufuegen
+      - name: Bot ausfuehren
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
@@ -41,9 +41,11 @@ jobs:
         run: |
           git config user.name "ETA Bot"
           git config user.email "eta-bot@users.noreply.github.com"
+          # Aufraeumen: die zwei tmp-Dateien sollen NICHT mit committed werden
           git add index.html vokabeln.xlsx || true
           if ! git diff --cached --quiet; then
-            git commit -m "ETA: Neues Wort aus Issue #${{ github.event.issue.number }}"
+            COMMIT_MSG=$(cat .github/commit_msg.txt 2>/dev/null || echo "ETA-Bot: Aenderungen aus Issue #${{ github.event.issue.number }}")
+            git commit -m "$COMMIT_MSG"
             git push
             echo "committed=true" >> $GITHUB_OUTPUT
           else
@@ -51,12 +53,9 @@ jobs:
             echo "Keine Aenderungen zum Committen."
           fi
 
-      - name: Issue schliessen
+      - name: Issue schliessen mit Bot-Nachricht
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ steps.commit.outputs.committed }}" = "true" ]; then
-            gh issue close ${{ github.event.issue.number }} --comment "Wort wurde aufgenommen. Die App aktualisiert sich in ca. 1 Minute." --repo ${{ github.repository }}
-          else
-            gh issue close ${{ github.event.issue.number }} --comment "Das Wort steht bereits in der Liste - kein Doppeleintrag noetig." --repo ${{ github.repository }}
-          fi
+          MSG=$(cat .github/issue_msg.txt 2>/dev/null || echo "Bot ausgefuehrt.")
+          gh issue close ${{ github.event.issue.number }} --comment "$MSG" --repo ${{ github.repository }}
