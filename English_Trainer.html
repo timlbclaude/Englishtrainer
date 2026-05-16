@@ -331,6 +331,24 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
 .modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
 
+/* Notiz-Indikator in Wortliste + Notiz-Block im Detail */
+.note-indicator { font-size: 14px; opacity: .85; margin-left: 4px; cursor: help; }
+.wc-note { background: linear-gradient(135deg, rgba(245,158,11,.10), rgba(234,88,12,.06)); border-left: 3px solid var(--warn); padding: 8px 10px; border-radius: var(--radius-sm); margin: 8px 0 0; font-size: 13.5px; line-height: 1.4; color: var(--text); }
+.wc-note strong { color: var(--warn-text); }
+
+/* Wort-Detail-Modal: Inhalt-Styling */
+.wd-word { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 4px; }
+.wd-translation { font-size: 15px; color: var(--text-soft); margin-bottom: 10px; }
+.wd-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.wd-pronunciation { font-size: 13.5px; color: var(--muted); font-family: 'SFMono-Regular',Consolas,Menlo,monospace; margin-bottom: 12px; }
+.wd-def { font-size: 13.5px; color: var(--text-soft); line-height: 1.5; padding: 10px 12px; background: var(--bg); border-left: 3px solid var(--primary); border-radius: var(--radius-sm); margin-bottom: 14px; }
+.wd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.wd-stats > div { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; display: flex; flex-direction: column; }
+.wd-stats-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+.wd-stats-val { font-size: 14.5px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.wd-note-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-soft); margin-bottom: 6px; }
+.wd-note-hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; font-style: italic; }
+
 /* Select-Element styling (für Add-Word-Modal) */
 .modal select.input {
   cursor: pointer;
@@ -815,6 +833,59 @@ body.dark .hm-lv4 { background: rgba(99,153,34,.95); }
 @media (max-width: 540px) {
   .fill-sentence-card { padding: 14px 16px; }
   .fill-sentence-card .fill-sentence { font-size: 15.5px; }
+}
+
+/* Quiz Richtungs-Toggle (EN ↔ DE) */
+.quiz-dir-toggle {
+  display: inline-flex;
+  align-self: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 2px;
+  margin: 0 auto 10px;
+  box-shadow: var(--sh-sm);
+}
+.qdt-btn {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  color: var(--muted);
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: all .15s ease;
+  min-height: 32px;
+}
+.qdt-btn.active {
+  background: var(--primary);
+  color: #fff;
+}
+.qdt-btn:not(.active):hover { color: var(--text); }
+/* Container zentrieren */
+#app .quiz-dir-toggle { display: flex; width: max-content; }
+
+/* Notiz-Anzeige in Quiz-Reveal */
+.quiz-reveal-note {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(234,88,12,.08));
+  border-left: 3px solid var(--warn);
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  color: var(--text);
+  font-style: normal;
+  line-height: 1.4;
+}
+.quiz-reveal-note::before {
+  content: "✏️ Deine Notiz: ";
+  font-weight: 600;
+  font-style: normal;
+  color: var(--warn-text);
 }
 
 /* Quiz Reveal-Karte: Beispielsatz und Weiter-Button zusammen, erscheint erst nach Antwort */
@@ -2368,7 +2439,10 @@ const WORDS = [
   },
   {"id":85,"word":"Pitfall","translation":"Falle, Fallstrick","pronunciation":"/ˈpɪtfɔːl/","wordType":"Nomen","definition":"A hidden or unexpected danger or difficulty.","examples":["One pitfall of online shopping is hidden delivery costs.","Avoid the common pitfall of studying only the night before exams."],"imageUrl":"https://commons.wikimedia.org/wiki/Special:FilePath/Insect_trap_hidden_in_a_tree_trunk_in_Junkerdalsura.jpg?width=400","difficulty":2,"dateAdded":"2026-05-10","notes":"","category":"Allgemein"},
   {"id":86,"word":"effortless","translation":"mühelos","pronunciation":"/ˈefətləs/","wordType":"Adjektiv","definition":"Requiring no physical or mental effort; done with ease.","examples":["She made the difficult task look effortless.","His effortless style impressed everyone at the party."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-11","notes":"","category":"Allgemein"},
-  {"id":87,"word":"to stack","translation":"stapeln","pronunciation":"/stæk/","wordType":"Verb","definition":"To arrange things in a neat pile, one on top of another.","examples":["Please stack the chairs after the meeting.","She stacked the books on the shelf."],"imageUrl":"","difficulty":1,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"}
+  {"id":87,"word":"to stack","translation":"stapeln","pronunciation":"/stæk/","wordType":"Verb","definition":"To arrange things in a neat pile, one on top of another.","examples":["Please stack the chairs after the meeting.","She stacked the books on the shelf."],"imageUrl":"","difficulty":1,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
+  {"id":88,"word":"to sift","translation":"sieben","pronunciation":"/sɪft/","wordType":"Verb","definition":"To pass a substance through a sieve to remove lumps or separate particles.","examples":["She sifted the flour before making the cake.","They sifted through the evidence to find clues."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
+  {"id":89,"word":"to dissolve","translation":"auflösen","pronunciation":"/dɪˈzɒlv/","wordType":"Verb","definition":"To become or cause to become incorporated into a liquid so as to form a solution.","examples":["Sugar dissolves quickly in hot water.","The tablet will dissolve in your mouth."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
+  {"id":90,"word":"red tape","translation":"Bürokratie","pronunciation":"/red teɪp/","wordType":"Phrase","definition":"Excessive bureaucracy or adherence to rules and formalities, especially in public business.","examples":["The company struggled with red tape when applying for permits.","We need to cut through the red tape to get this approved quickly."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"}
 ];
 
 /* ═══════════════════════════════════════════════
@@ -2391,6 +2465,19 @@ let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwort
 let combo = 0;            // aktuelle Streak innerhalb der Runde
 let bestComboInRound = 0;
 let roundStartTs = 0;
+// Quiz-Richtung: 'en2de' (Standard, Englisch → deutsche Übersetzung)
+// oder 'de2en' (Reverse: deutsche Übersetzung → englisches Wort).
+let quizDirection = (function(){
+  try { return localStorage.getItem('etQuizDir') || 'en2de'; } catch(e){ return 'en2de'; }
+})();
+function setQuizDirection(dir){
+  quizDirection = (dir === 'de2en') ? 'de2en' : 'en2de';
+  try { localStorage.setItem('etQuizDir', quizDirection); } catch(e){}
+  if(mode === 'quiz'){ idx = 0; resetRound(); deck = buildRoundDeck(); render(); scrollToTop(); }
+}
+function toggleQuizDirection(){
+  setQuizDirection(quizDirection === 'en2de' ? 'de2en' : 'en2de');
+}
 const CATEGORIES = ['TV', 'Books', 'Kitchen/Cooking'];
 let listFilterType = 'Alle';
 let listFilterCat  = 'Alle';
@@ -2620,6 +2707,10 @@ const SRS = {
     if(remote.stats && typeof Stats !== 'undefined' && Stats.applyRemote){
       if(Stats.applyRemote(remote.stats)) changed = true;
     }
+    // Notes parallel mergen
+    if(remote.notes && typeof Notes !== 'undefined' && Notes.applyRemote){
+      if(Notes.applyRemote(remote.notes)) changed = true;
+    }
     return changed;
   },
   stats(words){
@@ -2762,6 +2853,51 @@ const Stats = {
   }
 };
 Stats.load();
+
+/* ═══════════════════════════════════════════════
+   📝 NOTES (Persönliche Notizen pro Wort, synct via Gist)
+   ═══════════════════════════════════════════════ */
+const Notes = {
+  KEY: 'etNotes_v1',
+  state: { entries: {}, updatedAt: 0 }, // entries: { wordId: "note text" }
+  load(){
+    this.state = { entries: {}, updatedAt: 0 };
+    try {
+      const raw = JSON.parse(localStorage.getItem(this.KEY) || 'null');
+      if(raw && typeof raw === 'object'){
+        if(raw.entries) this.state.entries = raw.entries;
+        if(raw.updatedAt) this.state.updatedAt = raw.updatedAt;
+      }
+    } catch(e){}
+  },
+  save(skipSync){
+    this.state.updatedAt = Date.now();
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
+    if(!skipSync && typeof Sync !== 'undefined' && Sync.schedulePush){ Sync.schedulePush(); }
+  },
+  get(wordId){ return (this.state.entries[wordId] || '').toString(); },
+  set(wordId, text){
+    const t = (text || '').toString().trim();
+    if(t){ this.state.entries[wordId] = t; }
+    else { delete this.state.entries[wordId]; }
+    this.save();
+  },
+  has(wordId){ return !!this.state.entries[wordId]; },
+  count(){ return Object.keys(this.state.entries).length; },
+
+  applyRemote(remote){
+    if(!remote || typeof remote !== 'object') return false;
+    const lU = this.state.updatedAt || 0;
+    const rU = remote.updatedAt || 0;
+    if(rU > lU){
+      this.state = { entries: remote.entries || {}, updatedAt: rU };
+      try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
+      return true;
+    }
+    return false;
+  }
+};
+Notes.load();
 
 /* ═══════════════════════════════════════════════
    🍞 TOAST (App-weite Mini-Benachrichtigungen)
@@ -2985,6 +3121,89 @@ function setPreferredVoice(name){
 }
 
 /* ═══════════════════════════════════════════════
+   📖 WORD DETAIL (Modal mit Stats und Notiz-Edit)
+   ═══════════════════════════════════════════════ */
+let currentWordDetailId = null;
+
+function openWordDetail(wordId){
+  const w = WORDS.find(x => x.id === wordId);
+  if(!w) return;
+  currentWordDetailId = wordId;
+  const e = SRS.state[wordId] || { level: 0, ok: 0, wrong: 0, nextDue: null, lastReview: null };
+  const lvl = e.level || 0;
+  const total = (e.ok || 0) + (e.wrong || 0);
+  const pct = total ? Math.round(100 * (e.ok || 0) / total) : null;
+  const lastRev = e.lastReview ? formatNiceDate(e.lastReview) : 'noch nie';
+  const nextDue = e.nextDue ? formatNiceDate(e.nextDue) : '—';
+  const note = Notes.get(wordId);
+  const img = getImg(w);
+  const imgHTML = img
+    ? `<img src="${img}" alt="${w.word}" style="width:100%;max-height:140px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:10px" onerror="this.style.display='none'">`
+    : '';
+  const speakBtn = `<button type="button" class="speak-btn speak-btn-inline" id="wdSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören" style="vertical-align:middle">🔊</button>`;
+  const body = document.getElementById('wordDetailBody');
+  if(!body) return;
+  body.innerHTML = `
+    ${imgHTML}
+    <div class="wd-word">${w.word}${speakBtn}</div>
+    <div class="wd-translation">🇩🇪 ${w.translation}</div>
+    <div class="wd-meta">
+      <span class="badge badge-type">${w.wordType}</span>
+      <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+      <span class="level-badge lvl-${lvl}">Stufe ${lvl} · ${SRS.LABELS[lvl]||''}</span>
+    </div>
+    <div class="wd-pronunciation">${w.pronunciation}</div>
+    <div class="wd-def">${w.definition}</div>
+
+    <div class="wd-stats">
+      <div><span class="wd-stats-label">Versuche</span><span class="wd-stats-val">${total}</span></div>
+      <div><span class="wd-stats-label">Quote</span><span class="wd-stats-val">${pct !== null ? pct + '%' : '—'}</span></div>
+      <div><span class="wd-stats-label">Letzte Wiederholung</span><span class="wd-stats-val">${lastRev}</span></div>
+      <div><span class="wd-stats-label">Nächste Fälligkeit</span><span class="wd-stats-val">${nextDue}</span></div>
+    </div>
+
+    <label class="wd-note-label" for="wdNoteInput">✏️ Persönliche Notiz</label>
+    <textarea id="wdNoteInput" class="input" rows="3" placeholder="z.B. „Verwechsle ich immer mit XY" oder eine Eselsbrücke …" style="font-family:inherit;resize:vertical">${escapeHTML(note)}</textarea>
+    <div class="wd-note-hint">Wird mit dem Sync-Gist mitgespiegelt — auf allen Geräten verfügbar.</div>
+  `;
+  const m = document.getElementById('wordDetailModal');
+  if(m) m.classList.add('open');
+}
+
+function closeWordDetail(){
+  const m = document.getElementById('wordDetailModal');
+  if(m) m.classList.remove('open');
+  currentWordDetailId = null;
+}
+
+function saveWordNote(){
+  if(currentWordDetailId == null) return;
+  const inp = document.getElementById('wdNoteInput');
+  if(!inp) return;
+  Notes.set(currentWordDetailId, inp.value);
+  showToast('✓ Notiz gespeichert', 'ok');
+  closeWordDetail();
+  if(mode === 'list') render();
+}
+
+function formatNiceDate(iso){
+  if(!iso) return '—';
+  const today = SRS.todayISO();
+  const y = SRS.addDays(today, -1);
+  if(iso === today) return 'heute';
+  if(iso === y)     return 'gestern';
+  const [yy,mm,dd] = iso.split('-');
+  if(!yy) return iso;
+  return `${dd}.${mm}.${yy}`;
+}
+
+function escapeHTML(s){
+  return (s||'').toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ═══════════════════════════════════════════════
    ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
    Speicherort: Ein privater Gist im GitHub-Account des Users.
    Token: fine-grained PAT mit "Gist"-Scope, lokal in localStorage.
@@ -3063,10 +3282,11 @@ const Sync = {
 
   buildPayload(){
     return {
-      schema: 2,
+      schema: 3,
       updatedAt: Date.now(),
       entries: SRS.state,
-      stats: (typeof Stats !== 'undefined') ? Stats.state : null
+      stats: (typeof Stats !== 'undefined') ? Stats.state : null,
+      notes: (typeof Notes !== 'undefined') ? Notes.state : null
     };
   },
 
@@ -3710,24 +3930,42 @@ function renderQuiz(){
   quizCorrectIdx = quizChoices.findIndex(c=>c.id===w.id);
   quizAnswered = false;
 
+  // Richtungsabhängige Inhalte:
+  // - en2de: Englisches Wort im Hero, deutsche Übersetzungen als Antworten
+  // - de2en: Deutsche Übersetzung im Hero, englische Wörter als Antworten
+  const isReverse = (quizDirection === 'de2en');
   const choicesHTML = quizChoices.map((c,i) =>
-    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
+    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${isReverse ? c.word : c.translation}</button>`
   ).join('');
+
+  const heroWord = isReverse ? w.translation : w.word;
+  const heroMeta = isReverse
+    ? `${w.wordType}<span class="hero-dot">·</span>auf Englisch?`
+    : `${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}`;
+  const subPrompt = isReverse ? 'Wie heißt das Wort auf Englisch?' : 'Was bedeutet dieses Wort?';
+  const speakSrc = encodeURIComponent(w.word); // Aussprache bleibt immer das englische Wort
 
   // Hero-Bild: entweder Foto oder Emoji-Fallback mit Gradient-Hintergrund
   const heroVisual = getImg(w)
     ? `<img class="quiz-hero-img" src="${getImg(w)}" alt="${w.word}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-hero-emoji',textContent:'${icon(w)}'}))">`
     : `<div class="quiz-hero-emoji">${icon(w)}</div>`;
 
+  const dirToggleHTML = `
+    <div class="quiz-dir-toggle" role="tablist" aria-label="Quiz-Richtung">
+      <button type="button" class="qdt-btn ${!isReverse?'active':''}" onclick="setQuizDirection('en2de')" role="tab" aria-selected="${!isReverse}">EN → DE</button>
+      <button type="button" class="qdt-btn ${isReverse?'active':''}" onclick="setQuizDirection('de2en')" role="tab" aria-selected="${isReverse}">DE → EN</button>
+    </div>`;
+
   app.innerHTML = `
-    <div class="quiz-sub-prompt">Was bedeutet dieses Wort?</div>
+    ${dirToggleHTML}
+    <div class="quiz-sub-prompt">${subPrompt}</div>
     <div class="quiz-hero">
       ${heroVisual}
-      <button type="button" class="speak-btn speak-btn-hero" id="quizSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>
+      ${isReverse ? '' : `<button type="button" class="speak-btn speak-btn-hero" id="quizSpeakBtn" data-speak="${speakSrc}" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>`}
       <div class="quiz-hero-badge">${w.difficulty}</div>
       <div class="quiz-hero-overlay">
-        <div class="quiz-hero-word">${w.word}</div>
-        <div class="quiz-hero-meta">${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}</div>
+        <div class="quiz-hero-word">${heroWord}</div>
+        <div class="quiz-hero-meta">${heroMeta}</div>
       </div>
     </div>
     <div class="quiz-choices-grid">${choicesHTML}</div>
@@ -3736,6 +3974,7 @@ function renderQuiz(){
       <div>
         <span class="quiz-reveal-label">📝 Beispiel</span>
         <div class="quiz-reveal-example">„${w.examples[0]}"</div>
+        <div id="quizRevealNote"></div>
       </div>
       <button class="btn btn-primary" onclick="nextQuiz()" id="nextQuizBtn">Weiter →</button>
     </div>`;
@@ -3776,6 +4015,13 @@ function answerQuiz(chosen){
 
   const revealEl = document.getElementById('quizReveal');
   if(revealEl){ revealEl.style.display = 'flex'; }
+  // Persönliche Notiz einblenden, falls vorhanden
+  const noteEl = document.getElementById('quizRevealNote');
+  if(noteEl){
+    const note = Notes.get(w.id);
+    if(note){ noteEl.className = 'quiz-reveal-note'; noteEl.textContent = note; }
+    else { noteEl.className = ''; noteEl.textContent = ''; }
+  }
 }
 
 function scrollToTop(){
@@ -3970,6 +4216,9 @@ function renderList(){
     const isDue = SRS.isDue(w.id);
     const lvlBadge = `<span class="level-badge lvl-${lvl}" title="Lernstufe ${lvl}/7 – ${SRS.LABELS[lvl]}">L${lvl}</span>`;
     const duePill = isDue ? `<span class="due-pill" title="Heute zur Wiederholung fällig">Fällig</span>` : '';
+    const hasNote = Notes.has(w.id);
+    const noteBadge = hasNote ? `<span class="note-indicator" title="Notiz vorhanden">📝</span>` : '';
+    const userNote = hasNote ? `<p class="wc-note"><strong>✏️ Deine Notiz:</strong> ${esc(Notes.get(w.id))}</p>` : '';
     return `
     <div class="word-card ${listOpen[w.id]?'open':''}" onclick="toggleCard(event,${w.id})">
       <div class="wc-top">
@@ -3977,6 +4226,7 @@ function renderList(){
         <div class="wc-body">
           <div class="wc-title-row">
             <span class="wc-word">${esc(w.word)}</span>
+            ${noteBadge}
             <span class="wc-pron">${esc(w.pronunciation)}</span>
             ${duePill}
           </div>
@@ -3993,7 +4243,11 @@ function renderList(){
         ${detailImg}
         <p><strong>📖 Definition:</strong> ${esc(w.definition)}</p>
         ${exHTML}
+        ${userNote}
         <p style="font-size:11px;color:var(--muted);margin-top:6px">${esc(w.wordType)} · Hinzugefügt: ${esc(w.dateAdded)}</p>
+        <div style="margin-top:10px">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openWordDetail(${w.id})">📖 Details &amp; ${hasNote ? 'Notiz bearbeiten' : 'Notiz hinzufügen'}</button>
+        </div>
       </div>
     </div>`;
   }).join('') : `<div style="text-align:center;padding:40px;color:var(--muted)">Keine Wörter gefunden.</div>`;
@@ -4491,6 +4745,18 @@ prefetchImages();
 // Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
 Sync.init();
 </script>
+
+<!-- Wort-Detail-Modal (öffnet aus der Wortliste, mit Notiz-Edit) -->
+<div class="modal-overlay" id="wordDetailModal" onclick="if(event.target===this) closeWordDetail()">
+  <div class="modal" role="dialog" aria-labelledby="wdTitle">
+    <h2 id="wdTitle">📖 Wort-Details</h2>
+    <div id="wordDetailBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeWordDetail()">Schließen</button>
+      <button class="btn btn-primary btn-sm" onclick="saveWordNote()">Notiz speichern</button>
+    </div>
+  </div>
+</div>
 
 <!-- Wort-Hinzufügen Floating Action Button und Modal -->
 <button class="fab-add" id="fabAdd" onclick="openAddWordModal()" aria-label="Neues Wort hinzufügen" title="Neues Wort hinzufügen">
