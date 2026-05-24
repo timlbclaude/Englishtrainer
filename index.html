@@ -542,6 +542,32 @@ body.focus-mode .focus-bar {
   align-items: center;
 }
 .focus-stats .stat { font-size: 12px; padding: 3px 9px; }
+.focus-roundsize {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px 2px 9px;
+  color: var(--text);
+  cursor: pointer;
+}
+.focus-roundsize.hidden { display: none !important; }
+.focus-roundsize select {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 2px 2px 2px 2px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.focus-roundsize select:focus { outline: 2px solid var(--primary); outline-offset: 1px; border-radius: 4px; }
 
 @media (max-width: 540px) {
   body.focus-mode .focus-bar {
@@ -1083,6 +1109,19 @@ body.dark .hm-lv4 { background: rgba(99,153,34,.95); }
     <div class="focus-stats">
       <span class="stat stat-streak" id="focusStreak">🔥 0</span>
       <span class="stat stat-goal" id="focusGoal">🎯 0/20</span>
+      <label class="focus-roundsize hidden" id="focusRoundSizeWrap" title="Anzahl Wörter pro Runde">
+        🔢
+        <select id="focusRoundSize" onchange="setRoundSize(this.value)" aria-label="Wörter pro Runde">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="1000">Alle</option>
+        </select>
+      </label>
     </div>
   </div>
   <div id="app"></div>
@@ -2458,8 +2497,23 @@ let quizAnswered = false;
 let quizChoices = [];
 let quizCorrectIdx = 0;
 let fillChecked = false;
-// 10er-Runden für Quiz und Lückentext
-const ROUND_SIZE = 10;
+// Runden-Größe für Quiz, Lückentext und Karteikarten — vom Nutzer einstellbar
+let roundSize = (function(){
+  try {
+    const v = parseInt(localStorage.getItem('etRoundSize'), 10);
+    if(Number.isFinite(v) && v > 0) return Math.min(v, 1000);
+  } catch(e){}
+  return 10;
+})();
+function setRoundSize(n){
+  const v = parseInt(n, 10);
+  if(!Number.isFinite(v) || v <= 0) return;
+  roundSize = Math.min(v, 1000);
+  try { localStorage.setItem('etRoundSize', String(roundSize)); } catch(e){}
+  if(mode === 'quiz' || mode === 'fill' || mode === 'flash'){
+    idx = 0; resetRound(); deck = buildRoundDeck(); render(); scrollToTop();
+  }
+}
 let roundCorrect = 0;
 let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwortet wurden
 let combo = 0;            // aktuelle Streak innerhalb der Runde
@@ -2589,9 +2643,9 @@ function resetRound(){
   roundStartTs = Date.now();
 }
 
-// Erzeugt einen frischen 10er-Pool aus zufälligen Wörtern
+// Erzeugt einen frischen Pool aus zufälligen Wörtern (Größe = roundSize, max. WORDS.length)
 function buildRoundDeck(){
-  const size = Math.min(ROUND_SIZE, WORDS.length);
+  const size = Math.min(roundSize, WORDS.length);
   return shuffle(WORDS).slice(0, size);
 }
 
@@ -3554,8 +3608,8 @@ function setMode(m, btn){
   trainIdx = 0; trainFlipped = false;
   if(m === 'train'){
     trainDeck = SRS.dueQueue(WORDS);
-  } else if(m === 'quiz' || m === 'fill'){
-    // 10er-Runde
+  } else if(m === 'quiz' || m === 'fill' || m === 'flash'){
+    // Rundenmodus (Größe via roundSize einstellbar)
     deck = buildRoundDeck();
     resetRound();
   } else if(m === 'match'){
@@ -3584,6 +3638,8 @@ function updateFocusBar(){
   const streakEl = document.getElementById('focusStreak');
   const goalEl   = document.getElementById('focusGoal');
   const progEl   = document.getElementById('focusProg');
+  const rsWrap   = document.getElementById('focusRoundSizeWrap');
+  const rsSel    = document.getElementById('focusRoundSize');
   if(streakEl) streakEl.textContent = '🔥 ' + (Stats.state.streak || 0);
   if(goalEl)   goalEl.textContent   = '🎯 ' + Stats.todayProgress() + '/' + Stats.state.dailyGoal;
   if(progEl){
@@ -3596,6 +3652,21 @@ function updateFocusBar(){
       pct = Match.PAIRS ? Math.round((Match.matchedCount / Match.PAIRS) * 100) : 0;
     }
     progEl.style.width = pct + '%';
+  }
+  // Rundengröße-Picker nur in den Runden-Modi anzeigen
+  if(rsWrap){
+    const showPicker = (mode === 'quiz' || mode === 'fill' || mode === 'flash');
+    rsWrap.classList.toggle('hidden', !showPicker);
+    if(showPicker && rsSel){
+      const cur = String(roundSize);
+      const hasOption = Array.from(rsSel.options).some(o => o.value === cur);
+      if(!hasOption){
+        const opt = document.createElement('option');
+        opt.value = cur; opt.textContent = cur;
+        rsSel.appendChild(opt);
+      }
+      if(rsSel.value !== cur) rsSel.value = cur;
+    }
   }
 }
 
@@ -3843,7 +3914,7 @@ function renderFlash(){
   if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
 
   // Check if all done
-  if(idx >= deck.length){ renderSummary(); return; }
+  if(idx >= deck.length){ renderRoundResult('flash'); return; }
 
   const w = deck[idx];
   const imgFront = getImg(w)
@@ -3902,11 +3973,23 @@ function markCard(wasCorrect){
   if(w){
     if(wasCorrect) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
   }
-  if(wasCorrect){ correct++; } else { incorrect++; }
+  if(wasCorrect){
+    correct++; roundCorrect++; combo++;
+    if(combo > bestComboInRound) bestComboInRound = combo;
+  } else {
+    incorrect++; combo = 0;
+    if(w) roundWrongWords.push(w);
+  }
   Stats.recordAnswer(wasCorrect, 'flash');
+  if(combo >= 3) Stats.recordCombo(combo);
   updateStats();
   idx++;
   flipped = false;
+  if(idx >= deck.length){
+    renderRoundResult('flash');
+    scrollToTop();
+    return;
+  }
   render();
   scrollToTop();
 }
@@ -4298,7 +4381,7 @@ function clearSearch(e){
    ═══════════════════════════════════════════════ */
 function renderRoundResult(mode){
   const app = document.getElementById('app');
-  const total = deck.length || ROUND_SIZE;
+  const total = deck.length || roundSize;
   const ok = roundCorrect;
   const wrong = total - ok;
   const pct = total ? Math.round((ok/total)*100) : 0;
@@ -4318,7 +4401,7 @@ function renderRoundResult(mode){
   updateStats();
 
   let msg, emoji;
-  if(isPerfect){ emoji = '🌟'; msg = 'Perfekte Runde! 10 von 10. +50 XP Bonus!'; }
+  if(isPerfect){ emoji = '🌟'; msg = `Perfekte Runde! ${total} von ${total}. +50 XP Bonus!`; }
   else if(pct >= 80){ emoji = '🏆'; msg = 'Sehr stark!'; }
   else if(pct >= 50){ emoji = '💪'; msg = 'Solide Runde – weiter so.'; }
   else { emoji = '📚'; msg = 'Übung macht den Meister.'; }
@@ -4352,7 +4435,7 @@ function renderRoundResult(mode){
       </div>
       ${wrongList}
       <div class="round-actions">
-        <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit 10 neuen</button>
+        <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit ${Math.min(roundSize, WORDS.length)} neuen</button>
         <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.tab')[0])">🧠 Zurück zum Training</button>
       </div>
     </div>`;
