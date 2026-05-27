@@ -138,6 +138,9 @@ main{padding:28px 24px 60px;max-width:820px;margin:0 auto;}
 .quiz-question{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:18px;text-align:center;}
 .quiz-word{font-size:32px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.02em;}
 .quiz-sub{font-size:13px;color:var(--muted);letter-spacing:.02em;text-transform:uppercase;font-weight:500;}
+.quiz-dir-row{display:flex;gap:6px;margin-bottom:12px;}
+.qdt-btn{flex:1;padding:9px 6px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+.qdt-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
 .quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
 .choice{padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;transition:all .18s ease;text-align:left;color:var(--text);}
 .choice:hover:not(:disabled){border-color:var(--primary);background:var(--primary-bg);transform:translateY(-1px);box-shadow:var(--sh-sm);}
@@ -3514,6 +3517,7 @@ let flashRoundSize = 20;
 let flashShowPicker = true;
 // Quiz Auto-Weiter Timer
 let quizAutoTimer = null;
+let quizDir = 'en-de'; // 'en-de' | 'de-en'
 let roundCorrect = 0;
 let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwortet wurden
 let combo = 0;            // aktuelle Streak innerhalb der Runde
@@ -4555,16 +4559,24 @@ function renderQuiz(){
   if(idx >= deck.length){ renderRoundResult('quiz'); return; }
 
   const w = deck[idx];
+  const enDE = quizDir === 'en-de';
+
   // Build choices: 1 correct + up to 3 wrong
   const wrong = shuffle(WORDS.filter(x=>x.id!==w.id)).slice(0,3);
   quizChoices = shuffle([w, ...wrong]);
   quizCorrectIdx = quizChoices.findIndex(c=>c.id===w.id);
   quizAnswered = false;
 
+  // Richtungsabhängige Texte
+  const questionWord   = enDE ? w.word        : w.translation;
+  const questionSub    = enDE ? 'Was bedeutet dieses Wort?' : 'Wie lautet das englische Wort?';
+  const choiceLabel    = (c) => enDE ? c.translation : c.word;
+
   const choicesHTML = quizChoices.map((c,i) =>
-    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
+    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${choiceLabel(c)}</button>`
   ).join('');
 
+  // Bild: immer zeigen (hilft beim Lernen in beiden Richtungen)
   const qImgSrc = getImg(w);
   const qImgHTML = qImgSrc
     ? `<div class="quiz-img-wrap"><img class="quiz-img-hd" src="${qImgSrc}" alt="${w.word}" onerror="this.parentElement.outerHTML='<div class=quiz-img-ph>${icon(w)}</div>'"></div>`
@@ -4572,16 +4584,20 @@ function renderQuiz(){
 
   app.innerHTML = `
     ${progressHTML(idx+1, deck.length)}
+    <div class="quiz-dir-row">
+      <button class="qdt-btn${enDE?' active':''}" onclick="setQuizDir('en-de')">🇬🇧 → 🇩🇪</button>
+      <button class="qdt-btn${!enDE?' active':''}" onclick="setQuizDir('de-en')">🇩🇪 → 🇬🇧</button>
+    </div>
     <div class="quiz-question" style="padding:0;overflow:hidden;margin-bottom:18px">
       ${qImgHTML}
       <div style="padding:14px 16px 12px;text-align:center;">
-        <div class="quiz-sub">Was bedeutet dieses Wort?</div>
-        <div class="quiz-word">${w.word}</div>
+        <div class="quiz-sub">${questionSub}</div>
+        <div class="quiz-word">${questionWord}</div>
         <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
           <span class="badge badge-type">${w.wordType}</span>
           <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
         </div>
-        <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
+        ${enDE ? `<div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>` : ''}
       </div>
     </div>
     <div class="quiz-choices">${choicesHTML}</div>
@@ -4589,6 +4605,13 @@ function renderQuiz(){
     <div class="nav-row">
       <button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button>
     </div>`;
+}
+
+function setQuizDir(dir){
+  if(quizAutoTimer){ clearTimeout(quizAutoTimer); quizAutoTimer = null; }
+  quizDir = dir;
+  quizAnswered = false;
+  renderQuiz();
 }
 
 function answerQuiz(chosen){
