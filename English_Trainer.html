@@ -246,14 +246,59 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 }
 @media(max-width:540px){
   .quiz-choices{grid-template-columns:1fr;}
-  .fc-word{font-size:28px;}
-  main{padding:18px 14px 40px;}
-  header{padding:12px 16px;}
-  .hd-title h1{font-size:15px;}
-  .hd-title small{font-size:11px;}
-  .theme-toggle{width:32px;height:32px;font-size:15px;}
-  .scene{height:500px;}
+  .fc-word{font-size:26px;}
+  main{padding:12px 12px 110px;}
+  header{padding:8px 14px;gap:8px;}
+  .hd-left{gap:8px;}
+  .logo{font-size:22px;}
+  .hd-title h1{font-size:14px;}
+  .hd-title small{font-size:10px;}
+  .hd-stats{gap:5px;}
+  .stat{padding:4px 8px;font-size:11px;}
+  .theme-toggle{width:30px;height:30px;font-size:14px;margin-left:2px;}
+  .scene{height:420px;}
+  .quiz-question{padding:16px 14px;margin-bottom:12px;}
+  .quiz-word{font-size:26px;}
+  .quiz-sub{font-size:11px;margin-bottom:4px;}
+  .fc-front-example{font-size:12px;padding:8px 10px;margin-top:8px;}
+  .choice{padding:13px 14px;font-size:13.5px;min-height:48px;}
+  .quiz-choices{gap:8px;margin-bottom:10px;}
+  .quiz-feedback{font-size:13px;padding:10px;}
+  .fill-card{padding:16px 14px;margin-bottom:10px;}
+  .fill-sentence{font-size:17px;}
+  .fill-label{font-size:10px;margin-bottom:10px;}
+  .nav-row{display:none;}
+  .tab .tab-label{display:none;}
+  .tab{padding:10px 12px;font-size:16px;}
+  .round-result{padding:22px 16px;}
+  .round-score-circle{width:130px;height:130px;}
+  .round-score-num{font-size:36px;}
+  .srs-dash{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ── Sticky Mobile Action Bar (Weiter / Überspringen) ── */
+#mobileNextBar{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  padding:10px 16px;
+  padding-bottom:max(10px,env(safe-area-inset-bottom));
+  z-index:60;
+  box-shadow:0 -4px 20px rgba(15,23,42,.14);
+  animation:slideUp .22s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+#mobileNextBar .mnb-btn{
+  display:block;width:100%;padding:15px;
+  background:var(--primary);color:#fff;border:none;
+  border-radius:var(--radius-sm);font-family:inherit;
+  font-size:16px;font-weight:700;cursor:pointer;
+  letter-spacing:.01em;transition:filter .15s;
+}
+#mobileNextBar .mnb-btn:active{filter:brightness(.92);}
+@media(min-width:541px){#mobileNextBar{display:none !important;}}
 
 /* ── Subtle focus ring for accessibility ── */
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm);}
@@ -448,15 +493,19 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 </header>
 
 <nav>
-  <button class="tab active" onclick="setMode('train',this)">🧠 Training</button>
-  <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
-  <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
-  <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
-  <button class="tab" onclick="setMode('match',this)">🎮 Match</button>
-  <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
+  <button class="tab active" onclick="setMode('train',this)">🧠 <span class="tab-label">Training</span></button>
+  <button class="tab" onclick="setMode('flash',this)">🃏 <span class="tab-label">Karteikarten</span></button>
+  <button class="tab" onclick="setMode('quiz',this)">❓ <span class="tab-label">Quiz</span></button>
+  <button class="tab" onclick="setMode('fill',this)">✏️ <span class="tab-label">Lückentext</span></button>
+  <button class="tab" onclick="setMode('match',this)">🎮 <span class="tab-label">Match</span></button>
+  <button class="tab" onclick="setMode('list',this)">📋 <span class="tab-label">Wortliste</span></button>
 </nav>
 
 <main id="app"></main>
+
+<div id="mobileNextBar">
+  <button class="mnb-btn" id="mobileNextBtn" onclick="mobileNextAction()">Weiter →</button>
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════
@@ -4066,10 +4115,32 @@ let trainFlipped = false;
 /* ═══════════════════════════════════════════════
    Mode switching
    ═══════════════════════════════════════════════ */
+/* ── Mobile Sticky Bar Helpers ── */
+let _mobileNextFn = null;
+function showMobileNext(label, fn){
+  _mobileNextFn = fn;
+  const bar = document.getElementById('mobileNextBar');
+  const btn = document.getElementById('mobileNextBtn');
+  if(bar && btn && window.innerWidth <= 540){
+    btn.textContent = label;
+    bar.style.display = 'block';
+  }
+}
+function hideMobileNext(){
+  const bar = document.getElementById('mobileNextBar');
+  if(bar) bar.style.display = 'none';
+  _mobileNextFn = null;
+}
+function mobileNextAction(){
+  if(_mobileNextFn){ const fn = _mobileNextFn; hideMobileNext(); fn(); }
+}
+function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
 function setMode(m, btn){
   mode = m;
   idx = 0; flipped = false; quizAnswered = false; fillChecked = false;
   trainIdx = 0; trainFlipped = false;
+  hideMobileNext();
   if(m === 'train'){
     trainDeck = SRS.dueQueue(WORDS);
   } else if(m === 'quiz' || m === 'fill'){
@@ -4083,6 +4154,7 @@ function setMode(m, btn){
   }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  scrollToTop();
   render();
 }
 
@@ -4090,6 +4162,7 @@ function setMode(m, btn){
    RENDER dispatcher
    ═══════════════════════════════════════════════ */
 function render(){
+  hideMobileNext();
   if(mode==='train') renderTrain();
   else if(mode==='flash') renderFlash();
   else if(mode==='quiz') renderQuiz();
@@ -4307,6 +4380,7 @@ function rateTrain(wasCorrect){
   updateStats();
   trainIdx++;
   trainFlipped = false;
+  scrollToTop();
   render();
 }
 
@@ -4391,6 +4465,7 @@ function markCard(wasCorrect){
   updateStats();
   idx++;
   flipped = false;
+  scrollToTop();
   render();
 }
 
@@ -4470,13 +4545,16 @@ function answerQuiz(chosen){
     : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
   document.getElementById('nextQuizBtn').style.display = 'inline-flex';
+  showMobileNext('Weiter →', nextQuiz);
 }
 
 function nextQuiz(){
+  hideMobileNext();
   idx++;
   if(idx >= deck.length){
     renderRoundResult('quiz');
   } else {
+    scrollToTop();
     render();
   }
 }
@@ -4531,9 +4609,10 @@ function skipFill(){
     Stats.recordAnswer(false, 'fill');
     updateStats();
   }
+  hideMobileNext();
   idx++;
   if(idx >= deck.length) renderRoundResult('fill');
-  else render();
+  else { scrollToTop(); render(); }
 }
 
 function onFillInput(input){
@@ -4583,11 +4662,17 @@ function checkFill(){
   if(skip){
     skip.textContent = 'Weiter →';
     skip.onclick = ()=>{
+      hideMobileNext();
       idx++;
       if(idx >= deck.length) renderRoundResult('fill');
-      else render();
+      else { scrollToTop(); render(); }
     };
   }
+  showMobileNext('Weiter →', ()=>{
+    idx++;
+    if(idx >= deck.length) renderRoundResult('fill');
+    else { scrollToTop(); render(); }
+  });
 }
 
 /* ═══════════════════════════════════════════════
@@ -4708,6 +4793,8 @@ function clearSearch(e){
    🏁 10er-RUNDEN-AUSWERTUNG (Quiz / Lückentext)
    ═══════════════════════════════════════════════ */
 function renderRoundResult(mode){
+  hideMobileNext();
+  scrollToTop();
   const app = document.getElementById('app');
   const total = deck.length || ROUND_SIZE;
   const ok = roundCorrect;
