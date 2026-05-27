@@ -276,6 +276,35 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
   .srs-dash{grid-template-columns:repeat(2,1fr);}
 }
 
+
+/* ── Flash-Modus Runden-Picker ── */
+.flash-picker{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 24px;box-shadow:var(--sh);text-align:center;max-width:420px;margin:0 auto;}
+.flash-picker-emoji{font-size:52px;margin-bottom:12px;line-height:1;}
+.flash-picker h2{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;color:var(--text);}
+.flash-picker p{color:var(--muted);font-size:14px;margin-bottom:22px;line-height:1.5;}
+.flash-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.fp-btn{padding:18px 10px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;color:var(--text);transition:all .18s ease;line-height:1.2;}
+.fp-btn small{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px;}
+.fp-btn:hover{border-color:var(--primary);background:var(--primary-bg);color:var(--primary);}
+.fp-btn:hover small{color:var(--primary);}
+.fp-btn.fp-featured{border-color:var(--primary);background:var(--primary-bg);color:var(--primary);}
+.fp-btn.fp-featured small{color:var(--primary-soft);}
+.fp-btn-all{width:100%;padding:12px;background:transparent;border:1px dashed var(--border-strong);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--muted);transition:all .18s ease;}
+.fp-btn-all:hover{color:var(--text);border-color:var(--primary);}
+
+/* ── Quiz-Bild-Header ── */
+.quiz-img-hd{width:100%;height:100px;object-fit:cover;border-radius:var(--radius) var(--radius) 0 0;display:block;}
+.quiz-img-ph{width:100%;height:80px;background:var(--primary-bg);display:flex;align-items:center;justify-content:center;font-size:34px;border-radius:var(--radius) var(--radius) 0 0;}
+@media(max-width:540px){
+  .quiz-img-hd{height:70px;}
+  .quiz-img-ph{height:60px;font-size:26px;}
+}
+
+/* ── Auto-Advance Timer-Bar (korrekte Antwort) ── */
+.auto-adv-bar{height:3px;background:var(--border);border-radius:var(--radius-full);overflow:hidden;margin-top:8px;}
+.auto-adv-fill{height:100%;background:var(--ok);border-radius:var(--radius-full);animation:autoFill 1.5s linear forwards;}
+@keyframes autoFill{from{width:0%}to{width:100%}}
+
 /* ── Sticky Mobile Action Bar (Weiter / Überspringen) ── */
 #mobileNextBar{
   display:none;
@@ -3474,6 +3503,11 @@ let quizCorrectIdx = 0;
 let fillChecked = false;
 // 10er-Runden für Quiz und Lückentext
 const ROUND_SIZE = 10;
+// Karteikarten Rundenwahl
+let flashRoundSize = 20;
+let flashShowPicker = true;
+// Quiz Auto-Weiter Timer
+let quizAutoTimer = null;
 let roundCorrect = 0;
 let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwortet wurden
 let combo = 0;            // aktuelle Streak innerhalb der Runde
@@ -4149,6 +4183,9 @@ function setMode(m, btn){
     resetRound();
   } else if(m === 'match'){
     Match.start();
+  } else if(m === 'flash'){
+    flashShowPicker = true;
+    deck = shuffle(WORDS);
   } else {
     deck = shuffle(WORDS);
   }
@@ -4396,9 +4433,39 @@ function resetSRS(){
 /* ═══════════════════════════════════════════════
    🃏 KARTEIKARTEN
    ═══════════════════════════════════════════════ */
+function renderFlashPicker(){
+  const app = document.getElementById('app');
+  const total = WORDS.length;
+  const sizes = [10, 20, 30, 50].filter(n => n <= total);
+  const btns = sizes.map(n =>
+    `<button class="fp-btn${n===20?' fp-featured':''}" onclick="startFlash(${n})">
+      ${n} Karten<small>${n===20?'Empfohlen':'~'+Math.round(n*0.5)+' Min.'}</small>
+    </button>`
+  ).join('');
+  app.innerHTML = `
+    <div class="flash-picker">
+      <div class="flash-picker-emoji">🃏</div>
+      <h2>Karteikarten</h2>
+      <p>Wie viele Wörter möchtest du üben?</p>
+      <div class="flash-picker-grid">${btns}</div>
+      <button class="fp-btn-all" onclick="startFlash(${total})">Alle ${total} Wörter anzeigen</button>
+    </div>`;
+}
+
+function startFlash(size){
+  flashShowPicker = false;
+  deck = shuffle(WORDS).slice(0, size);
+  idx = 0; flipped = false;
+  scrollToTop();
+  render();
+}
+
 function renderFlash(){
   const app = document.getElementById('app');
   if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
+
+  // Picker anzeigen wenn noch nicht gestartet
+  if(flashShowPicker){ renderFlashPicker(); return; }
 
   // Check if all done
   if(idx >= deck.length){ renderSummary(); return; }
@@ -4492,17 +4559,24 @@ function renderQuiz(){
     `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
   ).join('');
 
+  const qImgSrc = getImg(w);
+  const qImgHTML = qImgSrc
+    ? `<img class="quiz-img-hd" src="${qImgSrc}" alt="${w.word}" onerror="this.outerHTML='<div class=quiz-img-ph>${icon(w)}</div>'">`
+    : `<div class="quiz-img-ph">${icon(w)}</div>`;
+
   app.innerHTML = `
     ${progressHTML(idx+1, deck.length)}
-    <div class="quiz-question">
-      <div class="quiz-sub">Was bedeutet dieses Wort?</div>
-      <div class="quiz-word">${w.word}</div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
-        <span class="badge badge-type">${w.wordType}</span>
-        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+    <div class="quiz-question" style="padding:0;overflow:hidden;margin-bottom:18px">
+      ${qImgHTML}
+      <div style="padding:14px 16px 12px;text-align:center;">
+        <div class="quiz-sub">Was bedeutet dieses Wort?</div>
+        <div class="quiz-word">${w.word}</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+          <span class="badge badge-type">${w.wordType}</span>
+          <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
+        </div>
+        <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
       </div>
-      <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
-      <div class="fc-front-example" style="margin-top:14px;text-align:center;">📝 „${w.examples[0]}"</div>
     </div>
     <div class="quiz-choices">${choicesHTML}</div>
     <div id="quizFeedback"></div>
@@ -4537,18 +4611,29 @@ function answerQuiz(chosen){
     else if(i===chosen && !isOk) btn.classList.add('wrong');
   });
 
+  if(quizAutoTimer){ clearTimeout(quizAutoTimer); quizAutoTimer = null; }
+
   const fb = document.getElementById('quizFeedback');
   fb.className = `quiz-feedback ${isOk?'ok':'err'}`;
   const comboBadge = (isOk && combo >= 3) ? ` <span class="combo-badge">🔥 ${combo} in Folge</span>` : '';
-  fb.innerHTML = isOk
-    ? `🎉 Richtig! Sehr gut!${comboBadge}`
-    : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
-  document.getElementById('nextQuizBtn').style.display = 'inline-flex';
-  showMobileNext('Weiter →', nextQuiz);
+  if(isOk){
+    fb.innerHTML = `🎉 Richtig!${comboBadge}<div class="auto-adv-bar"><div class="auto-adv-fill"></div></div>`;
+    // Auto-advance nach 1.5s; Weiter-Button als Abbruch
+    document.getElementById('nextQuizBtn').textContent = 'Jetzt weiter →';
+    document.getElementById('nextQuizBtn').style.display = 'inline-flex';
+    showMobileNext('Jetzt weiter →', nextQuiz);
+    quizAutoTimer = setTimeout(()=>{ quizAutoTimer = null; nextQuiz(); }, 1500);
+  } else {
+    fb.innerHTML = `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
+    document.getElementById('nextQuizBtn').textContent = 'Weiter →';
+    document.getElementById('nextQuizBtn').style.display = 'inline-flex';
+    showMobileNext('Weiter →', nextQuiz);
+  }
 }
 
 function nextQuiz(){
+  if(quizAutoTimer){ clearTimeout(quizAutoTimer); quizAutoTimer = null; }
   hideMobileNext();
   idx++;
   if(idx >= deck.length){
