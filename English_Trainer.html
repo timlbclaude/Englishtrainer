@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="English Trainer">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>English Trainer 🇬🇧</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5197,5 +5203,16 @@ Sync.init();
     </div>
   </div>
 </div>
+
+<script>
+// Service Worker registrieren (PWA / Offline-Support)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registriert:', reg.scope))
+      .catch(err => console.warn('SW Fehler:', err));
+  });
+}
+</script>
 </body>
 </html>
