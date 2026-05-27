@@ -331,72 +331,6 @@ body.dark .lvl-5,body.dark .lvl-6{background:rgba(168,85,247,.15);color:#e9d5ff;
 .modal .modal-msg{font-size:13px;margin:10px 0;min-height:18px;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
 
-/* Notiz-Indikator in Wortliste + Notiz-Block im Detail */
-.note-indicator { font-size: 14px; opacity: .85; margin-left: 4px; cursor: help; }
-.wc-note { background: linear-gradient(135deg, rgba(245,158,11,.10), rgba(234,88,12,.06)); border-left: 3px solid var(--warn); padding: 8px 10px; border-radius: var(--radius-sm); margin: 8px 0 0; font-size: 13.5px; line-height: 1.4; color: var(--text); }
-.wc-note strong { color: var(--warn-text); }
-
-/* Wort-Detail-Modal: Inhalt-Styling */
-.wd-word { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 4px; }
-.wd-translation { font-size: 15px; color: var(--text-soft); margin-bottom: 10px; }
-.wd-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-.wd-pronunciation { font-size: 13.5px; color: var(--muted); font-family: 'SFMono-Regular',Consolas,Menlo,monospace; margin-bottom: 12px; }
-.wd-def { font-size: 13.5px; color: var(--text-soft); line-height: 1.5; padding: 10px 12px; background: var(--bg); border-left: 3px solid var(--primary); border-radius: var(--radius-sm); margin-bottom: 14px; }
-.wd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.wd-stats > div { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; display: flex; flex-direction: column; }
-.wd-stats-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
-.wd-stats-val { font-size: 14.5px; font-weight: 700; color: var(--text); margin-top: 2px; }
-.wd-note-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-soft); margin-bottom: 6px; }
-.wd-note-hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; font-style: italic; }
-
-/* Select-Element styling (für Add-Word-Modal) */
-.modal select.input {
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 38px;
-}
-
-/* Floating Action Button: neues Wort hinzufügen */
-.fab-add {
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 18px 12px 14px;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-full);
-  font-family: inherit;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: .01em;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(79,70,229,.35), 0 2px 6px rgba(15,23,42,.1);
-  z-index: 90;
-  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
-}
-.fab-add:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(79,70,229,.45), 0 3px 8px rgba(15,23,42,.12); }
-.fab-add:active { transform: translateY(0); }
-.fab-icon { font-size: 22px; line-height: 1; font-weight: 700; }
-body.focus-mode .fab-add { display: none; }
-@media (max-width: 540px) {
-  .fab-add {
-    right: 16px;
-    bottom: 18px;
-    padding: 12px 16px 12px 12px;
-  }
-  .fab-label { display: none; }
-  .fab-add { padding: 14px 14px; }
-}
-
 /* ── Header-Stat-Badges (Streak, XP, Tagesziel) ── */
 .hd-stats{flex-wrap:wrap;}
 .stat-streak{color:#ea580c;border-color:rgba(234,88,12,.25);background:#fff7ed;}
@@ -488,585 +422,6 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 .match-result .big-score{font-size:48px;font-weight:800;color:var(--primary);letter-spacing:-.02em;margin:8px 0;}
 .match-result .new-high{color:var(--warn-text);background:var(--warn-bg);padding:6px 14px;border-radius:var(--radius-full);display:inline-block;font-size:13px;font-weight:700;margin:6px 0;}
 
-/* ═══════════════════════════════════════════════
-   🎯 FOCUS MODE (Lern-Modi blenden Header und Tabs aus)
-   ═══════════════════════════════════════════════ */
-body.focus-mode > header,
-body.focus-mode > nav { display: none !important; }
-body.focus-mode main { padding-top: 0; }
-
-.focus-bar { display: none; }
-body.focus-mode .focus-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px 8px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  margin: 0 -24px 16px;
-  padding-left: 24px;
-  padding-right: 24px;
-}
-.focus-exit {
-  width: 32px; height: 32px;
-  border-radius: var(--radius-full);
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--text);
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all .15s ease;
-}
-.focus-exit:hover { background: var(--card-hover); border-color: var(--border-strong); }
-.focus-prog-bar {
-  flex: 1;
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.focus-prog-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-soft), var(--primary));
-  border-radius: 3px;
-  transition: width .4s cubic-bezier(.4,0,.2,1);
-}
-.focus-stats {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.focus-stats .stat { font-size: 12px; padding: 3px 9px; }
-.focus-roundsize {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  padding: 2px 8px 2px 9px;
-  color: var(--text);
-  cursor: pointer;
-}
-.focus-roundsize.hidden { display: none !important; }
-.focus-roundsize select {
-  border: none;
-  background: transparent;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  padding: 2px 2px 2px 2px;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.focus-roundsize select:focus { outline: 2px solid var(--primary); outline-offset: 1px; border-radius: 4px; }
-
-@media (max-width: 540px) {
-  body.focus-mode .focus-bar {
-    padding: 10px 14px 6px;
-    margin: 0 -14px 12px;
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   🖼️ QUIZ HERO (Layout B — Bild als große Card mit Overlay)
-   ═══════════════════════════════════════════════ */
-.quiz-hero {
-  position: relative;
-  width: 100%;
-  height: 220px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--primary-soft), var(--primary));
-  margin: 8px 0 16px;
-  box-shadow: var(--sh);
-}
-.quiz-hero-img {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.quiz-hero-emoji {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 90px;
-  color: rgba(255,255,255,.85);
-  line-height: 1;
-}
-.quiz-hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.55) 75%, rgba(0,0,0,.78) 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 18px 22px;
-  color: #fff;
-  pointer-events: none; /* damit Klicks auf den Speak-Button durchgehen */
-}
-.quiz-hero-word {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-  line-height: 1.1;
-  text-shadow: 0 2px 8px rgba(0,0,0,.35);
-}
-.quiz-hero-meta {
-  font-size: 13.5px;
-  opacity: .95;
-  margin-top: 5px;
-  text-shadow: 0 1px 3px rgba(0,0,0,.4);
-  letter-spacing: .01em;
-}
-.quiz-hero-meta .hero-dot { opacity: .55; margin: 0 6px; }
-
-.quiz-hero-badge {
-  position: absolute;
-  top: 12px; right: 12px;
-  background: rgba(255,255,255,.92);
-  color: var(--text);
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .02em;
-  backdrop-filter: blur(8px);
-}
-
-.quiz-sub-prompt {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
-.quiz-choices-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.quiz-choices-grid .choice {
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 14.5px;
-  padding: 12px 12px;
-  line-height: 1.25;
-}
-@media (max-width: 380px) {
-  .quiz-choices-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 540px) {
-  .quiz-hero { height: 180px; }
-  .quiz-hero-word { font-size: 26px; }
-  .quiz-hero-emoji { font-size: 70px; }
-  .quiz-choices-grid .choice { min-height: 56px; font-size: 13.5px; }
-}
-
-/* ═══════════════════════════════════════════════
-   🍞 TOAST (Benachrichtigungen)
-   ═══════════════════════════════════════════════ */
-.app-toast {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%) translateY(150%);
-  z-index: 200;
-  background: var(--text);
-  color: var(--bg);
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  font-size: 13.5px;
-  font-weight: 500;
-  box-shadow: var(--sh-lg);
-  max-width: calc(100vw - 40px);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
-  text-align: center;
-  line-height: 1.4;
-}
-.app-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.app-toast.toast-warn { background: var(--warn); color: #fff; }
-.app-toast.toast-err  { background: var(--err);  color: #fff; }
-.app-toast.toast-ok   { background: var(--ok);   color: #fff; }
-@media (max-width: 540px) {
-  .app-toast { bottom: 90px; font-size: 13px; padding: 10px 16px; }
-  body.focus-mode .app-toast { bottom: 110px; }
-}
-
-/* TTS-Diagnose-Sektion */
-.tts-diag {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  margin-bottom: 24px;
-  box-shadow: var(--sh-sm);
-}
-.tts-diag h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-.tts-diag .tts-diag-text { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; }
-.tts-diag #ttsDiagResult { font-size: 13px; line-height: 1.5; padding: 12px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border); min-height: 40px; }
-.tts-diag #ttsDiagResult code { background: var(--primary-bg); color: var(--primary); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
-
-/* ═══════════════════════════════════════════════
-   📊 STATS-TAB (Heatmap, Badge-Gallery, Übersichts-Karten)
-   ═══════════════════════════════════════════════ */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.stats-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--sh-sm); }
-.stats-card-xp { background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(99,102,241,.08)); border-color: rgba(124,58,237,.2); }
-.stats-card-streak { background: linear-gradient(135deg, rgba(234,88,12,.08), rgba(245,158,11,.08)); border-color: rgba(234,88,12,.2); }
-.stats-num { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -.02em; }
-.stats-lbl { font-size: 12.5px; color: var(--muted); font-weight: 600; margin-top: 6px; letter-spacing: .02em; }
-
-.heatmap-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 24px; box-shadow: var(--sh-sm); }
-.heatmap-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 12px; font-weight: 600; letter-spacing: .02em; }
-.heatmap-legend { display: inline-flex; gap: 3px; align-items: center; }
-.heatmap-legend::before { content: 'wenig'; font-size: 11px; color: var(--muted); margin-right: 4px; }
-.heatmap-legend::after { content: 'viel'; font-size: 11px; color: var(--muted); margin-left: 4px; }
-
-.heatmap-grid { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-.hm-day-labels { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; padding-top: 0; }
-.hm-day-label { height: 11px; font-size: 10px; color: var(--muted); line-height: 11px; }
-.hm-weeks { display: flex; gap: 2px; flex-shrink: 0; }
-.hm-week { display: flex; flex-direction: column; gap: 2px; }
-.hm-cell { width: 11px; height: 11px; border-radius: 2px; background: var(--border); transition: transform .12s ease; }
-.hm-cell:hover { transform: scale(1.4); }
-.hm-lv0 { background: var(--border); }
-.hm-lv1 { background: #c0dd97; }
-.hm-lv2 { background: #97c459; }
-.hm-lv3 { background: #639922; }
-.hm-lv4 { background: #3b6d11; }
-body.dark .hm-lv0 { background: rgba(255,255,255,.06); }
-body.dark .hm-lv1 { background: rgba(99,153,34,.35); }
-body.dark .hm-lv2 { background: rgba(99,153,34,.55); }
-body.dark .hm-lv3 { background: rgba(99,153,34,.75); }
-body.dark .hm-lv4 { background: rgba(99,153,34,.95); }
-.hm-today { box-shadow: inset 0 0 0 1px var(--primary); }
-
-.badge-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
-.badge-head h3 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
-.badge-count { font-size: 13px; color: var(--muted); font-weight: 600; }
-.badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-.badge-tile { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 12px; text-align: center; box-shadow: var(--sh-sm); transition: transform .15s ease, box-shadow .15s ease; }
-.badge-tile.unlocked { background: linear-gradient(135deg, rgba(99,102,241,.06), rgba(168,85,247,.06)); border-color: rgba(99,102,241,.25); }
-.badge-tile.locked { opacity: .55; filter: grayscale(.5); }
-.badge-tile.unlocked:hover { transform: translateY(-2px); box-shadow: var(--sh); }
-.bt-emoji { font-size: 34px; line-height: 1; margin-bottom: 6px; }
-.bt-name { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; letter-spacing: -.01em; }
-.bt-desc { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
-
-@media (max-width: 540px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .stats-card { padding: 12px 14px; }
-  .stats-num { font-size: 22px; }
-  .stats-lbl { font-size: 11px; }
-  .badge-grid { grid-template-columns: repeat(2, 1fr); }
-  .hm-cell { width: 9px; height: 9px; }
-  .hm-day-label { height: 9px; line-height: 9px; font-size: 9px; }
-}
-
-/* Hör-Button für TTS (Aussprache) */
-.speak-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.92);
-  color: var(--primary);
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  transition: transform .15s ease, background .15s ease;
-  box-shadow: 0 2px 8px rgba(15,23,42,.15);
-}
-.speak-btn:hover { transform: scale(1.08); background: #fff; }
-.speak-btn:active { transform: scale(.95); }
-.speak-btn.speaking { animation: speakPulse .9s ease-in-out infinite; }
-@keyframes speakPulse {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.12); box-shadow: 0 4px 14px rgba(79,70,229,.4); }
-}
-.speak-btn-hero {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 10;
-  width: 44px;
-  height: 44px;
-  font-size: 18px;
-}
-.speak-btn-inline {
-  width: 32px;
-  height: 32px;
-  font-size: 14px;
-  background: var(--primary-bg);
-  color: var(--primary);
-  margin-left: 8px;
-  vertical-align: middle;
-  box-shadow: none;
-}
-
-/* Lückentext im Hero-Layout B */
-.fill-sentence-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  margin: 0 0 14px;
-  box-shadow: var(--sh-sm);
-}
-.fill-sentence-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.fill-sentence-card .fill-sentence {
-  font-size: 16.5px;
-  line-height: 1.5;
-  color: var(--text);
-}
-.fill-sentence-card .blank {
-  display: inline-block;
-  min-width: 80px;
-  border-bottom: 2px solid var(--primary);
-  color: transparent;
-  font-weight: 700;
-  letter-spacing: .15em;
-  padding: 0 4px;
-}
-@media (max-width: 540px) {
-  .fill-sentence-card { padding: 14px 16px; }
-  .fill-sentence-card .fill-sentence { font-size: 15.5px; }
-}
-
-/* Quiz Richtungs-Toggle (EN ↔ DE) */
-.quiz-dir-toggle {
-  display: inline-flex;
-  align-self: center;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  padding: 3px;
-  gap: 2px;
-  margin: 0 auto 10px;
-  box-shadow: var(--sh-sm);
-}
-.qdt-btn {
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
-  color: var(--muted);
-  cursor: pointer;
-  letter-spacing: .02em;
-  transition: all .15s ease;
-  min-height: 32px;
-}
-.qdt-btn.active {
-  background: var(--primary);
-  color: #fff;
-}
-.qdt-btn:not(.active):hover { color: var(--text); }
-/* Container zentrieren */
-#app .quiz-dir-toggle { display: flex; width: max-content; }
-
-/* Notiz-Anzeige in Quiz-Reveal */
-.quiz-reveal-note {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(234,88,12,.08));
-  border-left: 3px solid var(--warn);
-  border-radius: var(--radius-sm);
-  font-size: 13.5px;
-  color: var(--text);
-  font-style: normal;
-  line-height: 1.4;
-}
-.quiz-reveal-note::before {
-  content: "✏️ Deine Notiz: ";
-  font-weight: 600;
-  font-style: normal;
-  color: var(--warn-text);
-}
-
-/* Quiz Reveal-Karte: Beispielsatz und Weiter-Button zusammen, erscheint erst nach Antwort */
-.quiz-reveal-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-top: 2px solid var(--primary);
-  border-radius: var(--radius);
-  padding: 14px 16px 14px;
-  margin: 14px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: var(--sh-sm);
-  animation: cardIn .3s cubic-bezier(.4,0,.2,1);
-}
-.quiz-reveal-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--primary);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 4px;
-}
-.quiz-reveal-example {
-  font-size: 14.5px;
-  color: var(--text);
-  font-style: italic;
-  line-height: 1.45;
-}
-.quiz-reveal-card .btn {
-  min-height: 44px;
-  width: 100%;
-  font-weight: 600;
-}
-@media (max-width: 540px) {
-  .quiz-reveal-card {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 100;
-    margin: 0 !important;
-    border-radius: 16px 16px 0 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    border-top: 2px solid var(--primary);
-    box-shadow: 0 -10px 28px rgba(15,23,42,.15);
-    padding: 14px 16px;
-    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
-    max-height: 55vh;
-    overflow-y: auto;
-    animation: revealSlideUp .3s cubic-bezier(.34,1.56,.64,1);
-  }
-  body.dark .quiz-reveal-card { box-shadow: 0 -10px 28px rgba(0,0,0,.5); }
-  .quiz-reveal-card .btn { min-height: 48px; font-size: 14.5px; }
-  @keyframes revealSlideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
-  }
-  /* Mehr Polster unten im Quiz-Modus, damit die Reveal-Karte den Inhalt nicht überlappt */
-  body.focus-mode main { padding-bottom: 180px !important; }
-}
-
-/* ═══════════════════════════════════════════════
-   📱 MOBILE UX (Sticky Action Bar, kompakte Tabs, Touch-Targets, Übergänge)
-   ═══════════════════════════════════════════════ */
-/* Sanfte Karten-Übergänge (auf allen Bildschirmgrößen) */
-.scene, .quiz-question, .fill-card, .round-result, .summary-card, .srs-empty, .match-result, .match-grid {
-  animation: cardIn .25s cubic-bezier(.4,0,.2,1);
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Mobile (< 540px): Aktions-Buttons kleben am unteren Bildschirmrand */
-@media (max-width: 540px) {
-  .mobile-action-bar {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 100;
-    background: var(--card);
-    border-top: 1px solid var(--border-strong);
-    padding: 12px 16px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
-    box-shadow: 0 -6px 18px rgba(15,23,42,.10);
-    margin: 0 !important;
-    gap: 10px;
-    justify-content: stretch !important;
-  }
-  body.dark .mobile-action-bar {
-    box-shadow: 0 -6px 18px rgba(0,0,0,.5);
-  }
-  .mobile-action-bar .btn,
-  .mobile-action-bar button {
-    min-height: 48px;
-    flex: 1;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  /* Auf Mobile bekommt die Bar eine Mini-Animation beim Erscheinen */
-  .mobile-action-bar:not([style*="display:none"]):not([style*="display: none"]) {
-    animation: barSlideUp .22s cubic-bezier(.34,1.56,.64,1);
-  }
-  @keyframes barSlideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
-  }
-
-  /* Inhalt nicht unter der Bar verstecken */
-  main {
-    padding: 18px 14px 110px !important;
-  }
-
-  /* Tab-Bar: Icons-only auf Handy, große Touch-Targets */
-  nav { justify-content: space-around; overflow-x: visible; }
-  .tab {
-    padding: 12px 4px;
-    font-size: 22px;
-    min-height: 48px;
-    flex: 1;
-    text-align: center;
-  }
-  .tab-label { display: none; }
-
-  /* Header kompakter */
-  header { padding: 10px 14px; }
-  .hd-title h1 { font-size: 15px; }
-  .hd-title small { display: none; }
-  .hd-stats { gap: 5px; }
-  .hd-stats .stat { padding: 4px 8px; font-size: 11px; }
-  .logo { font-size: 22px; }
-  .theme-toggle { width: 32px; height: 32px; font-size: 14px; }
-
-  /* Touch-Targets vergrößern */
-  .btn-sm { min-height: 40px; padding: 10px 16px; font-size: 13px; }
-  .sync-manual-btn { min-height: 40px; padding: 9px 14px; }
-  .srs-reset-btn { min-height: 40px; padding: 9px 14px; }
-  .goal-edit { min-height: 32px; padding: 4px 10px; }
-
-  /* Quiz-Choices größer, mehr tap-tolerant */
-  .choice { min-height: 52px; padding: 12px 14px !important; font-size: 14.5px !important; }
-
-  /* Fill-Input + Prüfen großzügiger */
-  .fill-input { min-height: 44px; }
-  .fill-input-row .btn { min-height: 44px; }
-
-  /* Karteikarte kleiner, damit alles auf den Schirm passt */
-  .scene { min-height: 360px; }
-
-  /* Round-Result Buttons größer */
-  .round-actions .btn { min-height: 48px; }
-}
-
 /* Karteikarten: SRS-Bewertungszeile */
 .srs-rate-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 .srs-rate-row .btn{flex:1;max-width:220px;min-width:140px;font-weight:600;}
@@ -1093,39 +448,15 @@ body.dark .hm-lv4 { background: rgba(99,153,34,.95); }
 </header>
 
 <nav>
-  <button class="tab active" onclick="setMode('train',this)" aria-label="Training">🧠 <span class="tab-label">Training</span></button>
-  <button class="tab" onclick="setMode('flash',this)" aria-label="Karteikarten">🃏 <span class="tab-label">Karteikarten</span></button>
-  <button class="tab" onclick="setMode('quiz',this)" aria-label="Quiz">❓ <span class="tab-label">Quiz</span></button>
-  <button class="tab" onclick="setMode('fill',this)" aria-label="Lückentext">✏️ <span class="tab-label">Lückentext</span></button>
-  <button class="tab" onclick="setMode('match',this)" aria-label="Match-Spiel">🎮 <span class="tab-label">Match</span></button>
-  <button class="tab" onclick="setMode('stats',this)" aria-label="Statistik und Erfolge">📊 <span class="tab-label">Stats</span></button>
-  <button class="tab" onclick="setMode('list',this)" aria-label="Wortliste">📋 <span class="tab-label">Wortliste</span></button>
+  <button class="tab active" onclick="setMode('train',this)">🧠 Training</button>
+  <button class="tab" onclick="setMode('flash',this)">🃏 Karteikarten</button>
+  <button class="tab" onclick="setMode('quiz',this)">❓ Quiz</button>
+  <button class="tab" onclick="setMode('fill',this)">✏️ Lückentext</button>
+  <button class="tab" onclick="setMode('match',this)">🎮 Match</button>
+  <button class="tab" onclick="setMode('list',this)">📋 Wortliste</button>
 </nav>
 
-<main>
-  <div class="focus-bar" id="focusBar">
-    <button class="focus-exit" onclick="exitFocusMode()" aria-label="Lernmodus verlassen" title="Verlassen">✕</button>
-    <div class="focus-prog-bar"><div class="focus-prog-fill" id="focusProg" style="width:0%"></div></div>
-    <div class="focus-stats">
-      <span class="stat stat-streak" id="focusStreak">🔥 0</span>
-      <span class="stat stat-goal" id="focusGoal">🎯 0/20</span>
-      <label class="focus-roundsize hidden" id="focusRoundSizeWrap" title="Anzahl Wörter pro Runde">
-        🔢
-        <select id="focusRoundSize" onchange="setRoundSize(this.value)" aria-label="Wörter pro Runde">
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="1000">Alle</option>
-        </select>
-      </label>
-    </div>
-  </div>
-  <div id="app"></div>
-</main>
+<main id="app"></main>
 
 <script>
 /* ═══════════════════════════════════════════════
@@ -1175,7 +506,7 @@ const WORDS = [
       "The threshold for pain varies greatly between individuals.",
       "She stood at the threshold of the doorway, hesitating before stepping inside."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Funchal_(Madeira,_Portugal),_Rua_de_Santa_Maria_1_--_2025_--_0818.jpg?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-02",
     category: "—"
@@ -1207,7 +538,7 @@ const WORDS = [
       "Meeting my best friend at that coffee shop was pure serendipity.",
       "The discovery of penicillin was a remarkable act of serendipity."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/4-leaf-clover.jpg?width=400",
+    imageUrl: "",
     difficulty: "C1",
     dateAdded: "2026-04-02",
     category: "—"
@@ -1271,7 +602,7 @@ const WORDS = [
       "Scientists made a major breakthrough in cancer research last year.",
       "The peace talks finally led to a breakthrough after weeks of difficult negotiations."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Light_bulb_icon_tps.png?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-02",
     category: "—"
@@ -1319,7 +650,7 @@ const WORDS = [
       "She filled the coffee pot and switched it on before breakfast.",
       "There's a full coffee pot on the counter — help yourself."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coffee_pot.JPG?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1367,7 +698,7 @@ const WORDS = [
       "I keep a bag of frozen peas in the freezer for emergencies.",
       "Take the chicken out of the freezer the night before to defrost it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Chest_freezer.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1399,7 +730,7 @@ const WORDS = [
       "Preheat the oven to 200°C before putting the bread in.",
       "The pizza came out of the oven perfectly golden and crispy."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Conventional_oven.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1607,7 +938,7 @@ const WORDS = [
       "Cover the roast with kitchen foil for the first hour of cooking.",
       "Wrap the leftover bread in kitchen foil to keep it fresh."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Aluminium-foil.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1671,7 +1002,7 @@ const WORDS = [
       "Use the oven cloth when taking the casserole dish out of the oven.",
       "The oven cloth was scorched from years of heavy use."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Pot_holder.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1687,7 +1018,7 @@ const WORDS = [
       "Always put on the oven gloves before reaching into a hot oven.",
       "She grabbed the baking tray with her oven gloves and set it on the counter."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Oven_mitts.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1735,7 +1066,7 @@ const WORDS = [
       "You'll need a scouring pad to get that burnt food off the pan.",
       "Don't use a scouring pad on non-stick surfaces — it will scratch them."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scouring_pad.jpg?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1751,7 +1082,7 @@ const WORDS = [
       "The scourer removed the burnt residue from the bottom of the pan.",
       "A steel scourer is perfect for cast iron pans but too harsh for coated ones."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Scouring_pad.jpg?width=400",
+    imageUrl: "",
     difficulty: "B2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1767,7 +1098,7 @@ const WORDS = [
       "Sift the flour through a sieve to remove any lumps before baking.",
       "He rinsed the rice through a fine sieve under cold water."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Sieve_(PSF).png?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1783,7 +1114,7 @@ const WORDS = [
       "I need the tin opener to open this can of tomatoes.",
       "The electric tin opener makes it much easier to open large cans."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Can_opener.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1815,7 +1146,7 @@ const WORDS = [
       "She carried the mugs of coffee through on a tray.",
       "Line the baking tray with greaseproof paper before putting the biscuits on it."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Serving_tray.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1831,7 +1162,7 @@ const WORDS = [
       "Whisk the eggs until they are light and frothy.",
       "Use a hand whisk or an electric mixer to beat the cream."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Schneebesen.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1879,7 +1210,7 @@ const WORDS = [
       "She twirled the spaghetti around her fork.",
       "Set a knife and fork on each side of the plate."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Couvert-Gabel.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1911,7 +1242,7 @@ const WORDS = [
       "She ate the mousse with a small dessert spoon.",
       "A dessert spoon holds about 10ml — halfway between a teaspoon and tablespoon."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Dessert_spoon.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -1927,7 +1258,7 @@ const WORDS = [
       "The soup spoon is placed to the right of the other cutlery.",
       "He dipped his soup spoon into the bowl carefully to avoid spilling."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Soup_spoon.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2007,7 +1338,7 @@ const WORDS = [
       "She made herself a cup of tea and sat down by the window.",
       "Could you pass me a clean cup from the cupboard, please?"
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A_small_cup_of_coffee.JPG?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2023,7 +1354,7 @@ const WORDS = [
       "She poured the cereal into a bowl and added some milk.",
       "He filled a large bowl with fresh salad leaves."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Empty_bowl.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2039,7 +1370,7 @@ const WORDS = [
       "We bought a new set of crockery for the dining room.",
       "All the crockery is in the dishwasher — we'll need to wait before setting the table."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Crockery.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2055,7 +1386,7 @@ const WORDS = [
       "He poured the orange juice into a tall glass.",
       "There's a glass of water on the bedside table for you."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_glass.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2071,7 +1402,7 @@ const WORDS = [
       "She opened a new jar of peanut butter.",
       "There's a jar of strawberry jam in the cupboard."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Mason_jar.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2135,7 +1466,7 @@ const WORDS = [
       "She set the teacup back carefully on its saucer.",
       "The saucer caught the drips from the overfilled cup."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Tea_cup_with_saucer.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2151,7 +1482,7 @@ const WORDS = [
       "Could you pass the sugar bowl? I'd like one spoonful.",
       "The sugar bowl is on the table next to the teapot."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Cut_glass_sugar_bowl.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2215,7 +1546,7 @@ const WORDS = [
       "Cover the bowl with cling film and put it in the fridge overnight.",
       "Wrap the leftover cheese tightly in cling film to stop it drying out."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Cling_film.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2231,7 +1562,7 @@ const WORDS = [
       "Cover the salad with plastic wrap before putting it in the fridge.",
       "Stretch a layer of plastic wrap over the bowl to keep it airtight."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Cling_film.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2247,7 +1578,7 @@ const WORDS = [
       "She followed the recipe step by step from her favourite cookery book.",
       "He bought a new cookery book about Italian cuisine as a birthday gift."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Cookbook.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2263,7 +1594,7 @@ const WORDS = [
       "Wipe the counter down with a damp dishcloth after cooking.",
       "Replace the dishcloth regularly to prevent bacteria from building up."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Dishcloth.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2279,7 +1610,7 @@ const WORDS = [
       "Stack the clean dishes on the draining board to dry.",
       "The draining board was full of pots and pans from last night's cooking."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Draining_board.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2295,7 +1626,7 @@ const WORDS = [
       "Tear off a sheet of kitchen roll to wipe up the spill.",
       "Always keep a roll of kitchen roll handy when cooking messy dishes."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Paper_towel.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2311,7 +1642,7 @@ const WORDS = [
       "Put the plug in the sink before filling it to wash the dishes.",
       "The sink plug is stuck — could you try to pull it out?"
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bath_plug.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2327,7 +1658,7 @@ const WORDS = [
       "Dry the glasses with a clean tea towel so they don't get watermarks.",
       "Hang the wet tea towel over the oven handle to let it dry."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Tea_towel.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2343,7 +1674,7 @@ const WORDS = [
       "The spices are on the shelf above the cooker.",
       "She added an extra shelf to the kitchen cupboard to create more storage."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bookshelf.jpg?width=400",
+    imageUrl: "",
     difficulty: "A1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2375,7 +1706,7 @@ const WORDS = [
       "She spread a clean white tablecloth over the dining table.",
       "The tablecloth is covered in wine stains — it needs a good wash."
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Tablecloth.jpg?width=400",
+    imageUrl: "",
     difficulty: "A2",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2391,7 +1722,7 @@ const WORDS = [
       "Squirt a little washing-up liquid onto the sponge before scrubbing the pans.",
       "We've run out of washing-up liquid — could you pick some up at the shops?"
     ],
-    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Washing_up_liquid.jpg?width=400",
+    imageUrl: "",
     difficulty: "B1",
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
@@ -2476,12 +1807,1607 @@ const WORDS = [
     dateAdded: "2026-04-03",
     category: "Kitchen/Cooking"
   },
-  {"id":85,"word":"Pitfall","translation":"Falle, Fallstrick","pronunciation":"/ˈpɪtfɔːl/","wordType":"Nomen","definition":"A hidden or unexpected danger or difficulty.","examples":["One pitfall of online shopping is hidden delivery costs.","Avoid the common pitfall of studying only the night before exams."],"imageUrl":"https://commons.wikimedia.org/wiki/Special:FilePath/Insect_trap_hidden_in_a_tree_trunk_in_Junkerdalsura.jpg?width=400","difficulty":2,"dateAdded":"2026-05-10","notes":"","category":"Allgemein"},
-  {"id":86,"word":"effortless","translation":"mühelos","pronunciation":"/ˈefətləs/","wordType":"Adjektiv","definition":"Requiring no physical or mental effort; done with ease.","examples":["She made the difficult task look effortless.","His effortless style impressed everyone at the party."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-11","notes":"","category":"Allgemein"},
-  {"id":87,"word":"to stack","translation":"stapeln","pronunciation":"/stæk/","wordType":"Verb","definition":"To arrange things in a neat pile, one on top of another.","examples":["Please stack the chairs after the meeting.","She stacked the books on the shelf."],"imageUrl":"","difficulty":1,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
-  {"id":88,"word":"to sift","translation":"sieben","pronunciation":"/sɪft/","wordType":"Verb","definition":"To pass a substance through a sieve to remove lumps or separate particles.","examples":["She sifted the flour before making the cake.","They sifted through the evidence to find clues."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
-  {"id":89,"word":"to dissolve","translation":"auflösen","pronunciation":"/dɪˈzɒlv/","wordType":"Verb","definition":"To become or cause to become incorporated into a liquid so as to form a solution.","examples":["Sugar dissolves quickly in hot water.","The tablet will dissolve in your mouth."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"},
-  {"id":90,"word":"red tape","translation":"Bürokratie","pronunciation":"/red teɪp/","wordType":"Phrase","definition":"Excessive bureaucracy or adherence to rules and formalities, especially in public business.","examples":["The company struggled with red tape when applying for permits.","We need to cut through the red tape to get this approved quickly."],"imageUrl":"","difficulty":2,"dateAdded":"2026-05-15","notes":"","category":"Allgemein"}
+  {
+    id: 85,
+    word: "significant",
+    translation: "bedeutsam, wesentlich",
+    pronunciation: "/sɪɡˈnɪfɪkənt/",
+    wordType: "Adjektiv",
+    definition: "Important or large enough to have a noticeable effect.",
+    examples: [
+      "The new policy had a significant impact on employee satisfaction.",
+      "There is a significant difference between the two proposals."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 86,
+    word: "subtle",
+    translation: "subtil, fein, kaum merklich",
+    pronunciation: "/ˈsʌtl/",
+    wordType: "Adjektiv",
+    definition: "Not immediately obvious or easy to notice; delicate and understated.",
+    examples: [
+      "There was a subtle change in her tone that made everyone pay attention.",
+      "He made a subtle hint that he wanted to leave early."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 87,
+    word: "genuine",
+    translation: "echt, aufrichtig, authentisch",
+    pronunciation: "/ˈdʒenjuɪn/",
+    wordType: "Adjektiv",
+    definition: "Truly what it appears to be; sincere and honest.",
+    examples: [
+      "Her smile was genuine – she was truly happy to see him.",
+      "He showed a genuine interest in learning the language."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 88,
+    word: "remarkable",
+    translation: "bemerkenswert, außergewöhnlich",
+    pronunciation: "/rɪˈmɑːkəbl/",
+    wordType: "Adjektiv",
+    definition: "Worthy of attention; striking or extraordinary.",
+    examples: [
+      "She made a remarkable recovery after the surgery.",
+      "The film's special effects were absolutely remarkable."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 89,
+    word: "considerate",
+    translation: "rücksichtsvoll, aufmerksam",
+    pronunciation: "/kənˈsɪdərɪt/",
+    wordType: "Adjektiv",
+    definition: "Careful not to cause inconvenience or hurt to others; thoughtful.",
+    examples: [
+      "He is always considerate of his neighbours and keeps the noise down.",
+      "It was considerate of her to send a thank-you note."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 90,
+    word: "persistent",
+    translation: "beharrlich, hartnäckig, anhaltend",
+    pronunciation: "/pəˈsɪstənt/",
+    wordType: "Adjektiv",
+    definition: "Continuing firmly despite difficulty or opposition; refusing to give up.",
+    examples: [
+      "Despite many rejections, she remained persistent and finally got the job.",
+      "The persistent rain ruined our picnic plans."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 91,
+    word: "anxious",
+    translation: "ängstlich, besorgt, nervös",
+    pronunciation: "/ˈæŋkʃəs/",
+    wordType: "Adjektiv",
+    definition: "Feeling worried, uneasy, or nervous about a situation.",
+    examples: [
+      "He was anxious about the exam results and couldn't sleep.",
+      "She felt anxious waiting for the doctor's call."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 92,
+    word: "exhausted",
+    translation: "erschöpft, ausgelaugt",
+    pronunciation: "/ɪɡˈzɔːstɪd/",
+    wordType: "Adjektiv",
+    definition: "Extremely tired; drained of physical or mental energy.",
+    examples: [
+      "After the marathon, she was completely exhausted and fell asleep instantly.",
+      "He looked exhausted after working three back-to-back night shifts."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 93,
+    word: "frustrated",
+    translation: "frustriert, enttäuscht, verärgert",
+    pronunciation: "/ˈfrʌstreɪtɪd/",
+    wordType: "Adjektiv",
+    definition: "Feeling upset or annoyed because of an inability to achieve something.",
+    examples: [
+      "I was frustrated that the internet kept cutting out during my presentation.",
+      "She felt frustrated when nobody listened to her ideas."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 94,
+    word: "relieved",
+    translation: "erleichtert",
+    pronunciation: "/rɪˈliːvd/",
+    wordType: "Adjektiv",
+    definition: "Feeling no longer anxious or worried because something difficult has passed.",
+    examples: [
+      "He was relieved to hear that his flight was not cancelled.",
+      "She felt deeply relieved when she passed the driving test."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 95,
+    word: "awkward",
+    translation: "unangenehm, unbeholfen, peinlich",
+    pronunciation: "/ˈɔːkwəd/",
+    wordType: "Adjektiv",
+    definition: "Causing or feeling social discomfort; difficult to handle or use.",
+    examples: [
+      "There was an awkward silence after he made the joke.",
+      "She felt awkward being the only person who didn't know anyone at the party."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 96,
+    word: "decent",
+    translation: "anständig, ordentlich, passabel",
+    pronunciation: "/ˈdiːsnt/",
+    wordType: "Adjektiv",
+    definition: "Of an acceptable standard; morally correct and honest.",
+    examples: [
+      "The hotel was decent – nothing special, but clean and comfortable.",
+      "He is a decent person who always tries to do the right thing."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 97,
+    word: "vivid",
+    translation: "lebhaft, lebendig, intensiv",
+    pronunciation: "/ˈvɪvɪd/",
+    wordType: "Adjektiv",
+    definition: "Producing powerful feelings or strong, clear images in the mind; bright and strong.",
+    examples: [
+      "She had a vivid dream about flying over the mountains.",
+      "The documentary used vivid colours to bring the wildlife to life."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 98,
+    word: "compelling",
+    translation: "überzeugend, fesselnd, zwingend",
+    pronunciation: "/kəmˈpelɪŋ/",
+    wordType: "Adjektiv",
+    definition: "Evoking interest, attention, or admiration in a powerfully irresistible way.",
+    examples: [
+      "The novel had a compelling storyline that kept me reading all night.",
+      "She made a compelling argument for increasing the budget."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 99,
+    word: "grateful",
+    translation: "dankbar",
+    pronunciation: "/ˈɡreɪtfl/",
+    wordType: "Adjektiv",
+    definition: "Feeling or showing thanks for something received.",
+    examples: [
+      "I am truly grateful for all the help you have given me.",
+      "She was grateful that the rain stopped before the outdoor ceremony."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 100,
+    word: "cynical",
+    translation: "zynisch, misstrauisch",
+    pronunciation: "/ˈsɪnɪkl/",
+    wordType: "Adjektiv",
+    definition: "Believing that people are motivated purely by self-interest; distrustful of human sincerity.",
+    examples: [
+      "He was cynical about politicians ever keeping their promises.",
+      "After years in business, she had grown cynical about people's motives."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 101,
+    word: "cautious",
+    translation: "vorsichtig, behutsam",
+    pronunciation: "/ˈkɔːʃəs/",
+    wordType: "Adjektiv",
+    definition: "Careful to avoid potential problems or dangers; not taking unnecessary risks.",
+    examples: [
+      "She was cautious when crossing the icy road.",
+      "The investors took a cautious approach in the uncertain market."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 102,
+    word: "mediocre",
+    translation: "mittelmäßig, durchschnittlich",
+    pronunciation: "/ˌmiːdiˈoʊkər/",
+    wordType: "Adjektiv",
+    definition: "Of only moderate quality; not very good; unremarkable.",
+    examples: [
+      "The performance was mediocre – the audience expected much more.",
+      "He was unhappy with his mediocre exam results."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 103,
+    word: "bold",
+    translation: "mutig, gewagt, kühn",
+    pronunciation: "/boʊld/",
+    wordType: "Adjektiv",
+    definition: "Willing to take risks; showing confidence and courage; not afraid.",
+    examples: [
+      "It was a bold decision to quit her job and start her own business.",
+      "He wore a bold red jacket that stood out in the crowd."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 104,
+    word: "overwhelming",
+    translation: "überwältigend, erdrückend",
+    pronunciation: "/ˌoʊvərˈwelmɪŋ/",
+    wordType: "Adjektiv",
+    definition: "Very great in amount or strength; too intense to deal with comfortably.",
+    examples: [
+      "The response to the charity appeal was overwhelming – thousands donated.",
+      "She felt an overwhelming sense of relief when the operation was over."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 105,
+    word: "to achieve",
+    translation: "erreichen, erzielen, schaffen",
+    pronunciation: "/tuː əˈtʃiːv/",
+    wordType: "Verb",
+    definition: "To successfully reach a goal or result through effort or skill.",
+    examples: [
+      "She worked hard to achieve her dream of becoming a doctor.",
+      "The team achieved great results despite limited resources."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 106,
+    word: "to adapt",
+    translation: "sich anpassen, adaptieren",
+    pronunciation: "/tuː əˈdæpt/",
+    wordType: "Verb",
+    definition: "To change or adjust to suit new conditions or requirements.",
+    examples: [
+      "It took him a while to adapt to the new working environment.",
+      "Animals adapt to their surroundings over thousands of years."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 107,
+    word: "to appreciate",
+    translation: "schätzen, würdigen, zu schätzen wissen",
+    pronunciation: "/tuː əˈpriːʃieɪt/",
+    wordType: "Verb",
+    definition: "To recognise and value the good qualities of something or someone.",
+    examples: [
+      "I really appreciate everything you have done to help me.",
+      "He didn't appreciate how hard she worked until she left."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 108,
+    word: "to assume",
+    translation: "annehmen, vermuten, voraussetzen",
+    pronunciation: "/tuː əˈsjuːm/",
+    wordType: "Verb",
+    definition: "To accept something as true without proof; to take for granted.",
+    examples: [
+      "Don't assume everyone shares your opinion – ask first.",
+      "I assumed he would be late, but he actually arrived early."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 109,
+    word: "to avoid",
+    translation: "vermeiden, meiden, ausweichen",
+    pronunciation: "/tuː əˈvɔɪd/",
+    wordType: "Verb",
+    definition: "To keep away from or stop oneself from doing something.",
+    examples: [
+      "Try to avoid eating too much sugar if you want to stay healthy.",
+      "She avoided making eye contact during the difficult conversation."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 110,
+    word: "to challenge",
+    translation: "herausfordern, infrage stellen",
+    pronunciation: "/tuː ˈtʃælɪndʒ/",
+    wordType: "Verb",
+    definition: "To question or dispute something; to test someone's abilities.",
+    examples: [
+      "The new CEO challenged the way the company had always done things.",
+      "This role will challenge you in ways you have never experienced before."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 111,
+    word: "to convince",
+    translation: "überzeugen, überreden",
+    pronunciation: "/tuː kənˈvɪns/",
+    wordType: "Verb",
+    definition: "To persuade someone to believe something or to do something.",
+    examples: [
+      "He convinced his boss to give the team an extra day off.",
+      "I couldn't convince her that the film was worth watching."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 112,
+    word: "to demand",
+    translation: "fordern, verlangen, beanspruchen",
+    pronunciation: "/tuː dɪˈmɑːnd/",
+    wordType: "Verb",
+    definition: "To ask for something forcefully and insistently; to require.",
+    examples: [
+      "The workers demanded better pay and working conditions.",
+      "Teaching demands a great deal of patience and dedication."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 113,
+    word: "to emphasize",
+    translation: "betonen, hervorheben, unterstreichen",
+    pronunciation: "/tuː ˈemfəsaɪz/",
+    wordType: "Verb",
+    definition: "To give special importance or prominence to something.",
+    examples: [
+      "The teacher emphasized the importance of reading every day.",
+      "She emphasized that the deadline was non-negotiable."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 114,
+    word: "to encourage",
+    translation: "ermutigen, fördern, bestärken",
+    pronunciation: "/tuː ɪnˈkʌrɪdʒ/",
+    wordType: "Verb",
+    definition: "To give support, confidence, or hope to someone; to motivate.",
+    examples: [
+      "His parents always encouraged him to pursue his passion for music.",
+      "The coach encouraged the team after a difficult first half."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 115,
+    word: "to hesitate",
+    translation: "zögern, zaudern, innehalten",
+    pronunciation: "/tuː ˈhezɪteɪt/",
+    wordType: "Verb",
+    definition: "To pause before doing or saying something, often due to uncertainty.",
+    examples: [
+      "She hesitated before answering the difficult question.",
+      "Don't hesitate to call me if you need any help."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 116,
+    word: "to influence",
+    translation: "beeinflussen, prägen",
+    pronunciation: "/tuː ˈɪnfluəns/",
+    wordType: "Verb",
+    definition: "To have an effect on the character, development, or behaviour of someone or something.",
+    examples: [
+      "His teacher influenced him to study architecture.",
+      "Social media can heavily influence the way young people see themselves."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 117,
+    word: "to negotiate",
+    translation: "verhandeln, aushandeln",
+    pronunciation: "/tuː nɪˈɡoʊʃieɪt/",
+    wordType: "Verb",
+    definition: "To discuss something in order to reach an agreement.",
+    examples: [
+      "They negotiated a better deal by staying calm and prepared.",
+      "The union negotiated improved holiday allowances for all staff."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 118,
+    word: "to overcome",
+    translation: "überwinden, bewältigen, besiegen",
+    pronunciation: "/tuː ˌoʊvərˈkʌm/",
+    wordType: "Verb",
+    definition: "To succeed in dealing with or gaining control over something difficult.",
+    examples: [
+      "She overcame her fear of public speaking after joining a drama group.",
+      "He worked hard to overcome the obstacles in his path."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 119,
+    word: "to pursue",
+    translation: "verfolgen, anstreben, nachgehen",
+    pronunciation: "/tuː pərˈsjuː/",
+    wordType: "Verb",
+    definition: "To follow or chase something; to continue to work towards a goal.",
+    examples: [
+      "She decided to pursue a career in journalism.",
+      "The police pursued the suspect through the city streets."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 120,
+    word: "to recognize",
+    translation: "erkennen, anerkennen, identifizieren",
+    pronunciation: "/tuː ˈrekəɡnaɪz/",
+    wordType: "Verb",
+    definition: "To identify someone or something from previous experience; to acknowledge officially.",
+    examples: [
+      "I recognized her immediately even though I hadn't seen her in ten years.",
+      "The company was recognized for its outstanding customer service."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 121,
+    word: "to rely on",
+    translation: "sich verlassen auf, abhängen von",
+    pronunciation: "/tuː rɪˈlaɪ ɒn/",
+    wordType: "Verb",
+    definition: "To trust or depend on someone or something.",
+    examples: [
+      "You can always rely on her to get the job done on time.",
+      "He relied on public transport to get to work every day."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 122,
+    word: "to reveal",
+    translation: "enthüllen, offenbaren, bekannt geben",
+    pronunciation: "/tuː rɪˈviːl/",
+    wordType: "Verb",
+    definition: "To make something unknown or hidden known to others.",
+    examples: [
+      "The documentary revealed shocking facts about the food industry.",
+      "She finally revealed the secret she had been keeping for years."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 123,
+    word: "to suspect",
+    translation: "vermuten, verdächtigen, ahnen",
+    pronunciation: "/tuː səˈspekt/",
+    wordType: "Verb",
+    definition: "To believe something is likely or possible; to think someone may be guilty.",
+    examples: [
+      "I suspect he didn't finish the report on time.",
+      "The police suspected the neighbour from the very beginning."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 124,
+    word: "to witness",
+    translation: "bezeugen, miterleben, Zeuge sein von",
+    pronunciation: "/tuː ˈwɪtnɪs/",
+    wordType: "Verb",
+    definition: "To see an event happen, especially an important or significant one.",
+    examples: [
+      "She witnessed the accident from her kitchen window.",
+      "We are witnessing a major shift in the way people communicate."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 125,
+    word: "Achievement",
+    translation: "die Leistung, der Erfolg, die Errungenschaft",
+    pronunciation: "/əˈtʃiːvmənt/",
+    wordType: "Nomen",
+    definition: "A thing done successfully, typically by effort, courage, or skill.",
+    examples: [
+      "Winning the championship was the greatest achievement of his career.",
+      "Learning a new language is a remarkable achievement at any age."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 126,
+    word: "Approach",
+    translation: "der Ansatz, die Herangehensweise, der Zugang",
+    pronunciation: "/əˈproʊtʃ/",
+    wordType: "Nomen",
+    definition: "A way of dealing with a situation or problem; a method or strategy.",
+    examples: [
+      "We need a fresh approach to solve this long-standing problem.",
+      "Her calm approach to conflict made her an effective manager."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 127,
+    word: "Argument",
+    translation: "das Argument, der Streit, die Auseinandersetzung",
+    pronunciation: "/ˈɑːɡjumənt/",
+    wordType: "Nomen",
+    definition: "A reason given to support or oppose an idea; also a heated disagreement.",
+    examples: [
+      "He made a convincing argument for changing the company policy.",
+      "They had a serious argument about money and didn't speak for a week."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 128,
+    word: "Attitude",
+    translation: "die Einstellung, die Haltung, die Mentalität",
+    pronunciation: "/ˈætɪtjuːd/",
+    wordType: "Nomen",
+    definition: "A settled way of thinking or feeling about something; one's outlook or stance.",
+    examples: [
+      "Her positive attitude helped the team stay motivated during tough times.",
+      "You need to change your attitude if you want to succeed."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 129,
+    word: "Challenge",
+    translation: "die Herausforderung, die Aufgabe",
+    pronunciation: "/ˈtʃælɪndʒ/",
+    wordType: "Nomen",
+    definition: "A difficult task or situation that tests someone's abilities.",
+    examples: [
+      "Moving abroad was the biggest challenge she had ever faced.",
+      "The main challenge is keeping costs low while improving quality."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 130,
+    word: "Circumstance",
+    translation: "der Umstand, die Situation, die Lage",
+    pronunciation: "/ˈsɜːkəmstæns/",
+    wordType: "Nomen",
+    definition: "A fact or condition connected with or relevant to an event or action.",
+    examples: [
+      "Given the circumstances, she handled the crisis extremely well.",
+      "Under no circumstance should you share your password with anyone."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 131,
+    word: "Commitment",
+    translation: "das Engagement, die Verpflichtung, die Hingabe",
+    pronunciation: "/kəˈmɪtmənt/",
+    wordType: "Nomen",
+    definition: "The state of being dedicated to a cause, activity, or relationship.",
+    examples: [
+      "His commitment to the project was evident from day one.",
+      "Marriage is a serious commitment that requires work from both partners."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 132,
+    word: "Concern",
+    translation: "die Sorge, das Anliegen, das Bedenken",
+    pronunciation: "/kənˈsɜːn/",
+    wordType: "Nomen",
+    definition: "A matter of interest or importance; a feeling of worry.",
+    examples: [
+      "Safety is our main concern on every construction site.",
+      "She expressed concern about the rising cost of living."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 133,
+    word: "Conflict",
+    translation: "der Konflikt, der Streit, der Widerspruch",
+    pronunciation: "/ˈkɒnflɪkt/",
+    wordType: "Nomen",
+    definition: "A serious disagreement or argument; a prolonged armed struggle.",
+    examples: [
+      "The conflict between the two departments was slowing everything down.",
+      "The UN is working to resolve the conflict peacefully."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 134,
+    word: "Consequence",
+    translation: "die Konsequenz, die Folge, das Ergebnis",
+    pronunciation: "/ˈkɒnsɪkwəns/",
+    wordType: "Nomen",
+    definition: "A result or effect of an action or condition.",
+    examples: [
+      "He didn't study and, as a consequence, he failed the exam.",
+      "We must consider the consequences of our decisions carefully."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 135,
+    word: "Context",
+    translation: "der Kontext, der Zusammenhang, die Umgebung",
+    pronunciation: "/ˈkɒntekst/",
+    wordType: "Nomen",
+    definition: "The circumstances surrounding an event or statement that help explain its meaning.",
+    examples: [
+      "You need to read the full article to understand the context of the quote.",
+      "This word has a different meaning depending on the context."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 136,
+    word: "Dilemma",
+    translation: "das Dilemma, die Zwickmühle",
+    pronunciation: "/dɪˈlemə/",
+    wordType: "Nomen",
+    definition: "A situation where a difficult choice has to be made between two equally undesirable alternatives.",
+    examples: [
+      "She faced a dilemma: take the higher-paying job or stay closer to family.",
+      "The ethical dilemma had no easy answer."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 137,
+    word: "Evidence",
+    translation: "der Beweis, die Belege, das Beweismaterial",
+    pronunciation: "/ˈevɪdəns/",
+    wordType: "Nomen",
+    definition: "Facts or information indicating whether a belief or proposition is true.",
+    examples: [
+      "The police found no evidence linking him to the crime.",
+      "There is growing evidence that exercise improves mental health."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 138,
+    word: "Failure",
+    translation: "das Scheitern, der Misserfolg, der Ausfall",
+    pronunciation: "/ˈfeɪljər/",
+    wordType: "Nomen",
+    definition: "Lack of success; the omission of expected or required action.",
+    examples: [
+      "He saw every failure as a learning opportunity, not a setback.",
+      "The power failure left half the city without electricity."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 139,
+    word: "Habit",
+    translation: "die Gewohnheit, die Angewohnheit",
+    pronunciation: "/ˈhæbɪt/",
+    wordType: "Nomen",
+    definition: "A settled or regular tendency or practice, especially one that is hard to give up.",
+    examples: [
+      "She developed the habit of reading before bed to unwind.",
+      "Smoking is a habit that is very difficult to break."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 140,
+    word: "Impact",
+    translation: "die Auswirkung, der Einfluss, der Aufprall",
+    pronunciation: "/ˈɪmpækt/",
+    wordType: "Nomen",
+    definition: "A marked effect or influence on something or someone.",
+    examples: [
+      "The new law had a major impact on small businesses.",
+      "Climate change is having a devastating impact on coral reefs."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 141,
+    word: "Intention",
+    translation: "die Absicht, das Vorhaben, die Intention",
+    pronunciation: "/ɪnˈtenʃn/",
+    wordType: "Nomen",
+    definition: "A thing intended; an aim or plan.",
+    examples: [
+      "His intention was to apologise, but he never found the right moment.",
+      "I have every intention of finishing this project on time."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 142,
+    word: "Opportunity",
+    translation: "die Gelegenheit, die Chance, die Möglichkeit",
+    pronunciation: "/ˌɒpəˈtjuːnɪti/",
+    wordType: "Nomen",
+    definition: "A set of circumstances that makes it possible to do something desirable.",
+    examples: [
+      "This job offer is a fantastic opportunity that she shouldn't miss.",
+      "He seized every opportunity to practise his English."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 143,
+    word: "Perspective",
+    translation: "die Perspektive, die Sichtweise, der Blickwinkel",
+    pronunciation: "/pəˈspektɪv/",
+    wordType: "Nomen",
+    definition: "A particular attitude towards or way of regarding something; a point of view.",
+    examples: [
+      "Travelling abroad gave her a completely new perspective on life.",
+      "It is important to consider the situation from different perspectives."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 144,
+    word: "Priority",
+    translation: "die Priorität, der Vorrang",
+    pronunciation: "/praɪˈɒrɪti/",
+    wordType: "Nomen",
+    definition: "A thing regarded as more important than others; the fact of being treated first.",
+    examples: [
+      "Health should always be your number one priority.",
+      "The government set education as its top priority for the coming year."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 145,
+    word: "Responsibility",
+    translation: "die Verantwortung, die Pflicht, die Zuständigkeit",
+    pronunciation: "/rɪˌspɒnsɪˈbɪlɪti/",
+    wordType: "Nomen",
+    definition: "The state or fact of having a duty to deal with something; being accountable.",
+    examples: [
+      "As a parent, you have a responsibility to keep your children safe.",
+      "She took full responsibility for the mistake and apologised publicly."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 146,
+    word: "Reward",
+    translation: "die Belohnung, die Anerkennung, der Lohn",
+    pronunciation: "/rɪˈwɔːd/",
+    wordType: "Nomen",
+    definition: "A thing given in recognition of service, effort, or achievement.",
+    examples: [
+      "Hard work should be met with fair reward.",
+      "They offered a reward for anyone who could find the lost dog."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 147,
+    word: "Risk",
+    translation: "das Risiko, die Gefahr, das Wagnis",
+    pronunciation: "/rɪsk/",
+    wordType: "Nomen",
+    definition: "A situation involving exposure to danger or the chance of something going wrong.",
+    examples: [
+      "Starting a business always involves a certain amount of risk.",
+      "There is a risk of flooding in low-lying areas after heavy rain."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 148,
+    word: "Solution",
+    translation: "die Lösung, die Auflösung",
+    pronunciation: "/səˈluːʃn/",
+    wordType: "Nomen",
+    definition: "A means of solving a problem or dealing with a difficult situation.",
+    examples: [
+      "We need to find a long-term solution to the traffic problem.",
+      "Talking it through calmly is often the best solution to an argument."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 149,
+    word: "Strategy",
+    translation: "die Strategie, der Plan, das Konzept",
+    pronunciation: "/ˈstrætɪdʒi/",
+    wordType: "Nomen",
+    definition: "A plan of action designed to achieve a long-term or overall goal.",
+    examples: [
+      "The company needs a clear strategy to compete in the global market.",
+      "Playing chess requires careful strategy and forward thinking."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 150,
+    word: "Struggle",
+    translation: "der Kampf, die Mühe, das Ringen",
+    pronunciation: "/ˈstrʌɡl/",
+    wordType: "Nomen",
+    definition: "A very difficult task or situation; a determined effort under difficulties.",
+    examples: [
+      "The struggle to balance work and family life is something many people share.",
+      "The documentary showed the daily struggle of people living in poverty."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 151,
+    word: "Trust",
+    translation: "das Vertrauen, das Zutrauen",
+    pronunciation: "/trʌst/",
+    wordType: "Nomen",
+    definition: "Firm belief in the reliability, truth, or ability of someone or something.",
+    examples: [
+      "Trust is the foundation of every healthy relationship.",
+      "It took years to rebuild the trust after he had lied."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 152,
+    word: "Uncertainty",
+    translation: "die Unsicherheit, die Ungewissheit, der Zweifel",
+    pronunciation: "/ʌnˈsɜːtnti/",
+    wordType: "Nomen",
+    definition: "The state of being uncertain or not sure about something; unpredictability.",
+    examples: [
+      "The economic uncertainty made investors hesitant to commit large sums.",
+      "Living with uncertainty is a skill that requires practise and resilience."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 153,
+    word: "Awareness",
+    translation: "das Bewusstsein, die Aufmerksamkeit, das Wissen",
+    pronunciation: "/əˈweənɪs/",
+    wordType: "Nomen",
+    definition: "Knowledge or perception of a situation or fact; being conscious of something.",
+    examples: [
+      "The campaign aims to raise awareness about mental health issues.",
+      "Her awareness of other people's feelings made her an excellent therapist."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 154,
+    word: "Tension",
+    translation: "die Spannung, die Anspannung, die Reibung",
+    pronunciation: "/ˈtenʃn/",
+    wordType: "Nomen",
+    definition: "Mental or emotional strain; a strained relationship between people or groups.",
+    examples: [
+      "There was visible tension between the two colleagues after the argument.",
+      "The film builds tension slowly before the shocking final scene."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 155,
+    word: "to figure out",
+    translation: "herausfinden, verstehen, lösen",
+    pronunciation: "/tuː ˈfɪɡər aʊt/",
+    wordType: "Verb",
+    definition: "To understand or discover something; to find the answer to a problem.",
+    examples: [
+      "I couldn't figure out how to use the new software at first.",
+      "She finally figured out why the machine kept stopping."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 156,
+    word: "to give up",
+    translation: "aufgeben, kapitulieren",
+    pronunciation: "/tuː ɡɪv ʌp/",
+    wordType: "Verb",
+    definition: "To stop trying to do something; to admit defeat or surrender.",
+    examples: [
+      "Don't give up – you are almost there!",
+      "He gave up smoking after twenty years."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 157,
+    word: "to look forward to",
+    translation: "sich freuen auf (etwas)",
+    pronunciation: "/tuː lʊk ˈfɔːwəd tuː/",
+    wordType: "Verb",
+    definition: "To feel excited or pleased about something that is going to happen.",
+    examples: [
+      "I am really looking forward to our holiday next week.",
+      "She looks forward to her morning coffee every single day."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 158,
+    word: "to stand out",
+    translation: "herausstechen, auffallen, sich abheben",
+    pronunciation: "/tuː stænd aʊt/",
+    wordType: "Verb",
+    definition: "To be clearly better or more noticeable than others; to be conspicuous.",
+    examples: [
+      "Her bright yellow coat made her stand out in the crowd.",
+      "His creative approach made his application stand out from all the others."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 159,
+    word: "to catch up",
+    translation: "aufholen, nachholen, auf den neuesten Stand kommen",
+    pronunciation: "/tuː kætʃ ʌp/",
+    wordType: "Verb",
+    definition: "To reach the same level or standard as others; to exchange news with someone.",
+    examples: [
+      "He missed three weeks of school and needed time to catch up.",
+      "Let's have coffee soon – I'd love to catch up with you."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 160,
+    word: "to put off",
+    translation: "aufschieben, verschieben, vertagen",
+    pronunciation: "/tuː pʊt ɒf/",
+    wordType: "Verb",
+    definition: "To postpone or delay doing something; also to cause someone to lose interest.",
+    examples: [
+      "Stop putting off the dentist appointment – just book it!",
+      "The constant noise was putting her off her work."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 161,
+    word: "to come across",
+    translation: "stoßen auf, wirken, einen Eindruck machen",
+    pronunciation: "/tuː kʌm əˈkrɒs/",
+    wordType: "Verb",
+    definition: "To meet or find something by chance; to give a particular impression to others.",
+    examples: [
+      "I came across an old photo album while tidying the attic.",
+      "He came across as very confident during the interview."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 162,
+    word: "to make up your mind",
+    translation: "sich entscheiden, einen Entschluss fassen",
+    pronunciation: "/tuː meɪk ʌp jɔː maɪnd/",
+    wordType: "Verb",
+    definition: "To decide between two or more options after thinking carefully.",
+    examples: [
+      "Have you made up your mind about which university to apply to?",
+      "I can't make up my mind – both options have their advantages."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 163,
+    word: "to keep in mind",
+    translation: "im Hinterkopf behalten, berücksichtigen",
+    pronunciation: "/tuː kiːp ɪn maɪnd/",
+    wordType: "Verb",
+    definition: "To remember or consider something as important when thinking or deciding.",
+    examples: [
+      "Keep in mind that the deadline is Friday, not Monday.",
+      "Please keep in mind that we have a limited budget for this project."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 164,
+    word: "to take for granted",
+    translation: "als selbstverständlich ansehen, nicht schätzen",
+    pronunciation: "/tuː teɪk fər ˈɡrɑːntɪd/",
+    wordType: "Verb",
+    definition: "To fail to appreciate the value of something because you are so used to it.",
+    examples: [
+      "Don't take your health for granted – look after yourself.",
+      "He took his friends for granted until they were no longer around."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 165,
+    word: "to run out of",
+    translation: "ausgehen, aufbrauchen, keinen ... mehr haben",
+    pronunciation: "/tuː rʌn aʊt ɒv/",
+    wordType: "Verb",
+    definition: "To use up the entire supply of something; to have none left.",
+    examples: [
+      "We ran out of milk, so I need to go to the shop.",
+      "The car ran out of petrol on the motorway."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 166,
+    word: "to get along with",
+    translation: "gut auskommen mit, sich gut verstehen mit",
+    pronunciation: "/tuː ɡet əˈlɒŋ wɪð/",
+    wordType: "Verb",
+    definition: "To have a friendly relationship with someone; to be on good terms.",
+    examples: [
+      "She gets along with all of her colleagues really well.",
+      "Do you think the new flatmates will get along with each other?"
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 167,
+    word: "to point out",
+    translation: "hinweisen auf, aufzeigen, darauf aufmerksam machen",
+    pronunciation: "/tuː pɔɪnt aʊt/",
+    wordType: "Verb",
+    definition: "To direct attention to something; to mention something that might be overlooked.",
+    examples: [
+      "She pointed out several errors in the report before it was submitted.",
+      "Can you point out the house on the map?"
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 168,
+    word: "to bring up",
+    translation: "ansprechen, erwähnen, aufbringen (Thema)",
+    pronunciation: "/tuː brɪŋ ʌp/",
+    wordType: "Verb",
+    definition: "To mention a topic in conversation; also to raise a child.",
+    examples: [
+      "He brought up the issue of overtime pay at the team meeting.",
+      "She was brought up by her grandparents in a small village."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 169,
+    word: "to carry on",
+    translation: "weitermachen, fortfahren, nicht aufhören",
+    pronunciation: "/tuː ˈkæri ɒn/",
+    wordType: "Verb",
+    definition: "To continue doing something; to proceed despite difficulties.",
+    examples: [
+      "Carry on – you are doing a great job!",
+      "They carried on working even when the power went out."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "Allgemein"
+  },
+  {
+    id: 170,
+    word: "Suspense",
+    translation: "die Spannung, die Ungewissheit (Thriller)",
+    pronunciation: "/səˈspens/",
+    wordType: "Nomen",
+    definition: "A feeling of excited or anxious uncertainty about what may happen.",
+    examples: [
+      "The director builds suspense slowly throughout the entire first act.",
+      "The book kept me in suspense right until the final page."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 171,
+    word: "Plot twist",
+    translation: "die Wendung in der Geschichte, der überraschende Handlungsverlauf",
+    pronunciation: "/plɒt twɪst/",
+    wordType: "Nomen",
+    definition: "An unexpected development in a story that changes the direction of the narrative.",
+    examples: [
+      "Nobody saw the plot twist coming – it completely changed the story.",
+      "The best plot twists make you want to rewatch the whole film."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 172,
+    word: "Cliffhanger",
+    translation: "der Cliffhanger, das spannende offene Ende",
+    pronunciation: "/ˈklɪfhæŋər/",
+    wordType: "Nomen",
+    definition: "An ending to a story or episode that leaves the audience in suspense.",
+    examples: [
+      "The season ended on a cliffhanger – we have no idea if she survived.",
+      "Soap operas are famous for their dramatic cliffhangers."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 173,
+    word: "Protagonist",
+    translation: "der Protagonist, die Hauptfigur",
+    pronunciation: "/proʊˈtæɡənɪst/",
+    wordType: "Nomen",
+    definition: "The main character in a story, film, or play; the hero or central figure.",
+    examples: [
+      "The protagonist of the series is a detective with a troubled past.",
+      "We follow the protagonist on her journey from poverty to success."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 174,
+    word: "Antagonist",
+    translation: "der Antagonist, der Bösewicht, der Gegenspieler",
+    pronunciation: "/ænˈtæɡənɪst/",
+    wordType: "Nomen",
+    definition: "A person who actively opposes the protagonist; the villain of a story.",
+    examples: [
+      "The antagonist was so well written that audiences almost sympathised with him.",
+      "A great story needs a compelling antagonist, not just a great hero."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 175,
+    word: "Flashback",
+    translation: "der Rückblick, die Rückblende",
+    pronunciation: "/ˈflæʃbæk/",
+    wordType: "Nomen",
+    definition: "A scene in a film or story set in a time earlier than the main action.",
+    examples: [
+      "The episode uses a flashback to explain the character's troubled childhood.",
+      "The film cuts to a flashback every time she hears that song."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 176,
+    word: "Foreshadowing",
+    translation: "die Vorausdeutung, die Andeutung",
+    pronunciation: "/fɔːˈʃædoʊɪŋ/",
+    wordType: "Nomen",
+    definition: "A hint or warning of a future event in a story or film.",
+    examples: [
+      "The ominous music in the opening scene was clear foreshadowing.",
+      "Looking back, the foreshadowing was obvious – we just didn't notice it at first."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 177,
+    word: "Spoiler",
+    translation: "der Spoiler, die unerwünschte Enthüllung",
+    pronunciation: "/ˈspɔɪlər/",
+    wordType: "Nomen",
+    definition: "A piece of information that reveals important plot details before someone has seen a film or read a book.",
+    examples: [
+      "Warning: the next paragraph contains spoilers for the latest episode.",
+      "He accidentally gave away a major spoiler and everyone was furious."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 178,
+    word: "Binge-watch",
+    translation: "Serien am Stück schauen, Serienmarathon machen",
+    pronunciation: "/ˈbɪndʒ wɒtʃ/",
+    wordType: "Verb",
+    definition: "To watch multiple episodes of a TV show in rapid succession.",
+    examples: [
+      "We binge-watched the entire series over the long weekend.",
+      "She binge-watched three seasons of the show without leaving the sofa."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 179,
+    word: "Season finale",
+    translation: "das Staffelfinale, der letzte Teil einer Staffel",
+    pronunciation: "/ˈsiːzn fɪˈnɑːli/",
+    wordType: "Nomen",
+    definition: "The last episode of a television season, often with a dramatic conclusion.",
+    examples: [
+      "The season finale left millions of fans desperate for the next series.",
+      "She stayed up until 2 a.m. to watch the season finale live."
+    ],
+    imageUrl: "",
+    difficulty: "A2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 180,
+    word: "Subplot",
+    translation: "die Nebenhandlung, der Nebenstrang",
+    pronunciation: "/ˈsʌbplɒt/",
+    wordType: "Nomen",
+    definition: "A secondary plot that runs alongside the main storyline in a film or book.",
+    examples: [
+      "The romantic subplot added depth and warmth to the action film.",
+      "A well-crafted subplot can be just as engaging as the main story."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 181,
+    word: "Character development",
+    translation: "die Charakterentwicklung",
+    pronunciation: "/ˈkærɪktər dɪˈveləpmənt/",
+    wordType: "Nomen",
+    definition: "The process by which a character in a story changes and grows over time.",
+    examples: [
+      "The show's character development is what keeps viewers coming back for more.",
+      "Critics praised the film for its exceptional character development."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 182,
+    word: "Narrative",
+    translation: "die Erzählung, das Narrativ, die Geschichte",
+    pronunciation: "/ˈnærətɪv/",
+    wordType: "Nomen",
+    definition: "A spoken or written account of connected events; the art or process of storytelling.",
+    examples: [
+      "The film's narrative jumps between three different timelines.",
+      "She used personal narrative to make her speech more engaging."
+    ],
+    imageUrl: "",
+    difficulty: "C1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 183,
+    word: "Genre",
+    translation: "das Genre, die Gattung, die Stilrichtung",
+    pronunciation: "/ˈʒɒnrə/",
+    wordType: "Nomen",
+    definition: "A category of artistic composition, characterised by a particular style or form.",
+    examples: [
+      "Crime drama is her favourite genre – she never gets tired of it.",
+      "The film blends the sci-fi and horror genres in a unique way."
+    ],
+    imageUrl: "",
+    difficulty: "B1",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  },
+  {
+    id: 184,
+    word: "Screenplay",
+    translation: "das Drehbuch",
+    pronunciation: "/ˈskriːnpleɪ/",
+    wordType: "Nomen",
+    definition: "The script of a film, including dialogue and directions.",
+    examples: [
+      "She spent three years writing the screenplay for her debut film.",
+      "The screenplay won an Oscar before the film was even shot."
+    ],
+    imageUrl: "",
+    difficulty: "B2",
+    dateAdded: "2026-05-27",
+    category: "TV"
+  }
+
 ];
 
 /* ═══════════════════════════════════════════════
@@ -2497,41 +3423,13 @@ let quizAnswered = false;
 let quizChoices = [];
 let quizCorrectIdx = 0;
 let fillChecked = false;
-// Runden-Größe für Quiz, Lückentext und Karteikarten — vom Nutzer einstellbar
-let roundSize = (function(){
-  try {
-    const v = parseInt(localStorage.getItem('etRoundSize'), 10);
-    if(Number.isFinite(v) && v > 0) return Math.min(v, 1000);
-  } catch(e){}
-  return 10;
-})();
-function setRoundSize(n){
-  const v = parseInt(n, 10);
-  if(!Number.isFinite(v) || v <= 0) return;
-  roundSize = Math.min(v, 1000);
-  try { localStorage.setItem('etRoundSize', String(roundSize)); } catch(e){}
-  if(mode === 'quiz' || mode === 'fill' || mode === 'flash'){
-    idx = 0; resetRound(); deck = buildRoundDeck(); render(); scrollToTop();
-  }
-}
+// 10er-Runden für Quiz und Lückentext
+const ROUND_SIZE = 10;
 let roundCorrect = 0;
 let roundWrongWords = []; // Wort-Objekte aus dieser Runde, die falsch beantwortet wurden
 let combo = 0;            // aktuelle Streak innerhalb der Runde
 let bestComboInRound = 0;
 let roundStartTs = 0;
-// Quiz-Richtung: 'en2de' (Standard, Englisch → deutsche Übersetzung)
-// oder 'de2en' (Reverse: deutsche Übersetzung → englisches Wort).
-let quizDirection = (function(){
-  try { return localStorage.getItem('etQuizDir') || 'en2de'; } catch(e){ return 'en2de'; }
-})();
-function setQuizDirection(dir){
-  quizDirection = (dir === 'de2en') ? 'de2en' : 'en2de';
-  try { localStorage.setItem('etQuizDir', quizDirection); } catch(e){}
-  if(mode === 'quiz'){ idx = 0; resetRound(); deck = buildRoundDeck(); render(); scrollToTop(); }
-}
-function toggleQuizDirection(){
-  setQuizDirection(quizDirection === 'en2de' ? 'de2en' : 'en2de');
-}
 const CATEGORIES = ['TV', 'Books', 'Kitchen/Cooking'];
 let listFilterType = 'Alle';
 let listFilterCat  = 'Alle';
@@ -2643,9 +3541,9 @@ function resetRound(){
   roundStartTs = Date.now();
 }
 
-// Erzeugt einen frischen Pool aus zufälligen Wörtern (Größe = roundSize, max. WORDS.length)
+// Erzeugt einen frischen 10er-Pool aus zufälligen Wörtern
 function buildRoundDeck(){
-  const size = Math.min(roundSize, WORDS.length);
+  const size = Math.min(ROUND_SIZE, WORDS.length);
   return shuffle(WORDS).slice(0, size);
 }
 
@@ -2760,10 +3658,6 @@ const SRS = {
     // Stats parallel mergen (eigenes updatedAt-Feld)
     if(remote.stats && typeof Stats !== 'undefined' && Stats.applyRemote){
       if(Stats.applyRemote(remote.stats)) changed = true;
-    }
-    // Notes parallel mergen
-    if(remote.notes && typeof Notes !== 'undefined' && Notes.applyRemote){
-      if(Notes.applyRemote(remote.notes)) changed = true;
     }
     return changed;
   },
@@ -2909,355 +3803,6 @@ const Stats = {
 Stats.load();
 
 /* ═══════════════════════════════════════════════
-   📝 NOTES (Persönliche Notizen pro Wort, synct via Gist)
-   ═══════════════════════════════════════════════ */
-const Notes = {
-  KEY: 'etNotes_v1',
-  state: { entries: {}, updatedAt: 0 }, // entries: { wordId: "note text" }
-  load(){
-    this.state = { entries: {}, updatedAt: 0 };
-    try {
-      const raw = JSON.parse(localStorage.getItem(this.KEY) || 'null');
-      if(raw && typeof raw === 'object'){
-        if(raw.entries) this.state.entries = raw.entries;
-        if(raw.updatedAt) this.state.updatedAt = raw.updatedAt;
-      }
-    } catch(e){}
-  },
-  save(skipSync){
-    this.state.updatedAt = Date.now();
-    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
-    if(!skipSync && typeof Sync !== 'undefined' && Sync.schedulePush){ Sync.schedulePush(); }
-  },
-  get(wordId){ return (this.state.entries[wordId] || '').toString(); },
-  set(wordId, text){
-    const t = (text || '').toString().trim();
-    if(t){ this.state.entries[wordId] = t; }
-    else { delete this.state.entries[wordId]; }
-    this.save();
-  },
-  has(wordId){ return !!this.state.entries[wordId]; },
-  count(){ return Object.keys(this.state.entries).length; },
-
-  applyRemote(remote){
-    if(!remote || typeof remote !== 'object') return false;
-    const lU = this.state.updatedAt || 0;
-    const rU = remote.updatedAt || 0;
-    if(rU > lU){
-      this.state = { entries: remote.entries || {}, updatedAt: rU };
-      try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e){}
-      return true;
-    }
-    return false;
-  }
-};
-Notes.load();
-
-/* ═══════════════════════════════════════════════
-   🍞 TOAST (App-weite Mini-Benachrichtigungen)
-   ═══════════════════════════════════════════════ */
-function showToast(msg, type){
-  if(!msg) return;
-  let toast = document.getElementById('appToast');
-  if(!toast){
-    toast = document.createElement('div');
-    toast.id = 'appToast';
-    toast.className = 'app-toast';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.className = 'app-toast toast-' + (type || 'warn') + ' show';
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => { toast.classList.remove('show'); }, 4500);
-}
-
-/* ═══════════════════════════════════════════════
-   🔊 SPEECH (Browser-Text-to-Speech, läuft offline)
-   ═══════════════════════════════════════════════ */
-const Speech = {
-  _voicesPromise: null,
-  lastError: null,
-
-  available(){
-    return typeof window !== 'undefined'
-        && 'speechSynthesis' in window
-        && typeof SpeechSynthesisUtterance !== 'undefined';
-  },
-
-  // Promise-basiertes Laden der Stimmen-Liste (manche Browser laden async)
-  ready(){
-    if(!this.available()) return Promise.resolve([]);
-    if(this._voicesPromise) return this._voicesPromise;
-    this._voicesPromise = new Promise((resolve) => {
-      const get = () => window.speechSynthesis.getVoices() || [];
-      const initial = get();
-      if(initial.length){ resolve(initial); return; }
-      // Browser lädt asynchron — auf voiceschanged warten
-      const handler = () => {
-        const v = get();
-        if(v.length){
-          window.speechSynthesis.removeEventListener('voiceschanged', handler);
-          resolve(v);
-        }
-      };
-      window.speechSynthesis.addEventListener('voiceschanged', handler);
-      // Fallback nach 1,5 s: nehmen was da ist
-      setTimeout(() => resolve(get()), 1500);
-    });
-    return this._voicesPromise;
-  },
-
-  // Manuell gewählte Stimme (überschreibt Auto-Pick)
-  preferredVoiceName(){
-    try { return localStorage.getItem('etPreferredVoice') || ''; } catch(e){ return ''; }
-  },
-  setPreferredVoiceName(name){
-    try {
-      if(name) localStorage.setItem('etPreferredVoice', name);
-      else localStorage.removeItem('etPreferredVoice');
-    } catch(e){}
-  },
-
-  pickVoice(voices){
-    if(!voices || !voices.length) return null;
-    // Erst: Wenn der User manuell eine Stimme festgelegt hat, immer die nehmen
-    const preferred = this.preferredVoiceName();
-    if(preferred){
-      const found = voices.find(v => v.name === preferred);
-      if(found) return found;
-    }
-    // Sonst Auto-Pick: lokale (offline) Stimmen bevorzugen, weil Online-Stimmen oft stumm bleiben
-    const en = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-    const local = en.filter(v => v.localService === true);
-    const online = en.filter(v => v.localService !== true);
-    // Wenn lokale Stimmen verfügbar: nur die berücksichtigen
-    const pool = local.length ? local : en;
-    return pool.find(v => v.lang === 'en-GB')
-        || pool.find(v => v.lang === 'en-US')
-        || pool.find(v => v.lang && v.lang.toLowerCase().startsWith('en-'))
-        || pool.find(v => v.lang === 'en')
-        || pool[0]
-        || null;
-  },
-
-  async speak(text, opts){
-    opts = opts || {};
-    if(!this.available()){
-      this.lastError = 'Dein Browser unterstützt keine Sprachausgabe.';
-      showToast(this.lastError, 'err');
-      return false;
-    }
-    if(!text) return false;
-    try {
-      const voices = await this.ready();
-      const voice = this.pickVoice(voices);
-      window.speechSynthesis.cancel();
-      // Kurze Verzögerung, damit cancel() durch ist (manche Browser sonst inkonsistent)
-      await new Promise(r => setTimeout(r, 60));
-      const u = new SpeechSynthesisUtterance(String(text));
-      if(voice){
-        u.voice = voice;
-        u.lang = voice.lang;
-      } else {
-        u.lang = 'en-US';
-      }
-      u.rate = opts.rate || 1;
-      u.pitch = 1;
-      u.volume = 1;
-      const btn = opts.btnId ? document.getElementById(opts.btnId) : null;
-      let started = false;
-      u.onstart = () => { started = true; if(btn) btn.classList.add('speaking'); };
-      u.onend   = () => { if(btn) btn.classList.remove('speaking'); };
-      u.onerror = (e) => {
-        if(btn) btn.classList.remove('speaking');
-        this.lastError = 'TTS-Fehler: ' + (e.error || 'unbekannt');
-        showToast(this.lastError, 'err');
-      };
-      window.speechSynthesis.speak(u);
-      // Diagnose: nach 900 ms prüfen, ob wirklich was abgespielt wurde
-      setTimeout(() => {
-        if(!started && !window.speechSynthesis.speaking && !window.speechSynthesis.pending){
-          if(!voice){
-            showToast('Keine englische Stimme installiert. Im Stats-Tab unter „Aussprache testen" findest du Hinweise zur Installation.', 'warn');
-          } else {
-            showToast('Aussprache wurde nicht abgespielt. Bitte Lautstärke und Browser-Einstellungen prüfen.', 'warn');
-          }
-        }
-      }, 900);
-      return true;
-    } catch(e){
-      this.lastError = 'Fehler: ' + (e.message || e);
-      showToast(this.lastError, 'err');
-      return false;
-    }
-  },
-
-  // Diagnose-Methode für den Stats-Tab
-  async diagnostic(){
-    if(!this.available()){
-      return { ok: false, error: 'speechSynthesis nicht im Browser verfügbar' };
-    }
-    const voices = await this.ready();
-    const enVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-    const selected = this.pickVoice(voices);
-    return {
-      ok: voices.length > 0,
-      voiceCount: voices.length,
-      enVoices: enVoices.map(v => ({ name: v.name, lang: v.lang, isDefault: v.default || false, localService: v.localService === true })),
-      selected: selected ? { name: selected.name, lang: selected.lang, localService: selected.localService === true } : null,
-      preferredName: this.preferredVoiceName()
-    };
-  }
-};
-
-// Hilfsfunktion für inline-Aufruf aus HTML (Legacy — neue Buttons nutzen delegierten Handler)
-function speakWord(text, btnId){
-  Speech.speak(text, { btnId });
-}
-
-// Delegierter Klick-Handler für alle Speak-Buttons (mit data-speak)
-// Vorteil: keine HTML-Escape-Probleme mit JSON.stringify, klare Diagnose
-document.addEventListener('click', function(e){
-  const btn = e.target.closest('button[data-speak]');
-  if(!btn) return;
-  e.stopPropagation();
-  e.preventDefault();
-  let text = '';
-  try { text = decodeURIComponent(btn.dataset.speak || ''); } catch(_){ text = btn.dataset.speak || ''; }
-  if(!text) return;
-  // Sofortiges visuelles Feedback, damit man weiss: Klick angekommen
-  showToast('🔊 „' + text + '"', 'ok');
-  Speech.speak(text, { btnId: btn.id });
-}, true); // capture phase, damit andere Click-Handler (z.B. Flip-Card) nicht stören
-
-async function runTTSTest(){
-  const resEl = document.getElementById('ttsDiagResult');
-  if(!resEl) return;
-  resEl.innerHTML = '<span style="color:var(--muted)">Teste …</span>';
-  const result = await Speech.diagnostic();
-  if(!result.ok){
-    resEl.innerHTML = '<strong style="color:var(--err)">' + (result.error || 'Keine Stimmen verfügbar.') + '</strong><br><span style="font-size:12px">Dein Browser oder System hat keine TTS-Engine installiert.</span>';
-    return;
-  }
-  let html = '<strong>Stimmen-Diagnose:</strong><br>';
-  html += '<span style="color:var(--muted)">• ' + result.voiceCount + ' Stimmen insgesamt verfügbar, ' + result.enVoices.length + ' englische</span><br>';
-  if(result.selected){
-    const kind = result.selected.localService ? '<span style="color:var(--ok)">lokal (offline)</span>' : '<span style="color:var(--warn-text)">online — kann stumm bleiben!</span>';
-    html += '<span>• Verwendete Stimme: <code>' + result.selected.name + '</code> (' + result.selected.lang + ') — ' + kind + '</span>';
-  } else {
-    html += '<strong style="color:var(--err)">• Keine englische Stimme gefunden!</strong>';
-  }
-  // Stimmen-Picker für manuelle Auswahl
-  if(result.enVoices.length){
-    const localCount = result.enVoices.filter(v => v.localService).length;
-    const onlineCount = result.enVoices.filter(v => !v.localService).length;
-    const opts = result.enVoices.map(v => {
-      const tag = v.localService ? ' [lokal]' : ' [online]';
-      const sel = result.preferredName === v.name ? ' selected' : '';
-      return '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + sel + '>' + v.name + ' (' + v.lang + ')' + tag + '</option>';
-    }).join('');
-    html += '<div style="margin-top:14px"><label style="display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase">Stimme manuell wählen:</label>';
-    html += '<select id="ttsVoiceSelect" class="input" style="font-size:13px" onchange="setPreferredVoice(this.value)">';
-    html += '<option value="">Auto (lokale bevorzugen)</option>' + opts + '</select>';
-    html += '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">Lokale Stimmen funktionieren offline. „Online"-Stimmen (z.B. „Microsoft … Online (Natural)") werden in manchen Browsern wie Brave still blockiert — falls dein Test stumm bleibt, wechsle hier auf eine lokale Stimme.</div></div>';
-    html += '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--muted)">Alle ' + result.enVoices.length + ' Stimmen (' + localCount + ' lokal, ' + onlineCount + ' online) anzeigen</summary>';
-    html += '<ul style="margin:8px 0 0 18px;font-size:12.5px">' + result.enVoices.map(v => '<li>' + v.name + ' <span style="color:var(--muted)">(' + v.lang + ')</span> ' + (v.localService ? '<em style="color:var(--ok)">lokal</em>' : '<em style="color:var(--warn-text)">online</em>') + '</li>').join('') + '</ul></details>';
-  }
-  resEl.innerHTML = html;
-  // Test abspielen
-  Speech.speak('Hello, this is a test. Can you hear me?');
-}
-
-function setPreferredVoice(name){
-  Speech.setPreferredVoiceName(name);
-  // Sofort neu testen
-  setTimeout(() => Speech.speak('Hello, this is a test. Can you hear me?'), 100);
-}
-
-/* ═══════════════════════════════════════════════
-   📖 WORD DETAIL (Modal mit Stats und Notiz-Edit)
-   ═══════════════════════════════════════════════ */
-let currentWordDetailId = null;
-
-function openWordDetail(wordId){
-  const w = WORDS.find(x => x.id === wordId);
-  if(!w) return;
-  currentWordDetailId = wordId;
-  const e = SRS.state[wordId] || { level: 0, ok: 0, wrong: 0, nextDue: null, lastReview: null };
-  const lvl = e.level || 0;
-  const total = (e.ok || 0) + (e.wrong || 0);
-  const pct = total ? Math.round(100 * (e.ok || 0) / total) : null;
-  const lastRev = e.lastReview ? formatNiceDate(e.lastReview) : 'noch nie';
-  const nextDue = e.nextDue ? formatNiceDate(e.nextDue) : '—';
-  const note = Notes.get(wordId);
-  const img = getImg(w);
-  const imgHTML = img
-    ? `<img src="${img}" alt="${w.word}" style="width:100%;max-height:140px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:10px" onerror="this.style.display='none'">`
-    : '';
-  const speakBtn = `<button type="button" class="speak-btn speak-btn-inline" id="wdSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören" style="vertical-align:middle">🔊</button>`;
-  const body = document.getElementById('wordDetailBody');
-  if(!body) return;
-  body.innerHTML = `
-    ${imgHTML}
-    <div class="wd-word">${w.word}${speakBtn}</div>
-    <div class="wd-translation">🇩🇪 ${w.translation}</div>
-    <div class="wd-meta">
-      <span class="badge badge-type">${w.wordType}</span>
-      <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
-      <span class="level-badge lvl-${lvl}">Stufe ${lvl} · ${SRS.LABELS[lvl]||''}</span>
-    </div>
-    <div class="wd-pronunciation">${w.pronunciation}</div>
-    <div class="wd-def">${w.definition}</div>
-
-    <div class="wd-stats">
-      <div><span class="wd-stats-label">Versuche</span><span class="wd-stats-val">${total}</span></div>
-      <div><span class="wd-stats-label">Quote</span><span class="wd-stats-val">${pct !== null ? pct + '%' : '—'}</span></div>
-      <div><span class="wd-stats-label">Letzte Wiederholung</span><span class="wd-stats-val">${lastRev}</span></div>
-      <div><span class="wd-stats-label">Nächste Fälligkeit</span><span class="wd-stats-val">${nextDue}</span></div>
-    </div>
-
-    <label class="wd-note-label" for="wdNoteInput">✏️ Persönliche Notiz</label>
-    <textarea id="wdNoteInput" class="input" rows="3" placeholder="z.B. „Verwechsle ich immer mit XY" oder eine Eselsbrücke …" style="font-family:inherit;resize:vertical">${escapeHTML(note)}</textarea>
-    <div class="wd-note-hint">Wird mit dem Sync-Gist mitgespiegelt — auf allen Geräten verfügbar.</div>
-  `;
-  const m = document.getElementById('wordDetailModal');
-  if(m) m.classList.add('open');
-}
-
-function closeWordDetail(){
-  const m = document.getElementById('wordDetailModal');
-  if(m) m.classList.remove('open');
-  currentWordDetailId = null;
-}
-
-function saveWordNote(){
-  if(currentWordDetailId == null) return;
-  const inp = document.getElementById('wdNoteInput');
-  if(!inp) return;
-  Notes.set(currentWordDetailId, inp.value);
-  showToast('✓ Notiz gespeichert', 'ok');
-  closeWordDetail();
-  if(mode === 'list') render();
-}
-
-function formatNiceDate(iso){
-  if(!iso) return '—';
-  const today = SRS.todayISO();
-  const y = SRS.addDays(today, -1);
-  if(iso === today) return 'heute';
-  if(iso === y)     return 'gestern';
-  const [yy,mm,dd] = iso.split('-');
-  if(!yy) return iso;
-  return `${dd}.${mm}.${yy}`;
-}
-
-function escapeHTML(s){
-  return (s||'').toString()
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
-/* ═══════════════════════════════════════════════
    ☁️ SYNC (GitHub-Gist-basierte Geräte-Synchronisation)
    Speicherort: Ein privater Gist im GitHub-Account des Users.
    Token: fine-grained PAT mit "Gist"-Scope, lokal in localStorage.
@@ -3336,11 +3881,10 @@ const Sync = {
 
   buildPayload(){
     return {
-      schema: 3,
+      schema: 2,
       updatedAt: Date.now(),
       entries: SRS.state,
-      stats: (typeof Stats !== 'undefined') ? Stats.state : null,
-      notes: (typeof Notes !== 'undefined') ? Notes.state : null
+      stats: (typeof Stats !== 'undefined') ? Stats.state : null
     };
   },
 
@@ -3515,86 +4059,6 @@ async function manualSyncNow(){
   await Sync.push();
 }
 
-/* ═══════════════════════════════════════════════
-   ➕ ADD WORD (Issue via GitHub-API erstellen — ETA-Bot übernimmt Rest)
-   ═══════════════════════════════════════════════ */
-const AddWord = {
-  REPO_OWNER: 'timlbclaude',
-  REPO_NAME:  'Englishtrainer',
-  busy: false,
-  async submit(word, category){
-    if(this.busy) return false;
-    const token = Sync.token();
-    if(!token) throw new Error('Kein Token. Bitte zuerst den Sync einrichten.');
-    this.busy = true;
-    try {
-      const title = 'ETA: ' + word.trim() + (category && category !== 'Allgemein' ? ' #' + category : '');
-      const res = await fetch('https://api.github.com/repos/' + this.REPO_OWNER + '/' + this.REPO_NAME + '/issues', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/vnd.github+json',
-          'Authorization': 'Bearer ' + token,
-          'X-GitHub-Api-Version': '2022-11-28',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ title, body: 'Hinzugefügt aus der App.' })
-      });
-      if(!res.ok){
-        const txt = await res.text().catch(()=> '');
-        if(res.status === 403 || res.status === 404){
-          throw new Error('Token hat keine Repo-Zugriffsrechte. Bearbeite deinen GitHub-Token und füge Scope „Issues: Read and write" hinzu (github.com/settings/tokens). HTTP ' + res.status);
-        }
-        throw new Error('GitHub ' + res.status + ': ' + txt.slice(0, 160));
-      }
-      const issue = await res.json();
-      return issue;
-    } finally {
-      this.busy = false;
-    }
-  }
-};
-
-function openAddWordModal(){
-  const m = document.getElementById('addWordModal');
-  if(!m) return;
-  document.getElementById('addWordInput').value = '';
-  document.getElementById('addWordCategory').value = 'Allgemein';
-  document.getElementById('addWordMsg').innerHTML = '';
-  if(!Sync.isConfigured()){
-    document.getElementById('addWordMsg').innerHTML = '<span style="color:var(--err)">⚠️ Noch kein GitHub-Token. Richte erst den Sync ein (oben rechts im Training).</span>';
-  }
-  m.classList.add('open');
-  setTimeout(() => { const i = document.getElementById('addWordInput'); if(i) i.focus(); }, 50);
-}
-function closeAddWordModal(){
-  const m = document.getElementById('addWordModal');
-  if(m) m.classList.remove('open');
-}
-async function submitNewWord(){
-  const wordEl = document.getElementById('addWordInput');
-  const catEl  = document.getElementById('addWordCategory');
-  const msgEl  = document.getElementById('addWordMsg');
-  const btn    = document.getElementById('addWordSubmit');
-  const word = (wordEl && wordEl.value || '').trim();
-  const category = catEl ? catEl.value : 'Allgemein';
-  if(!word){
-    msgEl.innerHTML = '<span style="color:var(--err)">Bitte ein Wort eingeben.</span>';
-    return;
-  }
-  btn.disabled = true;
-  msgEl.innerHTML = '<span style="color:var(--muted)">Sende an GitHub…</span>';
-  try {
-    const issue = await AddWord.submit(word, category);
-    msgEl.innerHTML = '<span style="color:var(--ok)">✓ Issue #' + issue.number + ' erstellt. Der Bot verarbeitet das Wort jetzt — in ~30 Sekunden ist es in der App. Lade die Seite dann neu (oder ziehe von oben nach unten zum Aktualisieren).</span>';
-    wordEl.value = '';
-    setTimeout(() => { closeAddWordModal(); }, 3500);
-  } catch(e){
-    msgEl.innerHTML = '<span style="color:var(--err)">Fehler: ' + (e.message || e) + '</span>';
-  } finally {
-    btn.disabled = false;
-  }
-}
-
 let trainDeck = [];
 let trainIdx = 0;
 let trainFlipped = false;
@@ -3608,8 +4072,8 @@ function setMode(m, btn){
   trainIdx = 0; trainFlipped = false;
   if(m === 'train'){
     trainDeck = SRS.dueQueue(WORDS);
-  } else if(m === 'quiz' || m === 'fill' || m === 'flash'){
-    // Rundenmodus (Größe via roundSize einstellbar)
+  } else if(m === 'quiz' || m === 'fill'){
+    // 10er-Runde
     deck = buildRoundDeck();
     resetRound();
   } else if(m === 'match'){
@@ -3619,55 +4083,7 @@ function setMode(m, btn){
   }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  // Focus Mode aktivieren für Lern-Tabs (alles ausser Training-Dashboard und Wortliste)
-  const focusModes = ['quiz', 'fill', 'flash', 'match'];
-  document.body.classList.toggle('focus-mode', focusModes.includes(m));
   render();
-  updateFocusBar();
-  if(typeof scrollToTop === 'function') scrollToTop();
-}
-
-function exitFocusMode(){
-  // Zurück zum Training-Dashboard (Standard-Übersicht)
-  const trainTab = document.querySelectorAll('.tab')[0];
-  setMode('train', trainTab);
-}
-
-function updateFocusBar(){
-  if(!document.body.classList.contains('focus-mode')) return;
-  const streakEl = document.getElementById('focusStreak');
-  const goalEl   = document.getElementById('focusGoal');
-  const progEl   = document.getElementById('focusProg');
-  const rsWrap   = document.getElementById('focusRoundSizeWrap');
-  const rsSel    = document.getElementById('focusRoundSize');
-  if(streakEl) streakEl.textContent = '🔥 ' + (Stats.state.streak || 0);
-  if(goalEl)   goalEl.textContent   = '🎯 ' + Stats.todayProgress() + '/' + Stats.state.dailyGoal;
-  if(progEl){
-    let pct = 0;
-    if(mode === 'quiz' || mode === 'fill'){
-      pct = deck.length ? Math.round((idx / deck.length) * 100) : 0;
-    } else if(mode === 'flash'){
-      pct = deck.length ? Math.round((idx / deck.length) * 100) : 0;
-    } else if(mode === 'match'){
-      pct = Match.PAIRS ? Math.round((Match.matchedCount / Match.PAIRS) * 100) : 0;
-    }
-    progEl.style.width = pct + '%';
-  }
-  // Rundengröße-Picker nur in den Runden-Modi anzeigen
-  if(rsWrap){
-    const showPicker = (mode === 'quiz' || mode === 'fill' || mode === 'flash');
-    rsWrap.classList.toggle('hidden', !showPicker);
-    if(showPicker && rsSel){
-      const cur = String(roundSize);
-      const hasOption = Array.from(rsSel.options).some(o => o.value === cur);
-      if(!hasOption){
-        const opt = document.createElement('option');
-        opt.value = cur; opt.textContent = cur;
-        rsSel.appendChild(opt);
-      }
-      if(rsSel.value !== cur) rsSel.value = cur;
-    }
-  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -3679,9 +4095,7 @@ function render(){
   else if(mode==='quiz') renderQuiz();
   else if(mode==='fill') renderFill();
   else if(mode==='match') renderMatch();
-  else if(mode==='stats') renderStats();
   else renderList();
-  if(typeof updateFocusBar === 'function') updateFocusBar();
 }
 
 /* ═══════════════════════════════════════════════
@@ -3844,7 +4258,7 @@ function renderTrain(){
       <div class="flashcard ${trainFlipped?'flipped':''}" id="trainFc" onclick="flipTrain()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}<button type="button" class="speak-btn speak-btn-inline" id="srsSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
+          <div class="fc-word">${w.word}</div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3863,7 +4277,7 @@ function renderTrain(){
         </div>
       </div>
     </div>
-    <div class="srs-rate-row mobile-action-bar" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
+    <div class="srs-rate-row" id="trainRate" style="display:${trainFlipped?'flex':'none'}">
       <button class="btn btn-srs-err" onclick="rateTrain(false)">✗ Nicht gewusst</button>
       <button class="btn btn-srs-ok" onclick="rateTrain(true)">✓ Gewusst</button>
     </div>
@@ -3894,7 +4308,6 @@ function rateTrain(wasCorrect){
   trainIdx++;
   trainFlipped = false;
   render();
-  scrollToTop();
 }
 
 function resetSRS(){
@@ -3914,7 +4327,7 @@ function renderFlash(){
   if(!deck.length){ app.innerHTML='<p>Keine Wörter vorhanden.</p>'; return; }
 
   // Check if all done
-  if(idx >= deck.length){ renderRoundResult('flash'); return; }
+  if(idx >= deck.length){ renderSummary(); return; }
 
   const w = deck[idx];
   const imgFront = getImg(w)
@@ -3931,7 +4344,7 @@ function renderFlash(){
       <div class="flashcard" id="fc" onclick="flipCard()">
         <div class="face">
           ${imgFront}
-          <div class="fc-word">${w.word}<button type="button" class="speak-btn speak-btn-inline" id="flashSpeakBtn" data-speak="${encodeURIComponent(w.word)}" aria-label="Aussprache" title="Aussprache anhören">🔊</button></div>
+          <div class="fc-word">${w.word}</div>
           <div class="fc-pronunciation">${w.pronunciation}</div>
           <div class="fc-badges">
             <span class="badge badge-type">${w.wordType}</span>
@@ -3949,7 +4362,7 @@ function renderFlash(){
         </div>
       </div>
     </div>
-    <div class="fc-actions mobile-action-bar" id="fcActions" style="display:none">
+    <div class="fc-actions" id="fcActions" style="display:none">
       <button class="btn btn-err" onclick="markCard(false)">✗ Nochmal</button>
       <button class="btn btn-ok" onclick="markCard(true)">✓ Gewusst!</button>
     </div>
@@ -3973,25 +4386,12 @@ function markCard(wasCorrect){
   if(w){
     if(wasCorrect) SRS.markCorrect(w.id); else SRS.markWrong(w.id);
   }
-  if(wasCorrect){
-    correct++; roundCorrect++; combo++;
-    if(combo > bestComboInRound) bestComboInRound = combo;
-  } else {
-    incorrect++; combo = 0;
-    if(w) roundWrongWords.push(w);
-  }
+  if(wasCorrect){ correct++; } else { incorrect++; }
   Stats.recordAnswer(wasCorrect, 'flash');
-  if(combo >= 3) Stats.recordCombo(combo);
   updateStats();
   idx++;
   flipped = false;
-  if(idx >= deck.length){
-    renderRoundResult('flash');
-    scrollToTop();
-    return;
-  }
   render();
-  scrollToTop();
 }
 
 function prevCard(){
@@ -4013,53 +4413,26 @@ function renderQuiz(){
   quizCorrectIdx = quizChoices.findIndex(c=>c.id===w.id);
   quizAnswered = false;
 
-  // Richtungsabhängige Inhalte:
-  // - en2de: Englisches Wort im Hero, deutsche Übersetzungen als Antworten
-  // - de2en: Deutsche Übersetzung im Hero, englische Wörter als Antworten
-  const isReverse = (quizDirection === 'de2en');
   const choicesHTML = quizChoices.map((c,i) =>
-    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${isReverse ? c.word : c.translation}</button>`
+    `<button class="choice" id="ch${i}" onclick="answerQuiz(${i})">${c.translation}</button>`
   ).join('');
 
-  const heroWord = isReverse ? w.translation : w.word;
-  const heroMeta = isReverse
-    ? `${w.wordType}<span class="hero-dot">·</span>auf Englisch?`
-    : `${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}`;
-  const subPrompt = isReverse ? 'Wie heißt das Wort auf Englisch?' : 'Was bedeutet dieses Wort?';
-  const speakSrc = encodeURIComponent(w.word); // Aussprache bleibt immer das englische Wort
-
-  // Hero-Bild: entweder Foto oder Emoji-Fallback mit Gradient-Hintergrund
-  const heroVisual = getImg(w)
-    ? `<img class="quiz-hero-img" src="${getImg(w)}" alt="${w.word}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-hero-emoji',textContent:'${icon(w)}'}))">`
-    : `<div class="quiz-hero-emoji">${icon(w)}</div>`;
-
-  const dirToggleHTML = `
-    <div class="quiz-dir-toggle" role="tablist" aria-label="Quiz-Richtung">
-      <button type="button" class="qdt-btn ${!isReverse?'active':''}" onclick="setQuizDirection('en2de')" role="tab" aria-selected="${!isReverse}">EN → DE</button>
-      <button type="button" class="qdt-btn ${isReverse?'active':''}" onclick="setQuizDirection('de2en')" role="tab" aria-selected="${isReverse}">DE → EN</button>
-    </div>`;
-
   app.innerHTML = `
-    ${dirToggleHTML}
-    <div class="quiz-sub-prompt">${subPrompt}</div>
-    <div class="quiz-hero">
-      ${heroVisual}
-      ${isReverse ? '' : `<button type="button" class="speak-btn speak-btn-hero" id="quizSpeakBtn" data-speak="${speakSrc}" aria-label="Aussprache anhören" title="Aussprache anhören">🔊</button>`}
-      <div class="quiz-hero-badge">${w.difficulty}</div>
-      <div class="quiz-hero-overlay">
-        <div class="quiz-hero-word">${heroWord}</div>
-        <div class="quiz-hero-meta">${heroMeta}</div>
+    ${progressHTML(idx+1, deck.length)}
+    <div class="quiz-question">
+      <div class="quiz-sub">Was bedeutet dieses Wort?</div>
+      <div class="quiz-word">${w.word}</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+        <span class="badge badge-type">${w.wordType}</span>
+        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
       </div>
+      <div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>
+      <div class="fc-front-example" style="margin-top:14px;text-align:center;">📝 „${w.examples[0]}"</div>
     </div>
-    <div class="quiz-choices-grid">${choicesHTML}</div>
+    <div class="quiz-choices">${choicesHTML}</div>
     <div id="quizFeedback"></div>
-    <div class="quiz-reveal-card" id="quizReveal" style="display:none">
-      <div>
-        <span class="quiz-reveal-label">📝 Beispiel</span>
-        <div class="quiz-reveal-example">„${w.examples[0]}"</div>
-        <div id="quizRevealNote"></div>
-      </div>
-      <button class="btn btn-primary" onclick="nextQuiz()" id="nextQuizBtn">Weiter →</button>
+    <div class="nav-row">
+      <button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button>
     </div>`;
 }
 
@@ -4096,20 +4469,7 @@ function answerQuiz(chosen){
     ? `🎉 Richtig! Sehr gut!${comboBadge}`
     : `✗ Leider falsch. Richtig: „${deck[idx].translation}"`;
 
-  const revealEl = document.getElementById('quizReveal');
-  if(revealEl){ revealEl.style.display = 'flex'; }
-  // Persönliche Notiz einblenden, falls vorhanden
-  const noteEl = document.getElementById('quizRevealNote');
-  if(noteEl){
-    const note = Notes.get(w.id);
-    if(note){ noteEl.className = 'quiz-reveal-note'; noteEl.textContent = note; }
-    else { noteEl.className = ''; noteEl.textContent = ''; }
-  }
-}
-
-function scrollToTop(){
-  // Nach jeder Aktion sanft nach oben, damit die nächste Karte komplett sichtbar startet
-  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) { window.scrollTo(0, 0); }
+  document.getElementById('nextQuizBtn').style.display = 'inline-flex';
 }
 
 function nextQuiz(){
@@ -4119,7 +4479,6 @@ function nextQuiz(){
   } else {
     render();
   }
-  scrollToTop();
 }
 
 /* ═══════════════════════════════════════════════
@@ -4131,58 +4490,35 @@ function renderFill(){
   if(idx >= deck.length){ renderRoundResult('fill'); return; }
 
   const w = deck[idx];
-  // Zufälliger Beispielsatz mit der Lücke
+  // pick a random example and blank the word
   const ex = w.examples[Math.floor(Math.random()*w.examples.length)];
   const regex = new RegExp(w.word, 'gi');
   const blanked = ex.replace(regex, '<span class="blank">_____</span>');
   fillChecked = false;
 
-  // Hero-Layout B: Bild oben, deutsche Übersetzung als großes Wort (als Hint)
-  const heroVisual = getImg(w)
-    ? `<img class="quiz-hero-img" src="${getImg(w)}" alt="${w.translation}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'quiz-hero-emoji',textContent:'${icon(w)}'}))">`
-    : `<div class="quiz-hero-emoji">${icon(w)}</div>`;
-
   app.innerHTML = `
-    <div class="quiz-sub-prompt">Wie heißt dieses Wort auf Englisch?</div>
-    <div class="quiz-hero">
-      ${heroVisual}
-      <div class="quiz-hero-badge">${w.difficulty}</div>
-      <div class="quiz-hero-overlay">
-        <div class="quiz-hero-word">${w.translation}</div>
-        <div class="quiz-hero-meta">${w.wordType}<span class="hero-dot">·</span>${w.pronunciation}</div>
+    ${progressHTML(idx+1, deck.length)}
+    <div class="fill-card">
+      <div class="fill-label">🇩🇪 Übersetzung: <strong>${w.translation}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;
+        <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
       </div>
-    </div>
-    <div class="fill-sentence-card">
-      <div class="fill-sentence-label">Ergänze den Satz:</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Pronunciation: ${w.pronunciation}</div>
+      <div class="fill-label">Ergänze den Satz mit dem richtigen Wort:</div>
       <div class="fill-sentence">${blanked}</div>
-    </div>
-    <div class="fill-input-row">
-      <input class="fill-input" id="fillInput" type="text" placeholder="Englisches Wort eintippen…"
-        onkeydown="if(event.key==='Enter')checkFill()"
-        oninput="onFillInput(this)"
-        autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="btn btn-primary" onclick="checkFill()">Prüfen</button>
-    </div>
-    <div id="fillResult"></div>
-    <div class="quiz-reveal-card" id="fillReveal" style="display:none">
-      <div>
-        <span class="quiz-reveal-label" id="fillRevealLabel">📝 Lösung</span>
-        <div class="quiz-reveal-example" id="fillRevealExample"></div>
+      <div class="fill-input-row">
+        <input class="fill-input" id="fillInput" type="text" placeholder="Deine Antwort…"
+          onkeydown="if(event.key==='Enter')checkFill()"
+          oninput="onFillInput(this)"
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn btn-primary" onclick="checkFill()">Prüfen</button>
       </div>
-      <button class="btn btn-primary" onclick="fillNext()" id="fillNextBtn">Weiter →</button>
+      <div id="fillResult"></div>
     </div>
-    <div class="nav-row mobile-action-bar" id="fillActionBar">
+    <div class="nav-row">
       <button class="btn btn-ghost btn-sm" onclick="skipFill()" id="skipBtn">Überspringen →</button>
     </div>`;
 
   setTimeout(()=>{ const i=document.getElementById('fillInput'); if(i) i.focus(); },100);
-}
-
-function fillNext(){
-  idx++;
-  if(idx >= deck.length) renderRoundResult('fill');
-  else render();
-  scrollToTop();
 }
 
 function skipFill(){
@@ -4198,7 +4534,6 @@ function skipFill(){
   idx++;
   if(idx >= deck.length) renderRoundResult('fill');
   else render();
-  scrollToTop();
 }
 
 function onFillInput(input){
@@ -4237,21 +4572,22 @@ function checkFill(){
   input.disabled = true;
 
   const res = document.getElementById('fillResult');
+  const fullEx = w.examples[0];
   const comboBadge = (isOk && combo >= 3) ? ` <span class="combo-badge">🔥 ${combo} in Folge</span>` : '';
   res.className = `fill-result ${isOk?'ok':'err'}`;
   res.innerHTML = isOk
-    ? `✓ Richtig!${comboBadge}`
-    : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong>`;
+    ? `✓ Richtig!${comboBadge} <em>${fullEx}</em>`
+    : `✗ Nicht ganz. Das richtige Wort ist: <strong>${w.word}</strong><br><em>${fullEx}</em>`;
 
-  // Reveal-Karte mit komplettem Beispielsatz einblenden, Skip-Bar verstecken
-  const reveal = document.getElementById('fillReveal');
-  const labelEl = document.getElementById('fillRevealLabel');
-  const exEl = document.getElementById('fillRevealExample');
-  if(labelEl) labelEl.textContent = isOk ? '✓ Richtig — Beispielsatz komplett' : '📝 Beispiel mit korrekter Lösung';
-  if(exEl) exEl.innerHTML = '„' + w.examples[0].replace(new RegExp(w.word,'gi'), '<strong style="color:var(--primary)">'+w.word+'</strong>') + '"';
-  if(reveal) reveal.style.display = 'flex';
-  const skipBar = document.getElementById('fillActionBar');
-  if(skipBar) skipBar.style.display = 'none';
+  const skip = document.getElementById('skipBtn');
+  if(skip){
+    skip.textContent = 'Weiter →';
+    skip.onclick = ()=>{
+      idx++;
+      if(idx >= deck.length) renderRoundResult('fill');
+      else render();
+    };
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -4299,9 +4635,6 @@ function renderList(){
     const isDue = SRS.isDue(w.id);
     const lvlBadge = `<span class="level-badge lvl-${lvl}" title="Lernstufe ${lvl}/7 – ${SRS.LABELS[lvl]}">L${lvl}</span>`;
     const duePill = isDue ? `<span class="due-pill" title="Heute zur Wiederholung fällig">Fällig</span>` : '';
-    const hasNote = Notes.has(w.id);
-    const noteBadge = hasNote ? `<span class="note-indicator" title="Notiz vorhanden">📝</span>` : '';
-    const userNote = hasNote ? `<p class="wc-note"><strong>✏️ Deine Notiz:</strong> ${esc(Notes.get(w.id))}</p>` : '';
     return `
     <div class="word-card ${listOpen[w.id]?'open':''}" onclick="toggleCard(event,${w.id})">
       <div class="wc-top">
@@ -4309,7 +4642,6 @@ function renderList(){
         <div class="wc-body">
           <div class="wc-title-row">
             <span class="wc-word">${esc(w.word)}</span>
-            ${noteBadge}
             <span class="wc-pron">${esc(w.pronunciation)}</span>
             ${duePill}
           </div>
@@ -4326,11 +4658,7 @@ function renderList(){
         ${detailImg}
         <p><strong>📖 Definition:</strong> ${esc(w.definition)}</p>
         ${exHTML}
-        ${userNote}
         <p style="font-size:11px;color:var(--muted);margin-top:6px">${esc(w.wordType)} · Hinzugefügt: ${esc(w.dateAdded)}</p>
-        <div style="margin-top:10px">
-          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openWordDetail(${w.id})">📖 Details &amp; ${hasNote ? 'Notiz bearbeiten' : 'Notiz hinzufügen'}</button>
-        </div>
       </div>
     </div>`;
   }).join('') : `<div style="text-align:center;padding:40px;color:var(--muted)">Keine Wörter gefunden.</div>`;
@@ -4381,7 +4709,7 @@ function clearSearch(e){
    ═══════════════════════════════════════════════ */
 function renderRoundResult(mode){
   const app = document.getElementById('app');
-  const total = deck.length || roundSize;
+  const total = deck.length || ROUND_SIZE;
   const ok = roundCorrect;
   const wrong = total - ok;
   const pct = total ? Math.round((ok/total)*100) : 0;
@@ -4401,7 +4729,7 @@ function renderRoundResult(mode){
   updateStats();
 
   let msg, emoji;
-  if(isPerfect){ emoji = '🌟'; msg = `Perfekte Runde! ${total} von ${total}. +50 XP Bonus!`; }
+  if(isPerfect){ emoji = '🌟'; msg = 'Perfekte Runde! 10 von 10. +50 XP Bonus!'; }
   else if(pct >= 80){ emoji = '🏆'; msg = 'Sehr stark!'; }
   else if(pct >= 50){ emoji = '💪'; msg = 'Solide Runde – weiter so.'; }
   else { emoji = '📚'; msg = 'Übung macht den Meister.'; }
@@ -4435,7 +4763,7 @@ function renderRoundResult(mode){
       </div>
       ${wrongList}
       <div class="round-actions">
-        <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit ${Math.min(roundSize, WORDS.length)} neuen</button>
+        <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit 10 neuen</button>
         <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.tab')[0])">🧠 Zurück zum Training</button>
       </div>
     </div>`;
@@ -4448,7 +4776,6 @@ function nextRound(m){
   deck = buildRoundDeck();
   resetRound();
   render();
-  scrollToTop();
 }
 
 /* ═══════════════════════════════════════════════
@@ -4604,163 +4931,6 @@ function renderMatch(){
 }
 
 /* ═══════════════════════════════════════════════
-   📊 STATS-TAB (Activity-Heatmap, Badges, Übersicht)
-   ═══════════════════════════════════════════════ */
-function countMastered(){
-  let n = 0;
-  for(const w of WORDS){
-    const e = SRS.state[w.id];
-    if(e && (e.level||0) >= 7) n++;
-  }
-  return n;
-}
-
-const BADGES = [
-  { id:'first-xp',     emoji:'🌱', name:'Erste Schritte',     desc:'Erste 50 XP gesammelt',          check: s => (s.xp||0) >= 50 },
-  { id:'xp-500',       emoji:'⭐', name:'Fleißig',             desc:'500 XP gesammelt',               check: s => (s.xp||0) >= 500 },
-  { id:'xp-2000',      emoji:'🏆', name:'Wortschatzheld',      desc:'2000 XP gesammelt',              check: s => (s.xp||0) >= 2000 },
-  { id:'streak-3',     emoji:'🔥', name:'Dranbleiber',         desc:'3 Tage in Folge trainiert',      check: s => (s.longestStreak||0) >= 3 },
-  { id:'streak-7',     emoji:'🔥', name:'Konstanz',            desc:'7 Tage in Folge trainiert',      check: s => (s.longestStreak||0) >= 7 },
-  { id:'streak-30',    emoji:'🔥', name:'Monatsmeister',       desc:'30 Tage in Folge trainiert',     check: s => (s.longestStreak||0) >= 30 },
-  { id:'mastered-10',  emoji:'🎓', name:'Erste 10',            desc:'10 Wörter auf Stufe 7',          check: () => countMastered() >= 10 },
-  { id:'mastered-50',  emoji:'🎓', name:'Fortgeschritten',     desc:'50 Wörter auf Stufe 7',          check: () => countMastered() >= 50 },
-  { id:'mastered-100', emoji:'🎓', name:'Wortmeister',         desc:'100 Wörter auf Stufe 7',         check: () => countMastered() >= 100 },
-  { id:'perfect-1',    emoji:'🌟', name:'Erste perfekte Runde',desc:'10 von 10 richtig in einer Runde',check: s => (s.perfectRounds||0) >= 1 },
-  { id:'perfect-10',   emoji:'🌟', name:'Perfektionist',       desc:'10 perfekte Runden insgesamt',   check: s => (s.perfectRounds||0) >= 10 },
-  { id:'combo-5',      emoji:'⚡', name:'Combo-Master',        desc:'5er-Combo erreicht',             check: s => (s.bestCombo||0) >= 5 },
-  { id:'combo-10',     emoji:'⚡', name:'Unaufhaltsam',        desc:'10er-Combo erreicht',            check: s => (s.bestCombo||0) >= 10 },
-  { id:'match-500',    emoji:'🎮', name:'Match-Spieler',       desc:'Match-Score 500+',               check: s => (s.matchHigh||0) >= 500 },
-  { id:'match-800',    emoji:'🎮', name:'Match-Profi',         desc:'Match-Score 800+',               check: s => (s.matchHigh||0) >= 800 },
-];
-
-function heatmapHTML(){
-  // 52 Wochen × 7 Tage, jüngster Tag rechts unten
-  const today = new Date();
-  const todayISO = SRS.todayISO();
-  // Start: 52 Wochen zurück, ausgerichtet auf Wochenbeginn (Montag)
-  const DAYS = 52 * 7;
-  const cells = [];
-  for(let i = DAYS - 1; i >= 0; i--){
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const iso = SRS.localISO(d);
-    const count = Stats.state.dailyProgress[iso] || 0;
-    let level = 0;
-    if(count >= 1)  level = 1;
-    if(count >= 6)  level = 2;
-    if(count >= 16) level = 3;
-    if(count >= 30) level = 4;
-    cells.push({ iso, count, level, isToday: iso === todayISO });
-  }
-  // Renderung als CSS-Grid: 7 Zeilen (Tage), 52 Spalten (Wochen)
-  // Aber Zellen-Anordnung: Spalte für Spalte (Sonntag..Samstag)
-  // Wir gehen einfacher: Wochen-Spalten, je 7 Zellen
-  const weeks = [];
-  for(let w = 0; w < 52; w++){
-    const week = [];
-    for(let d = 0; d < 7; d++){
-      const idx = w * 7 + d;
-      if(idx < cells.length) week.push(cells[idx]);
-    }
-    weeks.push(week);
-  }
-  const weeksHTML = weeks.map(week =>
-    `<div class="hm-week">${week.map(c =>
-      `<div class="hm-cell hm-lv${c.level}${c.isToday?' hm-today':''}" title="${c.iso}: ${c.count} Antworten"></div>`
-    ).join('')}</div>`
-  ).join('');
-  // Tagesnamen-Spalte (Mo, Mi, Fr)
-  const dayLabels = ['Mo','','Mi','','Fr','',''];
-  const labelsHTML = dayLabels.map((l,i) =>
-    `<div class="hm-day-label">${l}</div>`
-  ).join('');
-  return `
-    <div class="heatmap-wrap">
-      <div class="heatmap-head">
-        <span>Letzte 52 Wochen</span>
-        <span class="heatmap-legend">
-          <span class="hm-cell hm-lv0"></span>
-          <span class="hm-cell hm-lv1"></span>
-          <span class="hm-cell hm-lv2"></span>
-          <span class="hm-cell hm-lv3"></span>
-          <span class="hm-cell hm-lv4"></span>
-        </span>
-      </div>
-      <div class="heatmap-grid">
-        <div class="hm-day-labels">${labelsHTML}</div>
-        <div class="hm-weeks">${weeksHTML}</div>
-      </div>
-    </div>`;
-}
-
-function badgesHTML(){
-  const s = Stats.state;
-  const items = BADGES.map(b => {
-    let unlocked = false;
-    try { unlocked = !!b.check(s); } catch(e){ unlocked = false; }
-    return `<div class="badge-tile ${unlocked?'unlocked':'locked'}" title="${b.desc}">
-      <div class="bt-emoji">${unlocked?b.emoji:'🔒'}</div>
-      <div class="bt-name">${b.name}</div>
-      <div class="bt-desc">${b.desc}</div>
-    </div>`;
-  }).join('');
-  const unlockedCount = BADGES.filter(b => { try { return b.check(s); } catch(e){ return false; } }).length;
-  return `
-    <div class="badge-head">
-      <h3>🏆 Erfolge</h3>
-      <span class="badge-count">${unlockedCount} / ${BADGES.length}</span>
-    </div>
-    <div class="badge-grid">${items}</div>`;
-}
-
-function renderStats(){
-  const app = document.getElementById('app');
-  const s = Stats.state;
-  const mastered = countMastered();
-  const trend = Stats.accuracyTrend();
-  const trendStr = (trend.curPct !== null && trend.prevPct !== null)
-    ? (trend.diff > 0 ? `<span style="color:var(--ok)">↗ +${trend.diff}%</span>` :
-       trend.diff < 0 ? `<span style="color:var(--err)">↘ ${trend.diff}%</span>` :
-                        `<span style="color:var(--muted)">→ stabil</span>`)
-    : `<span style="color:var(--muted)">noch keine Daten</span>`;
-  app.innerHTML = `
-    <div class="stats-grid">
-      <div class="stats-card stats-card-xp">
-        <div class="stats-num">${s.xp||0}</div>
-        <div class="stats-lbl">⭐ XP gesamt</div>
-      </div>
-      <div class="stats-card stats-card-streak">
-        <div class="stats-num">${s.streak||0}</div>
-        <div class="stats-lbl">🔥 Streak (Rekord ${s.longestStreak||0})</div>
-      </div>
-      <div class="stats-card">
-        <div class="stats-num">${mastered}</div>
-        <div class="stats-lbl">🎓 Wörter gemeistert</div>
-      </div>
-      <div class="stats-card">
-        <div class="stats-num">${s.perfectRounds||0}</div>
-        <div class="stats-lbl">🌟 Perfekte Runden</div>
-      </div>
-      <div class="stats-card">
-        <div class="stats-num">${s.matchHigh||0}</div>
-        <div class="stats-lbl">🎮 Match-Highscore</div>
-      </div>
-      <div class="stats-card">
-        <div class="stats-num">${trend.curPct !== null ? trend.curPct + '%' : '—'}</div>
-        <div class="stats-lbl">📈 Accuracy 7d ${trendStr}</div>
-      </div>
-    </div>
-    ${heatmapHTML()}
-    ${badgesHTML()}
-    <div class="tts-diag">
-      <h3>🔊 Aussprache testen</h3>
-      <p class="tts-diag-text">Falls die Lautsprecher-Buttons im Quiz oder bei den Karteikarten still bleiben, klick hier den Test-Button — du bekommst eine Diagnose, welche Stimme verwendet wird (oder ob keine englische Stimme installiert ist).</p>
-      <button class="btn btn-primary" onclick="runTTSTest()">🔊 Test "Hello, this is a test"</button>
-      <div id="ttsDiagResult" style="margin-top:12px">Noch nicht getestet.</div>
-    </div>`;
-}
-
-/* ═══════════════════════════════════════════════
    🏆 ZUSAMMENFASSUNG (alt — Karteikarten-Modus)
    ═══════════════════════════════════════════════ */
 function renderSummary(){
@@ -4828,51 +4998,6 @@ prefetchImages();
 // Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
 Sync.init();
 </script>
-
-<!-- Wort-Detail-Modal (öffnet aus der Wortliste, mit Notiz-Edit) -->
-<div class="modal-overlay" id="wordDetailModal" onclick="if(event.target===this) closeWordDetail()">
-  <div class="modal" role="dialog" aria-labelledby="wdTitle">
-    <h2 id="wdTitle">📖 Wort-Details</h2>
-    <div id="wordDetailBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline btn-sm" onclick="closeWordDetail()">Schließen</button>
-      <button class="btn btn-primary btn-sm" onclick="saveWordNote()">Notiz speichern</button>
-    </div>
-  </div>
-</div>
-
-<!-- Wort-Hinzufügen Floating Action Button und Modal -->
-<button class="fab-add" id="fabAdd" onclick="openAddWordModal()" aria-label="Neues Wort hinzufügen" title="Neues Wort hinzufügen">
-  <span class="fab-icon">+</span>
-  <span class="fab-label">Wort</span>
-</button>
-
-<div class="modal-overlay" id="addWordModal" onclick="if(event.target===this) closeAddWordModal()">
-  <div class="modal" role="dialog" aria-labelledby="addWordTitle">
-    <h2 id="addWordTitle">➕ Neues Wort hinzufügen</h2>
-    <p class="modal-sub">Trag das englische Wort ein. Der ETA-Bot ergänzt automatisch Übersetzung, IPA, Definition, Beispielsätze und Bild — und committet es ins Repo. In ~30 Sekunden ist es in der App.</p>
-
-    <div class="hint" id="addWordHint">Du nutzt denselben GitHub-Token wie für den Sync. Der Token braucht zusätzlich „Issues: write" — falls noch nicht, erweitern unter <code>github.com/settings/tokens</code>.</div>
-
-    <label for="addWordInput">Englisches Wort</label>
-    <input type="text" id="addWordInput" class="input" placeholder="z.B. brick" autocomplete="off" spellcheck="false" autocapitalize="off">
-
-    <label for="addWordCategory">Kategorie</label>
-    <select id="addWordCategory" class="input">
-      <option value="Allgemein">Allgemein</option>
-      <option value="TV">TV</option>
-      <option value="Books">Books</option>
-      <option value="Kitchen">Kitchen / Cooking</option>
-    </select>
-
-    <div class="modal-msg" id="addWordMsg"></div>
-
-    <div class="modal-actions">
-      <button class="btn btn-outline btn-sm" onclick="closeAddWordModal()">Abbrechen</button>
-      <button class="btn btn-primary btn-sm" id="addWordSubmit" onclick="submitNewWord()">Hinzufügen</button>
-    </div>
-  </div>
-</div>
 
 <!-- Sync-Einrichtungs-Modal -->
 <div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
