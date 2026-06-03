@@ -83,20 +83,16 @@ html,body{min-height:100vh;}
 body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background-color .3s ease, color .3s ease;font-feature-settings:'cv02','cv03','cv04','cv11';}
 
 /* ── Header ── */
-header{background:var(--header-bg);backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);color:var(--text);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
-.hd-left{display:flex;align-items:center;gap:12px;}
-.logo{font-size:28px;line-height:1;}
-.hd-title h1{font-size:17px;font-weight:700;line-height:1.1;letter-spacing:-.01em;color:var(--text);}
-.hd-title small{font-size:12px;color:var(--muted);letter-spacing:.01em;}
-.hd-stats{display:flex;gap:8px;align-items:center;}
-.stat{padding:5px 12px;border-radius:var(--radius-full);font-weight:600;font-size:12px;letter-spacing:.01em;border:1px solid var(--border);background:var(--card);}
+header{display:none;}
+.hd-stats{display:flex;gap:4px;align-items:center;padding:0 6px 0 2px;flex-shrink:0;}
+.stat{padding:4px 8px;border-radius:var(--radius-full);font-weight:600;font-size:11px;letter-spacing:.01em;border:1px solid var(--border);background:var(--card);}
 .stat-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 25%,var(--border));background:var(--ok-bg);}
 .stat-err{color:var(--err);border-color:color-mix(in srgb,var(--err) 25%,var(--border));background:var(--err-bg);}
-.theme-toggle{margin-left:4px;width:36px;height:36px;border-radius:var(--radius-full);border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;transition:all .2s ease;}
-.theme-toggle:hover{border-color:var(--border-strong);background:var(--card-hover);transform:translateY(-1px);}
+.theme-toggle{width:30px;height:30px;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.theme-toggle:hover{background:var(--card);}
 
 /* ── Tabs ── */
-nav{background:var(--nav-bg);backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);display:flex;border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:0;z-index:10;}
+nav{background:var(--nav-bg);backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);display:flex;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}.nav-tabs{display:flex;flex:1;overflow-x:auto;min-width:0;}
 .tab{padding:12px 18px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .18s ease, border-color .18s ease, background .18s ease;}
 .tab:hover{color:var(--text);background:var(--primary-bg);}
 .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600;}
@@ -260,15 +256,8 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 @media(max-width:540px){
   .quiz-choices{grid-template-columns:1fr;}
   .fc-word{font-size:22px;}
-  main{padding:12px 12px 130px;}
-  header{padding:8px 14px;gap:8px;}
-  .hd-left{gap:8px;}
-  .logo{font-size:22px;}
-  .hd-title h1{font-size:14px;}
-  .hd-title small{font-size:10px;}
-  .hd-stats{gap:5px;}
-  .stat{padding:4px 8px;font-size:11px;}
-  .theme-toggle{width:30px;height:30px;font-size:14px;margin-left:2px;}
+  main{padding:10px 12px 130px;}
+  .hd-stats{gap:4px;}
   .scene{height:320px;}
   .quiz-question{padding:16px 14px;margin-bottom:10px;}
   .face{padding:12px 10px;}
@@ -283,7 +272,7 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
   .fill-label{font-size:10px;margin-bottom:10px;}
   .nav-row{display:none;}
   .tab .tab-label{display:none;}
-  .tab{padding:9px 10px;font-size:15px;}
+  .tab{padding:8px 9px;font-size:14px;}
   .round-result{padding:22px 16px;}
   .round-score-circle{width:130px;height:130px;}
   .round-score-num{font-size:36px;}
@@ -502,30 +491,22 @@ body.dark .stat-goal{color:#67e8f9;background:rgba(8,145,178,.18);border-color:r
 </head>
 <body>
 
-<header>
-  <div class="hd-left">
-    <span class="logo">🇬🇧</span>
-    <div class="hd-title">
-      <h1>English Trainer</h1>
-      <small id="wordCountLabel">5 Wörter gespeichert</small>
-    </div>
+<nav>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="setMode('train',this)">🧠 <span class="tab-label">Training</span></button>
+    <button class="tab" onclick="setMode('flash',this)">🃏 <span class="tab-label">Karteikarten</span></button>
+    <button class="tab" onclick="setMode('quiz',this)">❓ <span class="tab-label">Quiz</span></button>
+    <button class="tab" onclick="setMode('fill',this)">✏️ <span class="tab-label">Lückentext</span></button>
+    <button class="tab" onclick="setMode('list',this)">📋 <span class="tab-label">Wortliste</span></button>
   </div>
   <div class="hd-stats">
-    <span class="stat stat-streak" id="statStreak" title="Aktuelle Streak — Tage in Folge">🔥 0</span>
-    <span class="stat stat-xp" id="statXP" title="Erfahrungspunkte gesamt">⭐ 0</span>
+    <span class="stat stat-streak" id="statStreak" title="Streak">🔥 0</span>
+    <span class="stat stat-xp" id="statXP" title="XP">⭐ 0</span>
     <span class="stat stat-goal" id="statGoal" title="Tagesziel">🎯 0/20</span>
-    <span class="stat stat-ok" id="statOk" title="Richtig in dieser Sitzung">✓ 0</span>
-    <span class="stat stat-err" id="statErr" title="Falsch in dieser Sitzung">✗ 0</span>
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Theme umschalten" title="Hell / Dunkel umschalten">☀️</button>
+    <span class="stat stat-ok" id="statOk" title="Richtig">✓ 0</span>
+    <span class="stat stat-err" id="statErr" title="Falsch">✗ 0</span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Theme" title="Hell/Dunkel">🌙</button>
   </div>
-</header>
-
-<nav>
-  <button class="tab active" onclick="setMode('train',this)">🧠 <span class="tab-label">Training</span></button>
-  <button class="tab" onclick="setMode('flash',this)">🃏 <span class="tab-label">Karteikarten</span></button>
-  <button class="tab" onclick="setMode('quiz',this)">❓ <span class="tab-label">Quiz</span></button>
-  <button class="tab" onclick="setMode('fill',this)">✏️ <span class="tab-label">Lückentext</span></button>
-  <button class="tab" onclick="setMode('list',this)">📋 <span class="tab-label">Wortliste</span></button>
 </nav>
 
 <main id="app"></main>
@@ -4182,7 +4163,7 @@ function setMode(m, btn){
   } else {
     deck = shuffle(WORDS);
   }
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tabs .tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
   scrollToTop();
   render();
@@ -4326,8 +4307,8 @@ function renderTrain(){
           ? `Du hast ${trainIdx} Wörter durchgegangen. Komm morgen wieder – die nächste Wiederholung wartet.`
           : 'Es gibt aktuell keine fälligen Wörter. Schau später wieder vorbei oder übe frei in den anderen Modi.'}</p>
         <div class="srs-actions">
-          <button class="btn btn-primary" onclick="setMode('flash',document.querySelectorAll('.tab')[1])">🃏 Freie Übung: Karteikarten</button>
-          <button class="btn btn-outline" onclick="setMode('list',document.querySelectorAll('.tab')[4])">📋 Wortliste</button>
+          <button class="btn btn-primary" onclick="setMode('flash',document.querySelectorAll('.nav-tabs .tab')[1])">🃏 Freie Übung: Karteikarten</button>
+          <button class="btn btn-outline" onclick="setMode('list',document.querySelectorAll('.nav-tabs .tab')[4])">📋 Wortliste</button>
         </div>
         <div class="srs-settings-row">
           <button class="srs-reset-btn" onclick="resetSRS()">Lernfortschritt zurücksetzen</button>
@@ -4937,7 +4918,7 @@ function renderRoundResult(mode){
       ${wrongList}
       <div class="round-actions">
         <button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit 10 neuen</button>
-        <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.tab')[0])">🧠 Zurück zum Training</button>
+        <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.nav-tabs .tab')[0])">🧠 Zurück zum Training</button>
       </div>
     </div>`;
 }
@@ -4974,7 +4955,7 @@ function renderSummary(){
       </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="restartMode()">🔄 Nochmal trainieren</button>
-        <button class="btn btn-outline" onclick="setMode('list',null);document.querySelectorAll('.tab')[3].classList.add('active');document.querySelectorAll('.tab').forEach((t,i)=>{if(i!==3)t.classList.remove('active')})">📋 Wortliste ansehen</button>
+        <button class="btn btn-outline" onclick="setMode('list',null);document.querySelectorAll('.nav-tabs .tab')[3].classList.add('active');document.querySelectorAll('.nav-tabs .tab').forEach((t,i)=>{if(i!==3)t.classList.remove('active')})">📋 Wortliste ansehen</button>
       </div>
     </div>`;
 }
