@@ -116,7 +116,7 @@ main{padding:28px 24px 60px;max-width:820px;margin:0 auto;}
 .fc-image{width:100%;max-height:220px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:18px;box-shadow:var(--sh-sm);}
 .fc-img-placeholder{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:18px;background:var(--primary-bg);color:var(--primary);}
 .fc-word{font-size:34px;font-weight:800;color:var(--text);text-align:center;line-height:1.15;margin-bottom:8px;letter-spacing:-.02em;}
-.fc-pronunciation{font-size:15px;color:var(--muted);margin-bottom:14px;font-family:'Inter',sans-serif;letter-spacing:.01em;}
+.fc-pronunciation{font-size:15px;color:var(--muted);margin-bottom:14px;font-family:'Inter',sans-serif;letter-spacing:.01em;}.speak-btn{background:none;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:17px;padding:4px 10px;transition:background .15s,transform .1s;color:var(--text);display:inline-flex;align-items:center;line-height:1;flex-shrink:0;}.speak-btn:hover{background:var(--hover);}.speak-btn:active{transform:scale(.93);}.speak-row{display:flex;align-items:center;justify-content:center;gap:8px;}.quiz-speak-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;}.quiz-pron{font-size:13px;color:var(--muted);}
 .fc-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
 .fc-hint{font-size:12px;color:var(--muted);opacity:.7;position:absolute;bottom:18px;letter-spacing:.02em;}
 
@@ -3556,7 +3556,10 @@ let imageCache = {};
 try { imageCache = JSON.parse(localStorage.getItem('etImageCache') || '{}'); } catch(e) {}
 
 function getImg(w){
-  return w.imageUrl || imageCache[w.word] || '';
+  const url = w.imageUrl || '';
+  // Special:FilePath-URLs sind unzuverlässige Redirects → API-Cache bevorzugen
+  if(url && !url.includes('Special:FilePath')) return url;
+  return imageCache[w.word] || '';
 }
 
 async function fetchWikiImage(word){
@@ -3581,13 +3584,27 @@ async function fetchWikiImage(word){
 
 async function prefetchImages(){
   // Nur Wörter holen, die noch kein Bild haben
-  const missing = WORDS.filter(w => !w.imageUrl && WIKI_TITLES[w.word] && !imageCache[w.word]);
+  const missing = WORDS.filter(w => (!w.imageUrl || w.imageUrl.includes('Special:FilePath')) && WIKI_TITLES[w.word] && !imageCache[w.word]);
   if(!missing.length) return;
   for(const w of missing){
     await fetchWikiImage(w.word);
     await new Promise(res => setTimeout(res, 130)); // höfliches Rate-Limiting
   }
   render(); // Ansicht nach dem Laden aktualisieren
+}
+
+
+function speakWord(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1;
+  // Bevorzuge eine natürliche englische Stimme
+  const voices = window.speechSynthesis.getVoices();
+  const en = voices.find(v => v.lang.startsWith('en') && v.localService) ||
+             voices.find(v => v.lang.startsWith('en'));
+  if(en) u.voice = en;
+  window.speechSynthesis.speak(u);
 }
 
 function updateStats(){
@@ -4371,11 +4388,11 @@ function renderTrain(){
 
   const enDE_t = learnDir === 'en-de';
   const faceFront = enDE_t
-    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="fc-pronunciation">${w.pronunciation}</div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
+    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
     : `${imgFront}<div class="fc-word" style="font-size:20px;text-align:center;padding:0 12px">${w.translation}</div><div class="fc-badges" style="margin-top:10px"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`;
   const faceBack = enDE_t
     ? `<div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}<div class="back-translation-small">🇩🇪 ${w.translation}</div>`
-    : `<div class="fc-word" style="font-size:28px;margin-bottom:6px">${w.word}</div><div class="fc-pronunciation" style="margin-bottom:12px">${w.pronunciation}</div><div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}`;
+    : `<div class="fc-word" style="font-size:28px;margin-bottom:6px">${w.word}</div><div class="speak-row" style="margin-bottom:12px"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}`;
   app.innerHTML = `
     ${dash}
     <div class="dir-toggle-row">
@@ -4484,11 +4501,11 @@ function renderFlash(){
 
   const enDE_f = learnDir === 'en-de';
   const flashFront = enDE_f
-    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="fc-pronunciation">${w.pronunciation}</div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
+    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
     : `${imgFront}<div class="fc-word" style="font-size:20px;text-align:center;padding:0 12px">${w.translation}</div><div class="fc-badges" style="margin-top:10px"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`;
   const flashBack = enDE_f
     ? `<div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}<div class="back-translation-small">🇩🇪 ${w.translation}</div>`
-    : `<div class="fc-word" style="font-size:28px;margin-bottom:6px">${w.word}</div><div class="fc-pronunciation" style="margin-bottom:12px">${w.pronunciation}</div><div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}`;
+    : `<div class="fc-word" style="font-size:28px;margin-bottom:6px">${w.word}</div><div class="speak-row" style="margin-bottom:12px"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}`;
   app.innerHTML = `
     ${progressHTML(idx+1, deck.length)}
     <div class="dir-toggle-row">
@@ -4585,7 +4602,7 @@ function renderQuiz(){
           <span class="badge badge-type">${w.wordType}</span>
           <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
         </div>
-        ${enDE ? `<div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>` : ''}
+        <div class="quiz-speak-row"><button class="speak-btn" onclick="speakWord('${enDE?w.word:w.translation}')">🔊</button>${enDE ? `<span class="quiz-pron">${w.pronunciation}</span>` : ''}</div>
         <div class="quiz-example">${(()=>{
           const ex = w.examples[0];
           if(enDE){
@@ -4602,6 +4619,14 @@ function renderQuiz(){
     <div class="nav-row">
       <button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button>
     </div>`;
+  // Lazy-Load: Bild via Wikipedia-API nachladen wenn noch nicht im Cache
+  if(!qImgSrc && WIKI_TITLES[w.word]){
+    fetchWikiImage(w.word).then(function(url){
+      if(!url) return;
+      var ph = document.querySelector('.quiz-img-ph');
+      if(ph) ph.outerHTML = '<div class="quiz-img-wrap"><img class="quiz-img-hd" src="' + url + '" alt="img" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
+    });
+  }
 }
 
 function setLearnDir(dir){
@@ -4687,9 +4712,9 @@ function renderFill(){
   if(enDE_fill){
     const ex = w.examples[Math.floor(Math.random()*w.examples.length)];
     const blanked = ex.replace(new RegExp(w.word,'gi'),'<span class="blank">_____</span>');
-    fillCardHTML = `<div class="fill-label">🇩🇪 Übersetzung: <strong>${w.translation}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;<span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div style="font-size:13px;color:var(--muted);margin-bottom:10px">Pronunciation: ${w.pronunciation}</div><div class="fill-label">Ergänze den Satz:</div><div class="fill-sentence">${blanked}</div>`;
+    fillCardHTML = `<div class="fill-label">🇩🇪 Übersetzung: <strong>${w.translation}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;<span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span style="font-size:13px;color:var(--muted)">${w.pronunciation}</span></div><div class="fill-label">Ergänze den Satz:</div><div class="fill-sentence">${blanked}</div>`;
   } else {
-    fillCardHTML = `<div class="fill-label">🇬🇧 Englisch: <strong>${w.word}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;<span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div style="font-size:13px;color:var(--muted);margin-bottom:10px">Pronunciation: ${w.pronunciation}</div><div class="fill-label">Was ist die deutsche Übersetzung?</div><div class="fill-sentence" style="font-size:15px;color:var(--muted)">📝 „${w.examples[0]}"</div>`;
+    fillCardHTML = `<div class="fill-label">🇬🇧 Englisch: <strong>${w.word}</strong> &nbsp;|&nbsp; ${w.wordType} &nbsp;<span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span style="font-size:13px;color:var(--muted)">${w.pronunciation}</span></div><div class="fill-label">Was ist die deutsche Übersetzung?</div><div class="fill-sentence" style="font-size:15px;color:var(--muted)">📝 „${w.examples[0]}"</div>`;
   }
   fillChecked = false;
   app.innerHTML = `
