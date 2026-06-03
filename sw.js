@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v4-syntax-fix';
+const CACHE = 'et-v5-audio-img';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -37,10 +37,12 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
-  // Externe Ressourcen (Google Fonts, Wikimedia) nur aus Netzwerk
+  // Externe Ressourcen (Google Fonts, Wikimedia, Wikipedia API) NICHT intercepten —
+  // der Browser holt sie direkt und behält dabei den <img referrerpolicy="no-referrer">.
+  // Würden wir hier fetch(event.request) machen, ginge die Referrer-Policy verloren
+  // und Wikimedia liefert 403 für Hotlinking aus.
   if (url.origin !== self.location.origin) {
-    event.respondWith(fetch(event.request).catch(() => new Response('', { status: 503 })));
-    return;
+    return; // → Browser handhabt die Anfrage selbst
   }
 
   // Eigene Dateien: Netzwerk-First, Cache als Fallback
