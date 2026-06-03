@@ -3554,6 +3554,16 @@ const WIKI_TITLES = {
 // Bild-Cache aus localStorage laden (für schnelles Wiederöffnen)
 let imageCache = {};
 try { imageCache = JSON.parse(localStorage.getItem('etImageCache') || '{}'); } catch(e) {}
+// Migration: alte Special:FilePath-Einträge entsorgen, damit neue Wikipedia-URLs greifen
+try {
+  let cleaned = false;
+  for(const k of Object.keys(imageCache)){
+    if(typeof imageCache[k] === 'string' && imageCache[k].includes('Special:FilePath')){
+      delete imageCache[k]; cleaned = true;
+    }
+  }
+  if(cleaned) localStorage.setItem('etImageCache', JSON.stringify(imageCache));
+} catch(e) {}
 
 function getImg(w){
   const url = w.imageUrl || '';
@@ -3566,11 +3576,12 @@ async function fetchWikiImage(word){
   const title = WIKI_TITLES[word];
   if(!title) return '';
   try {
+    // Wikipedia REST-API (CORS-frei). User-Agent wird vom Browser gesetzt;
+    // ein eigener User-Agent-Header ist im Browser nicht erlaubt.
     const r = await fetch(
-      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title),
-      {headers:{'User-Agent':'EnglishTrainerApp/1.0 (educational)'}}
+      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title)
     );
-    if(!r.ok) return '';
+    if(!r.ok){ console.warn('[Bilder] API-Fehler', title, r.status); return ''; }
     const d = await r.json();
     let url = (d.thumbnail && d.thumbnail.source) ? d.thumbnail.source : '';
     if(url) url = url.replace(/\/\d+px-/, '/400px-');
@@ -3579,18 +3590,25 @@ async function fetchWikiImage(word){
       try { localStorage.setItem('etImageCache', JSON.stringify(imageCache)); } catch(e) {}
     }
     return url;
-  } catch(e){ return ''; }
+  } catch(e){ console.warn('[Bilder] Netzwerkfehler', word, e); return ''; }
 }
 
 async function prefetchImages(){
   // Nur Wörter holen, die noch kein Bild haben
   const missing = WORDS.filter(w => (!w.imageUrl || w.imageUrl.includes('Special:FilePath')) && WIKI_TITLES[w.word] && !imageCache[w.word]);
   if(!missing.length) return;
+  let loaded = 0;
   for(const w of missing){
-    await fetchWikiImage(w.word);
+    const url = await fetchWikiImage(w.word);
+    if(url){
+      loaded++;
+      // Progressives Rendern: alle 3 geladenen Bilder neu rendern,
+      // damit die App nicht erst am Ende komplett aktualisiert wird.
+      if(loaded % 3 === 0) try { render(); } catch(e){}
+    }
     await new Promise(res => setTimeout(res, 130)); // höfliches Rate-Limiting
   }
-  render(); // Ansicht nach dem Laden aktualisieren
+  try { render(); } catch(e){} // Finale Aktualisierung
 }
 
 
@@ -4380,7 +4398,7 @@ function renderTrain(){
   const e = SRS.entry(w.id);
   const lvl = e.level || 0;
   const imgFront = getImg(w)
-    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" onerror="this.style.display='none'">`
+    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" referrerpolicy="no-referrer" loading="lazy" onerror="console.warn('Bild fehlgeschlagen:',this.src);this.style.display='none'">`
     : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
   const examplesHTML = w.examples.map(ex =>
     `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
@@ -4492,7 +4510,7 @@ function renderFlash(){
 
   const w = deck[idx];
   const imgFront = getImg(w)
-    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" onerror="this.style.display='none'">`
+    ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" referrerpolicy="no-referrer" loading="lazy" onerror="console.warn('Bild fehlgeschlagen:',this.src);this.style.display='none'">`
     : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
 
   const examplesHTML = w.examples.map(ex =>
@@ -4584,7 +4602,7 @@ function renderQuiz(){
   // Bild: immer zeigen (hilft beim Lernen in beiden Richtungen)
   const qImgSrc = getImg(w);
   const qImgHTML = qImgSrc
-    ? `<div class="quiz-img-wrap"><img class="quiz-img-hd" src="${qImgSrc}" alt="${w.word}" onerror="this.parentElement.outerHTML='<div class=quiz-img-ph>${icon(w)}</div>'"></div>`
+    ? `<div class="quiz-img-wrap"><img class="quiz-img-hd" src="${qImgSrc}" alt="${w.word}" referrerpolicy="no-referrer" loading="lazy" onerror="console.warn('Bild fehlgeschlagen:',this.src);this.parentElement.outerHTML='<div class=quiz-img-ph>${icon(w)}</div>'"></div>`
     : `<div class="quiz-img-ph">${icon(w)}</div>`;
 
   app.innerHTML = `
@@ -4624,7 +4642,7 @@ function renderQuiz(){
     fetchWikiImage(w.word).then(function(url){
       if(!url) return;
       var ph = document.querySelector('.quiz-img-ph');
-      if(ph) ph.outerHTML = '<div class="quiz-img-wrap"><img class="quiz-img-hd" src="' + url + '" alt="img" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
+      if(ph) ph.outerHTML = '<div class="quiz-img-wrap"><img class="quiz-img-hd" src="' + url + '" alt="img" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
     });
   }
 }
@@ -4852,10 +4870,10 @@ function renderList(){
     const exHTML = w.examples.map(e=>`<div class="wc-ex">📝 ${esc(e)}</div>`).join('');
     const src = getImg(w);
     const thumb = src
-      ? `<img class="wc-thumb" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.onerror=null;this.outerHTML='<div class=&quot;wc-thumb-fallback&quot;>${icon(w)}</div>'">`
+      ? `<img class="wc-thumb" src="${src}" alt="${esc(w.word)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.outerHTML='<div class=&quot;wc-thumb-fallback&quot;>${icon(w)}</div>'">`
       : `<div class="wc-thumb-fallback">${icon(w)}</div>`;
     const detailImg = src
-      ? `<img class="wc-detail-img" src="${src}" alt="${esc(w.word)}" loading="lazy" onerror="this.style.display='none'">`
+      ? `<img class="wc-detail-img" src="${src}" alt="${esc(w.word)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display='none'">`
       : '';
     const catBadge = `<span class="badge ${catBadgeClass(w.category)}">${w.category}</span>`;
     const sEntry = SRS.state[w.id];
@@ -5094,31 +5112,4 @@ Sync.init();
     <label for="syncTokenInput">GitHub Personal Access Token</label>
     <input type="password" id="syncTokenInput" class="input mono" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
 
-    <label for="syncGistInput">Gist-ID (nur auf zweitem Gerät nötig)</label>
-    <input type="text" id="syncGistInput" class="input mono" placeholder="leer lassen, um neuen Gist anzulegen" autocomplete="off" spellcheck="false">
-
-    <div class="modal-msg" id="syncModalMsg"></div>
-
-    <div class="modal-actions">
-      <button class="btn btn-outline btn-sm" onclick="copyGistIdToClipboard()" title="Gist-ID kopieren">📋 ID kopieren</button>
-      <button class="btn btn-outline btn-sm" onclick="closeSyncModal()">Schließen</button>
-      <button class="btn btn-primary btn-sm" onclick="saveSyncSettings()">Speichern &amp; Verbinden</button>
-    </div>
-    <div style="margin-top:14px;font-size:12px;color:var(--muted);text-align:center;">
-      Hilfe nötig? Öffne <a href="sync-anleitung.html" style="color:var(--primary);text-decoration:none;">sync-anleitung.html</a>.
-    </div>
-  </div>
-</div>
-
-<script>
-// Service Worker registrieren (PWA / Offline-Support)
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('SW registriert:', reg.scope))
-      .catch(err => console.warn('SW Fehler:', err));
-  });
-}
-</script>
-</body>
-</html>
+    <label for="syncGistInput">Gist-ID (nur au
