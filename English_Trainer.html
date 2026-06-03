@@ -259,12 +259,12 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
   main{padding:10px 12px 130px;}
   .hd-stats{gap:4px;}
   .scene{height:320px;}
-  .quiz-question{padding:16px 14px;margin-bottom:10px;}
+  .quiz-question{padding:16px 14px;margin-bottom:8px;}
   .face{padding:12px 10px;}
   .quiz-word{font-size:26px;}
   .quiz-sub{font-size:11px;margin-bottom:4px;}
   .fc-front-example{font-size:12px;padding:8px 10px;margin-top:8px;}
-  .choice{padding:11px 12px;font-size:13px;min-height:44px;}
+  .choice{padding:10px 12px;font-size:13px;min-height:42px;}
   .quiz-choices{gap:6px;margin-bottom:8px;}
   .quiz-feedback{font-size:13px;padding:10px;}
   .fill-card{padding:12px 12px;margin-bottom:8px;}
@@ -300,11 +300,14 @@ body.dark .badge-cat-Kitchen{background:rgba(52,211,153,.18);color:#a7f3d0;}
 .quiz-img-hd{max-width:100%;max-height:180px;object-fit:contain;border-radius:8px;display:block;}
 .quiz-img-ph{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:64px;}
 @media(max-width:540px){
-  .quiz-img-wrap{height:160px;}
-  .quiz-img-hd{max-height:140px;}
-  .quiz-img-ph{height:140px;font-size:48px;}
+  .quiz-img-wrap{height:130px;}
+  .quiz-img-hd{max-height:110px;}
+  .quiz-img-ph{height:110px;font-size:40px;}
 }
 
+.quiz-example{font-size:12px;color:var(--muted);font-style:italic;margin-top:8px;padding:6px 10px;background:var(--bg);border-radius:var(--radius-sm);text-align:left;line-height:1.55;border-left:2px solid var(--border);}
+.quiz-example .ex-blank{font-weight:700;color:var(--primary);font-style:normal;background:var(--primary-bg);padding:1px 4px;border-radius:3px;}
+@media(max-width:540px){.quiz-example{font-size:11px;margin-top:6px;padding:5px 8px;}}
 /* ── Auto-Advance Timer-Bar (korrekte Antwort) ── */
 .auto-adv-bar{height:3px;background:var(--border);border-radius:var(--radius-full);overflow:hidden;margin-top:8px;}
 .auto-adv-fill{height:100%;background:var(--ok);border-radius:var(--radius-full);animation:autoFill 1.5s linear forwards;}
@@ -4544,6 +4547,15 @@ function renderQuiz(){
           <span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span>
         </div>
         ${enDE ? `<div class="fc-pronunciation" style="margin-top:6px">${w.pronunciation}</div>` : ''}
+        <div class="quiz-example">${(()=>{
+          const ex = w.examples[0];
+          if(enDE){
+            const blanked = ex.replace(new RegExp(w.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m=>`<span class="ex-blank">${'_'.repeat(m.length)}</span>`);
+            return '📝 ' + blanked;
+          } else {
+            return '📝 ' + ex;
+          }
+        })()}</div>
       </div>
     </div>
     <div class="quiz-choices">${choicesHTML}</div>
