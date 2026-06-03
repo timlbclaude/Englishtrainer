@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v3-render-fix';
+const CACHE = 'et-v4-syntax-fix';
 const OFFLINE_URLS = [
   './',
   './index.html',

@@ -4955,8 +4955,8 @@ function renderRoundResult(mode){
   if(window.innerWidth > 540){
     const acts = document.createElement('div');
     acts.style.cssText = 'display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;';
-    acts.innerHTML = \`<button class="btn btn-primary" onclick="nextRound('\${mode}')">🔄 Weiter mit 10 neuen</button>
-      <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.nav-tabs .tab')[0])">🧠 Training</button>\`;
+    acts.innerHTML = `<button class="btn btn-primary" onclick="nextRound('${mode}')">🔄 Weiter mit 10 neuen</button>
+      <button class="btn btn-outline" onclick="setMode('train',document.querySelectorAll('.nav-tabs .tab')[0])">🧠 Training</button>`;
     document.querySelector('.round-result').appendChild(acts);
   }
 }
@@ -5044,11 +5044,4 @@ try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
 
 <!-- Sync-Einrichtungs-Modal -->
 <div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
-  <div class="modal" role="dialog" aria-labelledby="syncModalTitle">
-    <h2 id="syncModalTitle">☁️ Geräte-Synchronisation</h2>
-    <p class="modal-sub">Synchronisiere deinen Lernfortschritt (welches Wort ist auf welcher Stufe) zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten — danach läuft alles automatisch.</p>
-
-    <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
-
-    <label for="syncTokenInput">GitHub Personal Access Token</label>
-    <input type="password" id="sy
+  <div class="modal" role="dialog" aria-labelledby="
