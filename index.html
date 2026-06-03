@@ -5029,14 +5029,17 @@ function toggleTheme(){
 /* ═══════════════════════════════════════════════
    Start
    ═══════════════════════════════════════════════ */
-document.getElementById('wordCountLabel').textContent = `${WORDS.length} Wörter gespeichert`; // auto-updated
+// Defensiv: Element wurde in früherem Commit entfernt, aber JS-Zugriff blieb.
+// Ohne diese Prüfung crasht der gesamte Start und main#app bleibt leer.
+const _wcLabel = document.getElementById('wordCountLabel');
+if(_wcLabel) _wcLabel.textContent = `${WORDS.length} Wörter gespeichert`;
 deck = shuffle(WORDS);
 trainDeck = SRS.dueQueue(WORDS);
-render();
+try { render(); } catch(e){ console.error('render() failed:', e); document.getElementById('app').innerHTML = '<p style="padding:20px;color:#dc2626">Fehler beim Laden: ' + (e && e.message || e) + ' — bitte Konsole (F12) prüfen.</p>'; }
 // Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
-prefetchImages();
+try { prefetchImages(); } catch(e){ console.warn('prefetchImages failed:', e); }
 // Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
-Sync.init();
+try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
 </script>
 
 <!-- Sync-Einrichtungs-Modal -->

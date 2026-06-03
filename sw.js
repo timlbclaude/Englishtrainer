@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v2-img-fix';
+const CACHE = 'et-v3-render-fix';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -54,5 +54,4 @@ self.addEventListener('fetch', event => {
         }
         return response;
       })
-      .catch(() => caches.match(event.request).then(r => r || new Response('Offline', { status: 503 })))
- 
+      .catch(() => caches.match(event.request).then(r => r || new Response('Offline', { status: 503 }))

@@ -5091,14 +5091,13 @@ function toggleTheme(){
 /* ═══════════════════════════════════════════════
    Start
    ═══════════════════════════════════════════════ */
-document.getElementById('wordCountLabel').textContent = `${WORDS.length} Wörter gespeichert`; // auto-updated
+const _wcLabel = document.getElementById('wordCountLabel');
+if(_wcLabel) _wcLabel.textContent = `${WORDS.length} Wörter gespeichert`;
 deck = shuffle(WORDS);
 trainDeck = SRS.dueQueue(WORDS);
-render();
-// Bilder im Hintergrund nachladen (nur beim ersten Öffnen nötig)
-prefetchImages();
-// Sync im Hintergrund initialisieren (Pull vom Gist + Push falls lokal neuer)
-Sync.init();
+try { render(); } catch(e){ console.error('render() failed:', e); document.getElementById('app').innerHTML = '<p style="padding:20px;color:#dc2626">Fehler beim Laden: ' + (e && e.message || e) + ' — bitte Konsole (F12) prüfen.</p>'; }
+try { prefetchImages(); } catch(e){ console.warn('prefetchImages failed:', e); }
+try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
 </script>
 
 <!-- Sync-Einrichtungs-Modal -->
@@ -5109,7 +5108,4 @@ Sync.init();
 
     <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
 
-    <label for="syncTokenInput">GitHub Personal Access Token</label>
-    <input type="password" id="syncTokenInput" class="input mono" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
-
-    <label for="syncGistInput">Gist-ID (nur au
+    <label for="syncToke
