@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v5-audio-img';
+const CACHE = 'et-v6-no-size-rewrite';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -52,8 +52,4 @@ self.addEventListener('fetch', event => {
         // Erfolgreiche Antwort → auch in Cache schreiben
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      })
-      .catch(() => caches.match(event.request).then(r => r || new Response('Offline', { status: 503 }))
+          caches.open(CAC
