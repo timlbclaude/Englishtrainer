@@ -5104,20 +5104,21 @@ try { prefetchImages(); } catch(e){ console.warn('prefetchImages failed:', e); }
 try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
 </script>
 
-<!-- Sync-Einrichtungs-Modal -->
-<div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()">
-  <div class="modal" role="dialog" aria-labelledby="syncModalTitle">
-    <h2 id="syncModalTitle">☁️ Geräte-Synchronisation</h2>
-    <p class="modal-sub">Synchronisiere deinen Lernfortschritt (welches Wort ist auf welcher Stufe) zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten — danach läuft alles automatisch.</p>
+<!-- Sync-Einrichtungs-Modal (Inhalt wird vom v2-Patch dynamisch befüllt) -->
+<div class="modal-overlay" id="syncModal" onclick="if(event.target===this) closeSyncModal()"></div>
 
-    <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
+<script>
+// Service Worker registrieren (PWA / Offline-Support)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(reg){ console.log('SW registriert:', reg.scope); })
+      .catch(function(err){ console.warn('SW Fehler:', err); });
+  });
+}
+</script>
 
-    <label for="syncToke">
-
-    <!--
-═══════════════════════════════════════════════════════════════
-  ETA EnglishApp · Redesign-Patch (Variante B · Focus Dark)
- <!-- ETA-PATCH-START · v2.1 · Variante B Focus Dark + Heute -->
+<!-- ETA-PATCH-START · v2.1 · Variante B Focus Dark + Heute -->
 <style id="eta-v2-overrides">
 /* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
 :root, body, body.dark {
@@ -5768,8 +5769,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   console.log('[ETA v2.1] Variante B + Heute-Tab + Sync-Modal aktiviert');
 })();
 </script>
-<!-- ETA-PATCH-END --> Zum Einbauen: kopiere ALLES zwischen 
-  </div>
-</div>
+<!-- ETA-PATCH-END -->
+
 </body>
 </html>
