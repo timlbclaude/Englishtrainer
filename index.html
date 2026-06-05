@@ -5113,3 +5113,391 @@ try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
     <div class="hint" id="syncModalHint">Lade die Einrichtungs-Anleitung, um einen Token zu erstellen.</div>
 
     <label for="syncToke
+
+    <!--
+═══════════════════════════════════════════════════════════════
+  ETA EnglishApp · Redesign-Patch (Variante B · Focus Dark)
+  Zum Einbauen: kopiere ALLES zwischen <!-- ETA-PATCH-START --> und
+  <!-- ETA-PATCH-END -->, öffne deine index.html auf GitHub,
+  füge es DIREKT VOR </body> ein und committe.
+═══════════════════════════════════════════════════════════════
+-->
+<!-- ETA-PATCH-START · v2.0 · Variante B Focus Dark -->
+<style id="eta-v2-overrides">
+/* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
+:root,
+body,
+body.dark {
+  --primary:        #7C8CFF;
+  --primary2:       #5965F0;
+  --primary-soft:   #5EE3D6;
+  --primary-bg:     rgba(124,140,255,0.13);
+  --ok:             #42E3A4;
+  --ok-bg:          rgba(66,227,164,0.13);
+  --ok-text:        #B6F3D8;
+  --err:            #FF8A6B;
+  --err-bg:         rgba(255,138,107,0.13);
+  --err-text:       #FFCEC0;
+  --warn:           #FBBF24;
+  --warn-bg:        rgba(251,191,36,0.13);
+  --warn-text:      #FDE68A;
+  --bg:             #0B0F17;
+  --card:           #141926;
+  --card-hover:    #1B2233;
+  --text:           #F1F4FB;
+  --text-soft:      #C9D0E0;
+  --muted:          #7C8499;
+  --border:         #222B3E;
+  --border-strong:  #2E3956;
+  --header-bg:      rgba(20,25,38,0.85);
+  --nav-bg:         rgba(20,25,38,0.92);
+  --sh-sm:          0 1px 2px rgba(0,0,0,0.4);
+  --sh:             0 4px 14px rgba(0,0,0,0.35);
+  --sh-lg:          0 16px 40px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.3);
+  color-scheme: dark;
+}
+html, body { background: var(--bg) !important; color: var(--text) !important; }
+
+/* ━━━━━ 2. Top-Bar entlasten ━━━━━ */
+/* Stats-Chips raus, nur Streak + Theme-Toggle bleiben */
+.hd-stats .stat-xp,
+.hd-stats .stat-goal,
+.hd-stats .stat-ok,
+.hd-stats .stat-err { display: none !important; }
+
+.hd-stats .stat-streak {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--primary-soft) !important;
+  font-weight: 600 !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+}
+.theme-toggle {
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ━━━━━ 3. Tab-Bar nach UNTEN (mobile-first) ━━━━━ */
+@media (max-width: 720px) {
+  nav {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0; right: 0;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    border-bottom: none !important;
+    border-top: 1px solid var(--border) !important;
+    background: var(--nav-bg) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    z-index: 40 !important;
+    box-shadow: 0 -8px 28px rgba(0,0,0,0.3);
+  }
+  /* Stats-Pill an Tab-Bar verkleben — oben rechts schwebend statt ganz oben */
+  .hd-stats {
+    position: fixed !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: 12px !important;
+    z-index: 41 !important;
+    padding: 0 !important;
+    gap: 6px !important;
+    background: transparent !important;
+  }
+  .nav-tabs {
+    display: flex !important;
+    flex: 1 !important;
+    padding: 4px 4px 0 !important;
+    overflow: visible !important;
+  }
+  .tab {
+    flex: 1 !important;
+    padding: 8px 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 3px !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    border-radius: 12px !important;
+    font-size: 10.5px !important;
+    color: var(--muted) !important;
+    background: transparent !important;
+  }
+  .tab.active {
+    background: var(--card-hover) !important;
+    color: var(--text) !important;
+    border-bottom: none !important;
+  }
+  .tab .tab-label {
+    display: inline !important;
+    font-size: 10.5px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.1px !important;
+  }
+  .tab.active .tab-label { font-weight: 600 !important; }
+
+  /* Platz schaffen unten für die fixe Tab-Bar */
+  main { padding-bottom: 110px !important; }
+  /* Stats-Pill etwas kompakter */
+  .hd-stats .stat-streak {
+    padding: 4px 9px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* Emojis IMMER verstecken (Tabs zeigen nur SVG + Label) */
+.tab .eta-tab-emoji { display: none !important; }
+
+/* Desktop: zeige Icon + Label nebeneinander */
+@media (min-width: 721px) {
+  .tab .eta-tab-icon {
+    display: inline-flex !important;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  .nav-tabs { gap: 2px; padding: 4px; }
+  .tab { border-radius: 10px !important; }
+  .tab.active { background: var(--card-hover) !important; border-bottom-color: transparent !important; }
+}
+
+/* Streak-Pill / Theme-Toggle besser positioniert auf Desktop */
+@media (min-width: 721px) {
+  .hd-stats { padding: 0 12px 0 6px !important; gap: 6px !important; }
+}
+
+/* ━━━━━ 4. Cards & Buttons polieren ━━━━━ */
+.face, .quiz-question, .fill-card, .word-card,
+.summary-card, .srs-empty, .srs-dash-item,
+.flash-picker, .round-result, .history-box, .goal-row,
+.srs-compact-bar, .modal {
+  border-radius: 18px !important;
+}
+
+.btn-primary, .btn-ok {
+  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
+}
+.btn-primary:hover, .btn-ok:hover { filter: brightness(1.05) !important; }
+
+.choice {
+  background: var(--card) !important;
+  border: 1.5px solid var(--border) !important;
+  border-radius: 14px !important;
+  color: var(--text) !important;
+}
+.choice:hover:not(:disabled) {
+  border-color: var(--primary) !important;
+  background: var(--card-hover) !important;
+}
+.choice.correct {
+  background: var(--ok-bg) !important;
+  border-color: var(--ok) !important;
+  color: var(--ok-text) !important;
+}
+
+/* Single column quiz on mobile (große Trefferflächen) */
+@media (max-width: 720px) {
+  .quiz-choices {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .choice {
+    padding: 14px 16px !important;
+    font-size: 14.5px !important;
+    -webkit-line-clamp: unset !important;
+    display: flex !important;
+  }
+}
+
+/* ━━━━━ 5. Suchleiste — Emoji → SVG ━━━━━ */
+.search-bar::before { content: none !important; }
+.search-bar input { padding-left: 38px !important; }
+.search-bar .eta-search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); pointer-events: none; display: inline-flex;
+}
+
+/* ━━━━━ 6. Bewertungs-Buttons (SRS) ━━━━━ */
+.btn-srs-ok {
+  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
+}
+.btn-srs-err {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--border) !important;
+}
+.btn-srs-err:hover { border-color: var(--err) !important; }
+
+/* ━━━━━ 7. Akzentfarbe für SRS Levels (kühler, einheitlicher) ━━━━━ */
+.lvl-1, .lvl-2 {
+  background: rgba(94,227,214,0.13) !important;
+  color: #A7F0E5 !important;
+  border-color: rgba(94,227,214,0.35) !important;
+}
+.lvl-3, .lvl-4 {
+  background: rgba(124,140,255,0.16) !important;
+  color: #C7CEFF !important;
+  border-color: rgba(124,140,255,0.4) !important;
+}
+.lvl-5, .lvl-6 {
+  background: rgba(124,140,255,0.22) !important;
+  color: #DDE2FF !important;
+  border-color: rgba(124,140,255,0.5) !important;
+}
+
+/* ━━━━━ 8. Subtiler Hintergrund-Glow ━━━━━ */
+body::before {
+  content: '';
+  position: fixed;
+  top: -120px; right: -80px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,140,255,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+nav, main, #mobileNextBar { position: relative; z-index: 1; }
+
+/* ━━━━━ 9. Type-Polish ━━━━━ */
+body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+.fc-word, .quiz-word { letter-spacing: -0.04em !important; }
+
+/* Mobile next bar matched */
+#mobileNextBar {
+  background: var(--card) !important;
+  border-top: 1px solid var(--border) !important;
+}
+#mobileNextBar .mnb-btn {
+  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
+  box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
+}
+
+/* SRS Bewertungs-Leiste am Handy: über der Tab-Bar */
+@media (max-width: 540px) {
+  .srs-rate-row {
+    bottom: 76px !important;
+    background: var(--card) !important;
+    border-top: 1px solid var(--border) !important;
+    padding-bottom: 10px !important;
+  }
+  .fc-actions {
+    bottom: 76px !important;
+    background: var(--card) !important;
+    border-top: 1px solid var(--border) !important;
+    padding-bottom: 10px !important;
+  }
+}
+</style>
+
+<script id="eta-v2-script">
+(function(){
+  // ── 1. Dark mode hart erzwingen ───────────────────────────
+  document.body.classList.add('dark');
+  try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+
+  // ── 2. Theme-Color für mobile Adressleiste ────────────────
+  var tc = document.querySelector('meta[name="theme-color"]');
+  if (tc) tc.setAttribute('content', '#0B0F17');
+
+  // ── 3. Lucide-Stil SVG-Icons ──────────────────────────────
+  var ICON = {
+    train:  '<path d="M9.5 3a3 3 0 0 0-3 3v.5A3 3 0 0 0 4 9.5v1a3 3 0 0 0 1 5.7V18a3 3 0 0 0 5.5 1.7M14.5 3a3 3 0 0 1 3 3v.5A3 3 0 0 1 20 9.5v1a3 3 0 0 1-1 5.7V18a3 3 0 0 1-5.5 1.7M12 4v17"/>',
+    flash:  '<path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/>',
+    quiz:   '<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+    fill:   '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/>',
+    list:   '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
+    flame:  '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.4 0 2.6-1 2.9-2.4.4-2-1.4-3.6-1.4-3.6S15 12 15 9.5c0-3-3-5.5-3-5.5s.5 4-3 6c-1.7 1-2.5 2.8-2.5 4.5Z"/>',
+    moon:   '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
+    sun:    '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>',
+  };
+  function svg(name, size) {
+    return '<svg width="'+(size||20)+'" height="'+(size||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">'+(ICON[name]||'')+'</svg>';
+  }
+
+  // ── 4. Tab-Emojis durch SVG ersetzen ──────────────────────
+  var TAB_ICON = ['train','flash','quiz','fill','list'];
+  document.querySelectorAll('.nav-tabs .tab').forEach(function(btn, i){
+    // Emoji-Textknoten verstecken
+    var firstNode = btn.firstChild;
+    while (firstNode && firstNode.nodeType === 3 && !firstNode.textContent.trim()) {
+      firstNode = firstNode.nextSibling;
+    }
+    if (firstNode && firstNode.nodeType === 3) {
+      var span = document.createElement('span');
+      span.className = 'eta-tab-emoji';
+      span.textContent = firstNode.textContent;
+      btn.replaceChild(span, firstNode);
+    } else if (firstNode && firstNode.classList && !firstNode.classList.contains('tab-label')) {
+      firstNode.classList.add('eta-tab-emoji');
+    }
+    // SVG-Icon davor
+    var iconWrap = document.createElement('span');
+    iconWrap.className = 'eta-tab-icon';
+    iconWrap.style.cssText = 'display:inline-flex;color:inherit;';
+    iconWrap.innerHTML = svg(TAB_ICON[i] || 'train', 22);
+    btn.insertBefore(iconWrap, btn.firstChild);
+  });
+
+  // ── 5. Streak-Pill: Emoji 🔥 durch SVG ersetzen ───────────
+  var streak = document.getElementById('statStreak');
+  if (streak) {
+    var n = (streak.textContent.match(/\d+/) || [0])[0];
+    streak.innerHTML = svg('flame', 13) + ' ' + n;
+    streak.style.gap = '5px';
+    streak.style.display = 'inline-flex';
+    streak.style.alignItems = 'center';
+    // Wert auf updateStats hin neu setzen
+    var mo = new MutationObserver(function(){
+      var nn = (streak.textContent.replace(/[^\d ]/g,'').match(/\d+/) || [0])[0];
+      if (streak.querySelector('svg')) return;
+      streak.innerHTML = svg('flame', 13) + ' ' + nn;
+    });
+    mo.observe(streak, { childList: true, characterData: true, subtree: true });
+  }
+
+  // ── 6. Theme-Toggle Icon (Mond → Sonne dynamisch) ─────────
+  var tt = document.getElementById('themeToggle');
+  if (tt) {
+    var setIcon = function(){
+      tt.innerHTML = svg(document.body.classList.contains('dark') ? 'sun' : 'moon', 15);
+    };
+    setIcon();
+    var orig = tt.onclick;
+    tt.addEventListener('click', function(){ setTimeout(setIcon, 50); });
+  }
+
+  // ── 7. Such-Emoji 🔍 → SVG (auch wenn Suchleiste nachgerendert wird)
+  function decorateSearch() {
+    document.querySelectorAll('.search-bar').forEach(function(bar){
+      if (bar.querySelector('.eta-search-icon')) return;
+      var icon = document.createElement('span');
+      icon.className = 'eta-search-icon';
+      icon.innerHTML = svg('search', 15);
+      bar.appendChild(icon);
+    });
+  }
+  decorateSearch();
+  // Bei Re-Renders der Wortliste neu dekorieren
+  var app = document.getElementById('app');
+  if (app) {
+    var mo2 = new MutationObserver(function(){ decorateSearch(); });
+    mo2.observe(app, { childList: true, subtree: true });
+  }
+
+  console.log('[ETA v2.0] Variante B Focus Dark aktiviert');
+})();
+</script>
+<!-- ETA-PATCH-END -->
+ ">
+  </div>
+</div>
+</body>
+</html>

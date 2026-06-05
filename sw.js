@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v6-no-size-rewrite';
+const CACHE = 'et-v7-redesign-b';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -52,4 +52,10 @@ self.addEventListener('fetch', event => {
         // Erfolgreiche Antwort → auch in Cache schreiben
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CAC
+          caches.open(CACHE).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request).then(r => r || caches.match('./index.html')))
+  );
+});

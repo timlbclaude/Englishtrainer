@@ -1,11 +1,11 @@
 {
   "name": "English Trainer",
-  "short_name": "ET 🇬🇧",
+  "short_name": "ET",
   "description": "Persönlicher Vokabel-Trainer – Karteikarten, Quiz, Lückentext",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#4f46e5",
+  "background_color": "#0B0F17",
+  "theme_color": "#0B0F17",
   "lang": "de",
   "orientation": "portrait-primary",
   "icons": [
