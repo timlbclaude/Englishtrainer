@@ -5117,17 +5117,10 @@ try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
     <!--
 ═══════════════════════════════════════════════════════════════
   ETA EnglishApp · Redesign-Patch (Variante B · Focus Dark)
-  Zum Einbauen: kopiere ALLES zwischen <!-- ETA-PATCH-START --> und
-  <!-- ETA-PATCH-END -->, öffne deine index.html auf GitHub,
-  füge es DIREKT VOR </body> ein und committe.
-═══════════════════════════════════════════════════════════════
--->
-<!-- ETA-PATCH-START · v2.0 · Variante B Focus Dark -->
+ <!-- ETA-PATCH-START · v2.1 · Variante B Focus Dark + Heute -->
 <style id="eta-v2-overrides">
 /* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
-:root,
-body,
-body.dark {
+:root, body, body.dark {
   --primary:        #7C8CFF;
   --primary2:       #5965F0;
   --primary-soft:   #5EE3D6;
@@ -5143,10 +5136,10 @@ body.dark {
   --warn-text:      #FDE68A;
   --bg:             #0B0F17;
   --card:           #141926;
-  --card-hover:    #1B2233;
+  --card-hover:     #1B2233;
   --text:           #F1F4FB;
   --text-soft:      #C9D0E0;
-  --muted:          #7C8499;
+  --muted:          #8A93AC;
   --border:         #222B3E;
   --border-strong:  #2E3956;
   --header-bg:      rgba(20,25,38,0.85);
@@ -5159,12 +5152,10 @@ body.dark {
 html, body { background: var(--bg) !important; color: var(--text) !important; }
 
 /* ━━━━━ 2. Top-Bar entlasten ━━━━━ */
-/* Stats-Chips raus, nur Streak + Theme-Toggle bleiben */
 .hd-stats .stat-xp,
 .hd-stats .stat-goal,
 .hd-stats .stat-ok,
 .hd-stats .stat-err { display: none !important; }
-
 .hd-stats .stat-streak {
   background: var(--card) !important;
   border: 1px solid var(--border) !important;
@@ -5173,13 +5164,10 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
   padding: 5px 10px !important;
   border-radius: 999px !important;
 }
-.theme-toggle {
-  border: 1px solid var(--border) !important;
-  color: var(--text) !important;
-}
+.theme-toggle { border: 1px solid var(--border) !important; color: var(--text) !important; }
 
-/* ━━━━━ 3. Tab-Bar nach UNTEN (mobile-first) ━━━━━ */
-@media (max-width: 720px) {
+/* ━━━━━ 3. Tab-Bar nach UNTEN (alle Touch-Geräte) ━━━━━ */
+@media (max-width: 900px), (pointer: coarse) {
   nav {
     position: fixed !important;
     top: auto !important;
@@ -5196,7 +5184,6 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
     z-index: 40 !important;
     box-shadow: 0 -8px 28px rgba(0,0,0,0.3);
   }
-  /* Stats-Pill an Tab-Bar verkleben — oben rechts schwebend statt ganz oben */
   .hd-stats {
     position: fixed !important;
     top: max(10px, env(safe-area-inset-top)) !important;
@@ -5206,23 +5193,18 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
     gap: 6px !important;
     background: transparent !important;
   }
-  .nav-tabs {
-    display: flex !important;
-    flex: 1 !important;
-    padding: 4px 4px 0 !important;
-    overflow: visible !important;
-  }
+  .nav-tabs { display: flex !important; flex: 1 !important; padding: 4px !important; overflow: visible !important; }
   .tab {
     flex: 1 !important;
-    padding: 8px 4px !important;
+    padding: 7px 2px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 3px !important;
+    gap: 2px !important;
     border-bottom: none !important;
     margin-bottom: 0 !important;
     border-radius: 12px !important;
-    font-size: 10.5px !important;
+    font-size: 10px !important;
     color: var(--muted) !important;
     background: transparent !important;
   }
@@ -5231,103 +5213,38 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
     color: var(--text) !important;
     border-bottom: none !important;
   }
-  .tab .tab-label {
-    display: inline !important;
-    font-size: 10.5px !important;
-    font-weight: 500 !important;
-    letter-spacing: -0.1px !important;
-  }
+  .tab .tab-label { display: inline !important; font-size: 10px !important; font-weight: 500 !important; letter-spacing: -0.1px !important; }
   .tab.active .tab-label { font-weight: 600 !important; }
-
-  /* Platz schaffen unten für die fixe Tab-Bar */
-  main { padding-bottom: 110px !important; }
-  /* Stats-Pill etwas kompakter */
-  .hd-stats .stat-streak {
-    padding: 4px 9px !important;
-    font-size: 11px !important;
-  }
+  main { padding-bottom: 120px !important; padding-top: 50px !important; }
+  .hd-stats .stat-streak { padding: 4px 9px !important; font-size: 11px !important; }
 }
 
-/* Emojis IMMER verstecken (Tabs zeigen nur SVG + Label) */
-.tab .eta-tab-emoji { display: none !important; }
-
-/* Desktop: zeige Icon + Label nebeneinander */
-@media (min-width: 721px) {
-  .tab .eta-tab-icon {
-    display: inline-flex !important;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
+/* Desktop: Icon + Label nebeneinander */
+@media (min-width: 901px) and (pointer: fine) {
+  .tab .eta-tab-icon { display: inline-flex !important; vertical-align: middle; margin-right: 8px; }
   .nav-tabs { gap: 2px; padding: 4px; }
   .tab { border-radius: 10px !important; }
   .tab.active { background: var(--card-hover) !important; border-bottom-color: transparent !important; }
-}
-
-/* Streak-Pill / Theme-Toggle besser positioniert auf Desktop */
-@media (min-width: 721px) {
   .hd-stats { padding: 0 12px 0 6px !important; gap: 6px !important; }
 }
+
+/* Emojis IMMER verstecken */
+.tab .eta-tab-emoji { display: none !important; }
 
 /* ━━━━━ 4. Cards & Buttons polieren ━━━━━ */
 .face, .quiz-question, .fill-card, .word-card,
 .summary-card, .srs-empty, .srs-dash-item,
 .flash-picker, .round-result, .history-box, .goal-row,
-.srs-compact-bar, .modal {
-  border-radius: 18px !important;
-}
+.srs-compact-bar, .modal { border-radius: 18px !important; }
 
-.btn-primary, .btn-ok {
+.btn-primary, .btn-ok, .btn-srs-ok {
   background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
   border: none !important;
   color: #fff !important;
   box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
 }
-.btn-primary:hover, .btn-ok:hover { filter: brightness(1.05) !important; }
+.btn-primary:hover, .btn-ok:hover, .btn-srs-ok:hover { filter: brightness(1.05) !important; }
 
-.choice {
-  background: var(--card) !important;
-  border: 1.5px solid var(--border) !important;
-  border-radius: 14px !important;
-  color: var(--text) !important;
-}
-.choice:hover:not(:disabled) {
-  border-color: var(--primary) !important;
-  background: var(--card-hover) !important;
-}
-.choice.correct {
-  background: var(--ok-bg) !important;
-  border-color: var(--ok) !important;
-  color: var(--ok-text) !important;
-}
-
-/* Single column quiz on mobile (große Trefferflächen) */
-@media (max-width: 720px) {
-  .quiz-choices {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
-  }
-  .choice {
-    padding: 14px 16px !important;
-    font-size: 14.5px !important;
-    -webkit-line-clamp: unset !important;
-    display: flex !important;
-  }
-}
-
-/* ━━━━━ 5. Suchleiste — Emoji → SVG ━━━━━ */
-.search-bar::before { content: none !important; }
-.search-bar input { padding-left: 38px !important; }
-.search-bar .eta-search-icon {
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--muted); pointer-events: none; display: inline-flex;
-}
-
-/* ━━━━━ 6. Bewertungs-Buttons (SRS) ━━━━━ */
-.btn-srs-ok {
-  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
-  border: none !important;
-  box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
-}
 .btn-srs-err {
   background: var(--card) !important;
   color: var(--text) !important;
@@ -5335,65 +5252,189 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
 }
 .btn-srs-err:hover { border-color: var(--err) !important; }
 
-/* ━━━━━ 7. Akzentfarbe für SRS Levels (kühler, einheitlicher) ━━━━━ */
-.lvl-1, .lvl-2 {
-  background: rgba(94,227,214,0.13) !important;
-  color: #A7F0E5 !important;
-  border-color: rgba(94,227,214,0.35) !important;
+.choice {
+  background: var(--card) !important;
+  border: 1.5px solid var(--border) !important;
+  border-radius: 14px !important;
+  color: var(--text) !important;
 }
-.lvl-3, .lvl-4 {
-  background: rgba(124,140,255,0.16) !important;
-  color: #C7CEFF !important;
-  border-color: rgba(124,140,255,0.4) !important;
-}
-.lvl-5, .lvl-6 {
-  background: rgba(124,140,255,0.22) !important;
-  color: #DDE2FF !important;
-  border-color: rgba(124,140,255,0.5) !important;
+.choice:hover:not(:disabled) { border-color: var(--primary) !important; background: var(--card-hover) !important; }
+.choice.correct { background: var(--ok-bg) !important; border-color: var(--ok) !important; color: var(--ok-text) !important; }
+
+@media (max-width: 900px), (pointer: coarse) {
+  .quiz-choices { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .choice {
+    padding: 14px 16px !important; font-size: 14.5px !important;
+    -webkit-line-clamp: unset !important; display: flex !important;
+  }
 }
 
-/* ━━━━━ 8. Subtiler Hintergrund-Glow ━━━━━ */
+/* SRS-Level-Badges einheitlicher */
+.lvl-1, .lvl-2 { background: rgba(94,227,214,0.13) !important; color: #A7F0E5 !important; border-color: rgba(94,227,214,0.35) !important; }
+.lvl-3, .lvl-4 { background: rgba(124,140,255,0.16) !important; color: #C7CEFF !important; border-color: rgba(124,140,255,0.4) !important; }
+.lvl-5, .lvl-6 { background: rgba(124,140,255,0.22) !important; color: #DDE2FF !important; border-color: rgba(124,140,255,0.5) !important; }
+
+/* Such-Icon */
+.search-bar::before { content: none !important; }
+.search-bar input { padding-left: 38px !important; }
+.search-bar .eta-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; display: inline-flex; }
+
+/* Subtiler Glow */
 body::before {
-  content: '';
-  position: fixed;
-  top: -120px; right: -80px;
-  width: 380px; height: 380px;
-  border-radius: 50%;
+  content: ''; position: fixed; top: -120px; right: -80px;
+  width: 380px; height: 380px; border-radius: 50%;
   background: radial-gradient(circle, rgba(124,140,255,0.18) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+  pointer-events: none; z-index: 0;
 }
 nav, main, #mobileNextBar { position: relative; z-index: 1; }
 
-/* ━━━━━ 9. Type-Polish ━━━━━ */
 body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
 .fc-word, .quiz-word { letter-spacing: -0.04em !important; }
 
-/* Mobile next bar matched */
-#mobileNextBar {
-  background: var(--card) !important;
-  border-top: 1px solid var(--border) !important;
-}
+#mobileNextBar { background: var(--card) !important; border-top: 1px solid var(--border) !important; }
 #mobileNextBar .mnb-btn {
   background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
   box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
 }
 
-/* SRS Bewertungs-Leiste am Handy: über der Tab-Bar */
 @media (max-width: 540px) {
-  .srs-rate-row {
-    bottom: 76px !important;
-    background: var(--card) !important;
-    border-top: 1px solid var(--border) !important;
-    padding-bottom: 10px !important;
-  }
-  .fc-actions {
+  .srs-rate-row, .fc-actions {
     bottom: 76px !important;
     background: var(--card) !important;
     border-top: 1px solid var(--border) !important;
     padding-bottom: 10px !important;
   }
 }
+
+/* Karteikarten-Rückseite kompakter */
+.back-ex { padding: 8px 11px !important; font-size: 12.5px !important; }
+.back-ex:not(:first-of-type) { display: none !important; }
+
+/* Animation respektieren */
+@media (prefers-reduced-motion: reduce) {
+  .flashcard { transition: opacity .25s ease !important; }
+  .flashcard.flipped .face { display: none; }
+}
+
+/* ━━━━━ 5. HEUTE-Screen ━━━━━ */
+.eta-today {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-top: 4px;
+}
+.eta-today-hero {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 22px; padding: 20px 20px 18px;
+  position: relative; overflow: hidden;
+}
+.eta-today-greet {
+  font-size: 11px; color: var(--muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;
+}
+.eta-today-name {
+  font-size: 22px; color: var(--text); font-weight: 700;
+  letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 18px;
+}
+.eta-today-row {
+  display: flex; align-items: center; gap: 18px;
+  margin-bottom: 18px;
+}
+.eta-ring-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+.eta-ring-wrap svg { transform: rotate(-90deg); }
+.eta-ring-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.eta-ring-num { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.8px; line-height: 1; }
+.eta-ring-of { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.eta-today-meta { flex: 1; min-width: 0; }
+.eta-today-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(94,227,214,0.13); color: var(--primary-soft);
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.4px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.eta-today-pill::before {
+  content: ''; width: 5px; height: 5px; border-radius: 3px;
+  background: var(--primary-soft);
+}
+.eta-today-headline {
+  font-size: 17px; color: var(--text); font-weight: 700;
+  letter-spacing: -0.3px; line-height: 1.25; margin-bottom: 10px;
+}
+.eta-today-stats {
+  display: flex; gap: 12px; font-size: 11.5px; color: var(--muted);
+  align-items: center;
+}
+.eta-today-stats strong { color: var(--text); font-weight: 700; font-size: 13px; margin-right: 2px; }
+.eta-today-stats .sep { width: 1px; height: 14px; background: var(--border); }
+
+.eta-cta-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, var(--primary2), var(--primary));
+  color: #fff; border: none; border-radius: 14px;
+  padding: 15px 18px; width: 100%; cursor: pointer;
+  font-family: inherit; font-weight: 600; font-size: 14.5px;
+  box-shadow: 0 8px 22px rgba(89,101,240,0.4);
+  transition: filter .15s, transform .1s;
+}
+.eta-cta-btn:hover { filter: brightness(1.05); }
+.eta-cta-btn:active { transform: translateY(1px); }
+.eta-cta-btn .eta-cta-text { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.eta-cta-btn .eta-cta-sub { font-size: 12.5px; opacity: 0.85; font-weight: 500; }
+.eta-cta-btn .eta-cta-arrow {
+  width: 36px; height: 36px; border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.eta-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.eta-stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px 14px 12px;
+}
+.eta-stat-head {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+  font-size: 10.5px; color: var(--muted); font-weight: 600;
+  letter-spacing: 0.4px; text-transform: uppercase;
+}
+.eta-stat-num { display: flex; align-items: baseline; gap: 4px; }
+.eta-stat-num .v { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.eta-stat-num .u { font-size: 12px; color: var(--muted); }
+.eta-week-dots { display: flex; gap: 3px; margin-top: 8px; }
+.eta-week-dots > div { flex: 1; height: 4px; border-radius: 2px; background: var(--card-hover); }
+.eta-week-dots > div.done { background: var(--primary); }
+.eta-week-dots > div.today { background: var(--primary-soft); }
+
+.eta-modes {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+}
+.eta-mode-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; cursor: pointer;
+  border-top: 1px solid var(--border);
+  transition: background .15s;
+}
+.eta-mode-row:first-child { border-top: none; }
+.eta-mode-row:hover { background: var(--card-hover); }
+.eta-mode-ico {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--card-hover); color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.eta-mode-body { flex: 1; }
+.eta-mode-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
+.eta-mode-sub { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+/* Modal Polish (für rekonstruiertes Sync) */
+.modal { background: var(--card) !important; border: 1px solid var(--border) !important; }
+.modal-overlay { background: rgba(0,0,0,0.65) !important; backdrop-filter: blur(6px); }
+.modal .input { background: var(--bg) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.modal .hint { background: var(--card-hover) !important; border-left-color: var(--primary) !important; color: var(--text-soft) !important; }
+.modal-actions .btn-primary { background: linear-gradient(135deg, var(--primary2), var(--primary)) !important; }
 </style>
 
 <script id="eta-v2-script">
@@ -5402,79 +5443,306 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   document.body.classList.add('dark');
   try { localStorage.setItem('theme', 'dark'); } catch(e) {}
 
-  // ── 2. Theme-Color für mobile Adressleiste ────────────────
   var tc = document.querySelector('meta[name="theme-color"]');
   if (tc) tc.setAttribute('content', '#0B0F17');
 
-  // ── 3. Lucide-Stil SVG-Icons ──────────────────────────────
+  // ── 2. Lucide SVG-Icons ───────────────────────────────────
   var ICON = {
-    train:  '<path d="M9.5 3a3 3 0 0 0-3 3v.5A3 3 0 0 0 4 9.5v1a3 3 0 0 0 1 5.7V18a3 3 0 0 0 5.5 1.7M14.5 3a3 3 0 0 1 3 3v.5A3 3 0 0 1 20 9.5v1a3 3 0 0 1-1 5.7V18a3 3 0 0 1-5.5 1.7M12 4v17"/>',
-    flash:  '<path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/>',
-    quiz:   '<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
-    fill:   '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/>',
-    list:   '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
-    search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
-    flame:  '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.4 0 2.6-1 2.9-2.4.4-2-1.4-3.6-1.4-3.6S15 12 15 9.5c0-3-3-5.5-3-5.5s.5 4-3 6c-1.7 1-2.5 2.8-2.5 4.5Z"/>',
-    moon:   '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
-    sun:    '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>',
+    today:    '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    train:    '<path d="M9.5 3a3 3 0 0 0-3 3v.5A3 3 0 0 0 4 9.5v1a3 3 0 0 0 1 5.7V18a3 3 0 0 0 5.5 1.7M14.5 3a3 3 0 0 1 3 3v.5A3 3 0 0 1 20 9.5v1a3 3 0 0 1-1 5.7V18a3 3 0 0 1-5.5 1.7M12 4v17"/>',
+    flash:    '<path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/>',
+    quiz:     '<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+    fill:     '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/>',
+    list:     '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    search:   '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
+    flame:    '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.4 0 2.6-1 2.9-2.4.4-2-1.4-3.6-1.4-3.6S15 12 15 9.5c0-3-3-5.5-3-5.5s.5 4-3 6c-1.7 1-2.5 2.8-2.5 4.5Z"/>',
+    moon:     '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
+    sun:      '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>',
+    arrowRight:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+    chevronRight:'<path d="M9 18l6-6-6-6"/>',
+    play:     '<path d="M5 3v18l15-9L5 3Z" fill="currentColor"/>',
+    cloud:    '<path d="M18 10h-1.3A7 7 0 1 0 5 16.7"/><path d="M21 14a3 3 0 0 0-3-3h-3.5A5 5 0 1 0 8 17h10a3 3 0 0 0 3-3Z"/>',
+    x:        '<path d="M18 6 6 18M6 6l12 12"/>',
   };
-  function svg(name, size) {
-    return '<svg width="'+(size||20)+'" height="'+(size||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">'+(ICON[name]||'')+'</svg>';
+  function svg(name, size, w) {
+    return '<svg width="'+(size||20)+'" height="'+(size||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">'+(ICON[name]||'')+'</svg>';
+  }
+  window.__etaSvg = svg;
+
+  // ── 3. Sync-Modal rekonstruieren ──────────────────────────
+  function rebuildSyncModal() {
+    var modal = document.getElementById('syncModal');
+    if (!modal) return;
+    modal.innerHTML = ''
+      + '<div class="modal" role="dialog" aria-labelledby="syncModalTitle">'
+      + '  <h2 id="syncModalTitle" style="display:flex;align-items:center;gap:8px">'
+      +      svg('cloud', 18) + ' Geräte-Synchronisation</h2>'
+      + '  <p class="modal-sub">Synchronisiere deinen Lernfortschritt zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten — danach läuft alles automatisch im Hintergrund.</p>'
+      + '  <div class="hint" id="syncModalHint">Lade die <a href="sync-anleitung.html" target="_blank" style="color:var(--primary)">Einrichtungs-Anleitung</a>, um einen Token zu erstellen.</div>'
+      + '  <label for="syncTokenInput">GitHub Personal Access Token</label>'
+      + '  <input id="syncTokenInput" class="input mono" type="password" autocomplete="off" spellcheck="false" placeholder="ghp_..." />'
+      + '  <label for="syncGistInput">Gist-ID <span style="color:var(--muted);font-weight:400">(nur auf dem 2. Gerät nötig)</span></label>'
+      + '  <div style="display:flex;gap:6px">'
+      + '    <input id="syncGistInput" class="input mono" type="text" autocomplete="off" spellcheck="false" placeholder="z.B. 7a1b8c..." style="flex:1;margin-bottom:0" />'
+      + '    <button type="button" class="btn btn-ghost" onclick="copyGistIdToClipboard()" title="Gist-ID kopieren" style="padding:8px 12px">📋</button>'
+      + '  </div>'
+      + '  <div id="syncModalMsg" class="modal-msg"></div>'
+      + '  <div class="modal-actions">'
+      + '    <button type="button" class="btn btn-ghost" onclick="closeSyncModal()">Abbrechen</button>'
+      + '    <button type="button" class="btn btn-primary" onclick="saveSyncSettings()">Speichern & verbinden</button>'
+      + '  </div>'
+      + '</div>';
+  }
+  rebuildSyncModal();
+
+  // ── 4. Tab-Icons + Heute-Tab hinzufügen ──────────────────
+  var TAB_ORDER = [
+    { id: 'today',  label: 'Heute',         icon: 'today' },
+    { id: 'train',  label: 'Training',      icon: 'train' },
+    { id: 'flash',  label: 'Karteikarten',  icon: 'flash' },
+    { id: 'quiz',   label: 'Quiz',          icon: 'quiz' },
+    { id: 'fill',   label: 'Lückentext',    icon: 'fill' },
+    { id: 'list',   label: 'Wortliste',     icon: 'list' },
+  ];
+
+  var navTabs = document.querySelector('.nav-tabs');
+  if (navTabs) {
+    // Erstmal: alte Tabs durchgehen, deren Mode-Mapping ermitteln (Reihenfolge: train, flash, quiz, fill, list)
+    var existing = navTabs.querySelectorAll('.tab');
+    var modeOrder = ['train', 'flash', 'quiz', 'fill', 'list'];
+    existing.forEach(function(btn, i){
+      btn.dataset.mode = modeOrder[i] || 'train';
+      // Emoji raus
+      var firstNode = btn.firstChild;
+      while (firstNode && firstNode.nodeType === 3 && !firstNode.textContent.trim()) {
+        firstNode = firstNode.nextSibling;
+      }
+      if (firstNode && firstNode.nodeType === 3) {
+        var em = document.createElement('span');
+        em.className = 'eta-tab-emoji';
+        em.textContent = firstNode.textContent;
+        btn.replaceChild(em, firstNode);
+      }
+      // SVG einfügen
+      var iconName = ({train:'train', flash:'flash', quiz:'quiz', fill:'fill', list:'list'})[modeOrder[i]];
+      var iconWrap = document.createElement('span');
+      iconWrap.className = 'eta-tab-icon';
+      iconWrap.innerHTML = svg(iconName, 22);
+      btn.insertBefore(iconWrap, btn.firstChild);
+    });
+
+    // Heute-Tab als ERSTEN einfügen
+    var todayBtn = document.createElement('button');
+    todayBtn.className = 'tab';
+    todayBtn.dataset.mode = 'today';
+    todayBtn.onclick = function(){ setMode('today', todayBtn); };
+    todayBtn.innerHTML = '<span class="eta-tab-icon">' + svg('today', 22) + '</span><span class="tab-label">Heute</span>';
+    navTabs.insertBefore(todayBtn, navTabs.firstChild);
+
+    // Active-State-Helper: bei jedem setMode den richtigen Tab aktivieren
+    var origSetMode = window.setMode;
+    window.setMode = function(m, btn) {
+      window.mode = m;
+      window.idx = 0;
+      window.flipped = false;
+      window.quizAnswered = false;
+      window.fillChecked = false;
+      navTabs.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      var match = [...navTabs.querySelectorAll('.tab')].find(function(t){ return t.dataset.mode === m; });
+      if (match) match.classList.add('active');
+      if (m === 'today') {
+        try { scrollToTop(); } catch(e) {}
+        renderToday();
+        return;
+      }
+      // Fallback an Original
+      if (typeof origSetMode === 'function') return origSetMode(m, btn || match);
+      // Manuelles Reset, falls Original nicht existiert
+      try { scrollToTop(); } catch(e) {}
+      render();
+    };
   }
 
-  // ── 4. Tab-Emojis durch SVG ersetzen ──────────────────────
-  var TAB_ICON = ['train','flash','quiz','fill','list'];
-  document.querySelectorAll('.nav-tabs .tab').forEach(function(btn, i){
-    // Emoji-Textknoten verstecken
-    var firstNode = btn.firstChild;
-    while (firstNode && firstNode.nodeType === 3 && !firstNode.textContent.trim()) {
-      firstNode = firstNode.nextSibling;
-    }
-    if (firstNode && firstNode.nodeType === 3) {
-      var span = document.createElement('span');
-      span.className = 'eta-tab-emoji';
-      span.textContent = firstNode.textContent;
-      btn.replaceChild(span, firstNode);
-    } else if (firstNode && firstNode.classList && !firstNode.classList.contains('tab-label')) {
-      firstNode.classList.add('eta-tab-emoji');
-    }
-    // SVG-Icon davor
-    var iconWrap = document.createElement('span');
-    iconWrap.className = 'eta-tab-icon';
-    iconWrap.style.cssText = 'display:inline-flex;color:inherit;';
-    iconWrap.innerHTML = svg(TAB_ICON[i] || 'train', 22);
-    btn.insertBefore(iconWrap, btn.firstChild);
-  });
+  // ── 5. HEUTE-Render-Funktion ──────────────────────────────
+  function getStats() {
+    var stats = (typeof SRS !== 'undefined' && SRS.stats) ? SRS.stats(WORDS) : null;
+    var goal  = (typeof Stats !== 'undefined' && Stats.state) ? (Stats.state.dailyGoal || 20) : 20;
+    var doneToday = 0;
+    try {
+      var today = SRS.todayISO();
+      var hist = Stats.state.history || [];
+      doneToday = hist.filter(function(s){ return s.date === today; }).reduce(function(a,s){ return a + (s.correct||0); }, 0);
+    } catch(e) {}
+    var streak = (Stats && Stats.state && Stats.state.streak) || 0;
+    return {
+      due:  stats ? stats.due : 0,
+      newW: stats ? stats.new : 0,
+      learn: stats ? stats.learning : 0,
+      mast: stats ? stats.mastered : 0,
+      goal: goal,
+      doneToday: doneToday,
+      streak: streak,
+    };
+  }
 
-  // ── 5. Streak-Pill: Emoji 🔥 durch SVG ersetzen ───────────
+  function getGreeting() {
+    var h = new Date().getHours();
+    if (h < 5)  return 'Gute Nacht';
+    if (h < 11) return 'Guten Morgen';
+    if (h < 17) return 'Hallo';
+    if (h < 22) return 'Guten Abend';
+    return 'Guten Abend';
+  }
+  function todayDateDE() {
+    var d = new Date();
+    var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+    var months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    return days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()];
+  }
+
+  function weekActivity() {
+    // Letzte 7 Tage abprüfen: hat man da was gemacht?
+    var out = [];
+    try {
+      var hist = Stats.state.history || [];
+      var byDate = {};
+      hist.forEach(function(s){ byDate[s.date] = (byDate[s.date] || 0) + (s.correct || 0); });
+      var today = new Date();
+      var todayDow = (today.getDay() + 6) % 7; // 0 = Mo, 6 = So
+      for (var i = 6; i >= 0; i--) {
+        var d = new Date(today); d.setDate(today.getDate() - i);
+        var iso = d.toISOString().slice(0,10);
+        var count = byDate[iso] || 0;
+        out.push({ done: count > 0, today: i === 0, count: count });
+      }
+    } catch(e) {
+      for (var j = 0; j < 7; j++) out.push({ done: false, today: j === 6, count: 0 });
+    }
+    return out;
+  }
+
+  function makeRing(done, goal) {
+    var size = 110, stroke = 9;
+    var r = (size - stroke) / 2;
+    var c = 2 * Math.PI * r;
+    var pct = goal > 0 ? Math.min(1, done / goal) : 0;
+    var dashOff = c * (1 - pct);
+    return ''
+      + '<div class="eta-ring-wrap">'
+      +   '<svg width="'+size+'" height="'+size+'">'
+      +     '<defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">'
+      +       '<stop offset="0%" stop-color="#7C8CFF"/><stop offset="100%" stop-color="#5EE3D6"/>'
+      +     '</linearGradient></defs>'
+      +     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="#1B2233" stroke-width="'+stroke+'"/>'
+      +     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="url(#ringGrad)" stroke-width="'+stroke+'" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+dashOff+'"/>'
+      +   '</svg>'
+      +   '<div class="eta-ring-text"><div class="eta-ring-num">'+done+'</div><div class="eta-ring-of">von '+goal+' heute</div></div>'
+      + '</div>';
+  }
+
+  function renderToday() {
+    var app = document.getElementById('app');
+    if (!app) return;
+    var s = getStats();
+    var greeting = getGreeting();
+    var todayCount = s.due + s.newW;
+    var week = weekActivity();
+    var weekDays = ['M','D','M','D','F','S','S'];
+
+    var ctaText = (s.due > 0) ? 'Training fortsetzen' : (s.newW > 0 ? 'Neue Wörter starten' : 'Freies Üben');
+    var ctaSub  = (s.due > 0) ? (s.due + ' fällige Wiederholungen') : (s.newW > 0 ? (s.newW + ' neue Wörter') : 'Karteikarten-Modus');
+    var ctaAction = (s.due > 0 || s.newW > 0) ? 'train' : 'flash';
+
+    app.innerHTML = ''
+      + '<div class="eta-today">'
+      // Hero
+      + '  <div class="eta-today-hero">'
+      + '    <div class="eta-today-greet">' + todayDateDE() + '</div>'
+      + '    <div class="eta-today-name">' + greeting + '</div>'
+      + '    <div class="eta-today-row">'
+      +        makeRing(s.doneToday, s.goal)
+      + '      <div class="eta-today-meta">'
+      + '        <div class="eta-today-pill">' + ((s.due + s.newW) > 0 ? 'Bereit zum Lernen' : 'Alles erledigt') + '</div>'
+      + '        <div class="eta-today-headline">' + (todayCount > 0 ? (todayCount + ' Wörter warten') : 'Tagesziel erreicht 🎉') + '</div>'
+      + '        <div class="eta-today-stats">'
+      + '          <div><strong>' + s.due + '</strong> fällig</div>'
+      + '          <span class="sep"></span>'
+      + '          <div><strong>' + s.newW + '</strong> neu</div>'
+      + '          <span class="sep"></span>'
+      + '          <div><strong>' + s.mast + '</strong> ges.</div>'
+      + '        </div>'
+      + '      </div>'
+      + '    </div>'
+      + '    <button class="eta-cta-btn" onclick="setMode(\'' + ctaAction + '\')">'
+      + '      <span class="eta-cta-text"><span class="eta-cta-sub">Weiter mit</span><span>' + ctaText + '</span></span>'
+      + '      <span class="eta-cta-arrow">' + svg('play', 14, 2) + '</span>'
+      + '    </button>'
+      + '  </div>'
+      // Stats Grid
+      + '  <div class="eta-stats-grid">'
+      + '    <div class="eta-stat-card">'
+      + '      <div class="eta-stat-head">' + svg('flame', 13) + ' Streak</div>'
+      + '      <div class="eta-stat-num"><span class="v">' + s.streak + '</span><span class="u">Tag' + (s.streak === 1 ? '' : 'e') + '</span></div>'
+      + '      <div class="eta-week-dots">'
+      +          week.map(function(d){
+                   return '<div class="' + (d.today ? 'today' : '') + (d.done ? ' done' : '') + '"></div>';
+                 }).join('')
+      + '      </div>'
+      + '    </div>'
+      + '    <div class="eta-stat-card">'
+      + '      <div class="eta-stat-head">' + svg('list', 13) + ' Wortschatz</div>'
+      + '      <div class="eta-stat-num"><span class="v">' + WORDS.length + '</span><span class="u">Wörter</span></div>'
+      + '      <div style="font-size:11px;color:var(--muted);margin-top:8px">'
+      + '        <span style="color:var(--primary-soft);font-weight:600">' + s.mast + '</span> gemeistert'
+      + '      </div>'
+      + '    </div>'
+      + '  </div>'
+      // Modi
+      + '  <div class="eta-modes">'
+      +      [
+              { mode: 'flash', name: 'Karteikarten', sub: 'Freie Übung', icon: 'flash' },
+              { mode: 'quiz',  name: 'Quiz',         sub: 'Multiple Choice', icon: 'quiz' },
+              { mode: 'fill',  name: 'Lückentext',   sub: 'Selber tippen', icon: 'fill' },
+              { mode: 'list',  name: 'Wortliste',    sub: WORDS.length + ' Wörter', icon: 'list' },
+            ].map(function(m){
+              return ''
+                + '<div class="eta-mode-row" onclick="setMode(\'' + m.mode + '\')">'
+                + '  <div class="eta-mode-ico">' + svg(m.icon, 16) + '</div>'
+                + '  <div class="eta-mode-body">'
+                + '    <div class="eta-mode-name">' + m.name + '</div>'
+                + '    <div class="eta-mode-sub">' + m.sub + '</div>'
+                + '  </div>'
+                + '  ' + svg('chevronRight', 15)
+                + '</div>';
+            }).join('')
+      + '  </div>'
+      + '</div>';
+  }
+  window.renderToday = renderToday;
+
+  // ── 6. Streak-Pill / Theme-Toggle: SVG-Icons ──────────────
   var streak = document.getElementById('statStreak');
   if (streak) {
     var n = (streak.textContent.match(/\d+/) || [0])[0];
     streak.innerHTML = svg('flame', 13) + ' ' + n;
-    streak.style.gap = '5px';
-    streak.style.display = 'inline-flex';
-    streak.style.alignItems = 'center';
-    // Wert auf updateStats hin neu setzen
-    var mo = new MutationObserver(function(){
-      var nn = (streak.textContent.replace(/[^\d ]/g,'').match(/\d+/) || [0])[0];
+    streak.style.cssText = 'gap:5px;display:inline-flex;align-items:center';
+    new MutationObserver(function(){
       if (streak.querySelector('svg')) return;
+      var nn = (streak.textContent.replace(/[^\d ]/g,'').match(/\d+/) || [0])[0];
       streak.innerHTML = svg('flame', 13) + ' ' + nn;
-    });
-    mo.observe(streak, { childList: true, characterData: true, subtree: true });
+    }).observe(streak, { childList: true, characterData: true, subtree: true });
   }
 
-  // ── 6. Theme-Toggle Icon (Mond → Sonne dynamisch) ─────────
   var tt = document.getElementById('themeToggle');
   if (tt) {
     var setIcon = function(){
       tt.innerHTML = svg(document.body.classList.contains('dark') ? 'sun' : 'moon', 15);
     };
     setIcon();
-    var orig = tt.onclick;
     tt.addEventListener('click', function(){ setTimeout(setIcon, 50); });
   }
 
-  // ── 7. Such-Emoji 🔍 → SVG (auch wenn Suchleiste nachgerendert wird)
+  // ── 7. Suchleiste-Icon ────────────────────────────────────
   function decorateSearch() {
     document.querySelectorAll('.search-bar').forEach(function(bar){
       if (bar.querySelector('.eta-search-icon')) return;
@@ -5485,17 +5753,22 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     });
   }
   decorateSearch();
-  // Bei Re-Renders der Wortliste neu dekorieren
   var app = document.getElementById('app');
   if (app) {
-    var mo2 = new MutationObserver(function(){ decorateSearch(); });
-    mo2.observe(app, { childList: true, subtree: true });
+    new MutationObserver(decorateSearch).observe(app, { childList: true, subtree: true });
   }
 
-  console.log('[ETA v2.0] Variante B Focus Dark aktiviert');
+  // ── 8. Beim Start zu „Heute" springen ─────────────────────
+  setTimeout(function(){
+    try {
+      setMode('today');
+    } catch(e) { console.warn('Heute-Start fehlgeschlagen:', e); }
+  }, 100);
+
+  console.log('[ETA v2.1] Variante B + Heute-Tab + Sync-Modal aktiviert');
 })();
 </script>
-<!-- ETA-PATCH-END -->
+<!-- ETA-PATCH-END --> Zum Einbauen: kopiere ALLES zwischen 
   </div>
 </div>
 </body>
