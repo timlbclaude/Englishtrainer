@@ -63,11 +63,26 @@ jobs:
             }
 
             // Merge-Konflikte auflösen falls vorhanden
-            const conflictRegex = /<<<<<<< HEAD\n([\s\S]*?)=======\n[\s\S]*?>>>>>>> [a-f0-9]+\n?/g;
-            const conflicts = (newIndex.match(/<<<<<<< HEAD/g) || []).length;
-            if (conflicts > 0) {
-              newIndex = newIndex.replace(conflictRegex, (_, head) => head);
-              console.log(`${conflicts} Merge-Konflikte aufgelöst.`);
+            // 1) Vollständige Konflikte: HEAD-Teil behalten, Rest verwerfen
+            const fullConflict = /<<<<<<< HEAD\n([\s\S]*?)=======\n[\s\S]*?>>>>>>> [^\n]*\n?/g;
+            const fullCount = (newIndex.match(/<<<<<<< HEAD/g) || []).length;
+            if (fullCount > 0) {
+              newIndex = newIndex.replace(fullConflict, (_, head) => head);
+            }
+            // 2) Verwaiste Marker (ohne Gegenstück) zeilenweise entfernen
+            const orphans = (newIndex.match(/^(<<<<<<<|=======|>>>>>>>)/gm) || []).length;
+            if (orphans > 0) {
+              newIndex = newIndex.replace(/^<<<<<<< ?HEAD ?\n/gm, '');
+              newIndex = newIndex.replace(/^=======* ?\n/gm, '');
+              newIndex = newIndex.replace(/^>>>>>>> [^\n]*\n/gm, '');
+            }
+            if (fullCount > 0 || orphans > 0) {
+              console.log(`${fullCount} Konflikte + ${orphans} verwaiste Marker bereinigt.`);
+            }
+            // Sicherheits-Check: keine Marker mehr übrig
+            if (/<<<<<<<|>>>>>>>/.test(newIndex)) {
+              core.setFailed('Konflikt-Marker konnten nicht vollständig entfernt werden!');
+              return;
             }
 
             fs.writeFileSync('index.html', newIndex);
