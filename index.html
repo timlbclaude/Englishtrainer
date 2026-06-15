@@ -5567,6 +5567,13 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
       if (typeof origSetMode === 'function') return origSetMode(m, btn || match);
       try { render(); } catch(e){}
     };
+
+    // render() überschreiben — damit prefetchImages()/Sync den Heute-Screen NICHT überschreiben
+    var origRender = window.render;
+    window.render = function() {
+      if (window.mode === 'today') { renderToday(); return; }
+      if (typeof origRender === 'function') return origRender.apply(this, arguments);
+    };
   }
 
   // ── 6. HEUTE-Screen ─────────────────────────────────
@@ -5769,7 +5776,403 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   console.log('[ETA v2.4] 10 UX-Verbesserungen aktiv');
 })();
 </script>
+
+<!-- ═══════════ v2.5 — Lernwirkung + UX Pack ═══════════ -->
+<style id="eta-v25-style">
+/* Sessions kürzen — nur erste 2 sichtbar, Rest hinter Toggle */
+.history-box.eta-collapsed .history-row:nth-child(n+4) { display: none !important; }
+.eta-history-toggle { display:block; width:100%; margin-top:10px; padding:8px; background:var(--card-hover); border:1px solid var(--border); border-radius:10px; color:var(--text-soft); font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; }
+
+/* Flaggen-Umschalter → Text-Labels */
+.qdt-btn .eta-dir-label { font-size:12.5px; font-weight:600; letter-spacing:0.3px; }
+
+/* Zielwort-Hervorhebung in Beispielen */
+.eta-hl { color: var(--primary-soft); font-weight: 700; font-style: normal; }
+
+/* Settings + Tippmodus + Schwierige Wörter teilen das Sheet-Design von Streak */
+#eta-settings-sheet, #eta-onboard {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none; align-items: flex-end; justify-content: center;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+#eta-settings-sheet.open, #eta-onboard.open { display: flex; }
+#eta-onboard { align-items: center; }
+#eta-settings-sheet .eta-sheet-inner {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0; width: 100%; max-width: 540px;
+  padding: 22px 22px max(22px, env(safe-area-inset-bottom)); box-shadow: 0 -12px 40px rgba(0,0,0,0.5);
+  max-height: 84vh; overflow-y: auto;
+}
+.eta-sheet-handle { width:40px; height:4px; border-radius:2px; background:var(--border-strong,#2E3956); margin:0 auto 18px; display:block; }
+#eta-settings-sheet h3 { font-size:18px; font-weight:700; margin:0 0 18px; letter-spacing:-0.3px; }
+.eta-set-section { margin-bottom: 20px; }
+.eta-set-label { font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+.eta-goal-opts, .eta-dir-opts { display:flex; gap:8px; }
+.eta-goal-opt, .eta-dir-opt { flex:1; padding:12px 8px; border-radius:12px; background:var(--card-hover); border:1.5px solid var(--border); color:var(--text-soft); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; text-align:center; }
+.eta-goal-opt.active, .eta-dir-opt.active { border-color:var(--primary); color:var(--primary); background:var(--primary-bg); }
+.eta-set-btn { width:100%; padding:13px; border-radius:12px; border:1px solid var(--border); background:var(--card-hover); color:var(--text); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; }
+.eta-set-btn.danger { color:var(--err); border-color:rgba(255,138,107,0.3); }
+.eta-set-btn.danger:hover { background:rgba(255,138,107,0.1); }
+.eta-set-btn.primary { background:linear-gradient(135deg,var(--primary2),var(--primary)); color:#fff; border:none; }
+
+/* Tippmodus */
+.eta-type-card { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:28px 22px; text-align:center; margin-bottom:14px; }
+.eta-type-prompt { font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; }
+.eta-type-word { font-size:30px; font-weight:700; color:var(--text); letter-spacing:-0.6px; line-height:1.15; margin-bottom:10px; }
+.eta-type-badges { display:flex; gap:8px; justify-content:center; margin-bottom:18px; }
+.eta-type-input { width:100%; padding:14px 16px; border:1.5px solid var(--border); border-radius:14px; background:var(--bg); color:var(--text); font-family:inherit; font-size:18px; text-align:center; outline:none; transition:border-color .15s, box-shadow .15s; }
+.eta-type-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(124,140,255,0.2); }
+.eta-type-input.ok { border-color:var(--ok); background:var(--ok-bg); color:var(--ok-text); }
+.eta-type-input.err { border-color:var(--err); background:var(--err-bg); color:var(--err-text); }
+.eta-type-feedback { margin-top:14px; font-size:14px; font-weight:600; padding:12px; border-radius:12px; }
+.eta-type-feedback.ok { background:var(--ok-bg); color:var(--ok-text); }
+.eta-type-feedback.err { background:var(--err-bg); color:var(--err-text); }
+.eta-type-solution { font-size:13px; color:var(--text-soft); margin-top:6px; }
+
+/* Onboarding */
+#eta-onboard .eta-ob-inner { background:var(--card); border:1px solid var(--border); border-radius:22px; width:calc(100% - 36px); max-width:380px; padding:28px 24px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.5); }
+.eta-ob-icon { width:60px; height:60px; border-radius:18px; background:var(--primary-bg); color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+.eta-ob-title { font-size:20px; font-weight:700; color:var(--text); letter-spacing:-0.4px; margin-bottom:10px; }
+.eta-ob-text { font-size:14.5px; color:var(--text-soft); line-height:1.6; margin-bottom:22px; }
+.eta-ob-dots { display:flex; gap:6px; justify-content:center; margin-bottom:18px; }
+.eta-ob-dot { width:7px; height:7px; border-radius:4px; background:var(--border-strong,#2E3956); }
+.eta-ob-dot.active { background:var(--primary); width:20px; }
+.eta-ob-btn { width:100%; padding:14px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--primary2),var(--primary)); color:#fff; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; }
+.eta-ob-skip { background:none; border:none; color:var(--muted); font-family:inherit; font-size:13px; cursor:pointer; margin-top:12px; }
+
+/* Level-up Mikro-Animation */
+.eta-levelup { position:fixed; left:50%; top:40%; transform:translate(-50%,-50%); z-index:9998; pointer-events:none; background:var(--card); border:1px solid var(--primary); border-radius:14px; padding:12px 18px; display:flex; align-items:center; gap:10px; box-shadow:0 8px 30px rgba(89,101,240,0.4); animation:etaLevelUp 1.4s ease forwards; }
+.eta-levelup .lvl-from { color:var(--muted); font-weight:600; }
+.eta-levelup .lvl-to { color:var(--primary); font-weight:800; font-size:18px; }
+@keyframes etaLevelUp { 0%{opacity:0;transform:translate(-50%,-30%) scale(.8);} 15%{opacity:1;transform:translate(-50%,-50%) scale(1);} 80%{opacity:1;transform:translate(-50%,-55%) scale(1);} 100%{opacity:0;transform:translate(-50%,-70%) scale(.95);} }
+</style>
+
+<script id="eta-v25-script">
+(function(){
+  var svg = window.__etaSvg || function(){ return ''; };
+
+  // ═══ FEATURE: Wort-Normalisierung (Kleinschreibung außer Akronyme) ═══
+  try {
+    if (typeof WORDS !== 'undefined' && Array.isArray(WORDS)) {
+      WORDS.forEach(function(w){
+        if (!w.word) return;
+        var word = w.word;
+        // "to Xxx" Verben: nur das Hauptwort kleinschreiben
+        if (/^to [A-Z]/.test(word)) { w.word = 'to ' + word.charAt(3).toLowerCase() + word.slice(4); return; }
+        // Akronyme (TV, CEO) komplett groß lassen
+        if (word === word.toUpperCase()) return;
+        // Erstes Wort: ist Rest klein? Dann ist es ein normales Substantiv → kleinschreiben
+        var firstWord = word.split(' ')[0];
+        if (/^[A-Z][a-z]+$/.test(firstWord)) {
+          w.word = word.charAt(0).toLowerCase() + word.slice(1);
+        }
+      });
+    }
+  } catch(e) { console.warn('[v2.5] Normalisierung:', e); }
+
+  // ═══ FEATURE: Levenshtein für Tippmodus-Toleranz ═══
+  function levenshtein(a, b) {
+    a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
+    var m = a.length, n = b.length;
+    if (!m) return n; if (!n) return m;
+    var prev = []; for (var j=0;j<=n;j++) prev[j]=j;
+    for (var i=1;i<=m;i++){ var cur=[i]; for (var k=1;k<=n;k++){ cur[k]=Math.min(prev[k]+1,cur[k-1]+1,prev[k-1]+(a[i-1]===b[k-1]?0:1)); } prev=cur; }
+    return prev[n];
+  }
+  function normAnswer(s) { return (s||'').toLowerCase().replace(/^to\s+/,'').replace(/[.,!?]/g,'').trim(); }
+
+  // ═══ FEATURE: Tippmodus ═══
+  var typeDeck = [], typeIdx = 0, typeChecked = false, typeCorrect = 0, typeWrong = 0;
+
+  function startType() {
+    try {
+      typeDeck = (typeof SRS !== 'undefined' && SRS.dueQueue) ? SRS.dueQueue(WORDS).slice(0,10) : [];
+      if (!typeDeck.length && typeof WORDS !== 'undefined') typeDeck = WORDS.slice().sort(function(){return Math.random()-0.5;}).slice(0,10);
+    } catch(e) { typeDeck = (typeof WORDS!=='undefined'?WORDS.slice(0,10):[]); }
+    typeIdx = 0; typeChecked = false; typeCorrect = 0; typeWrong = 0;
+    window.mode = 'type';
+    setActiveTab(null);
+    renderType();
+  }
+
+  function renderType() {
+    var app = document.getElementById('app'); if (!app) return;
+    if (typeIdx >= typeDeck.length) {
+      app.innerHTML = '<div class="eta-type-card"><div class="eta-type-prompt">Runde beendet</div>'
+        + '<div style="font-size:44px;font-weight:800;color:var(--primary);letter-spacing:-1px;margin:8px 0">'+typeCorrect+'/'+typeDeck.length+'</div>'
+        + '<div style="color:var(--muted);font-size:14px;margin-bottom:18px">richtig getippt</div>'
+        + '<button class="eta-set-btn primary" onclick="window.__etaStartType()">Neue Runde</button>'
+        + '<button class="eta-set-btn" onclick="setMode(\'today\')">Zurück zu Heute</button></div>';
+      return;
+    }
+    var w = typeDeck[typeIdx];
+    var pct = Math.round((typeIdx/typeDeck.length)*100);
+    app.innerHTML = '<div style="margin-bottom:14px"><div style="height:5px;background:var(--border);border-radius:999px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-soft))"></div></div>'
+      + '<div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10.5px;color:var(--muted)"><span>Tippen '+(typeIdx+1)+' / '+typeDeck.length+'</span><span>✓ '+typeCorrect+' · ✗ '+typeWrong+'</span></div></div>'
+      + '<div class="eta-type-card">'
+      + '  <div class="eta-type-prompt">Wie heißt das auf Englisch?</div>'
+      + '  <div class="eta-type-word">'+w.translation+'</div>'
+      + '  <div class="eta-type-badges"><span class="badge badge-type">'+(w.wordType||'')+'</span><span class="badge '+(typeof diffColor==='function'?diffColor(w.difficulty):'')+'">'+(w.difficulty||'')+'</span></div>'
+      + '  <input class="eta-type-input" id="etaTypeInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="englisches Wort tippen…" />'
+      + '  <div id="etaTypeFeedback"></div>'
+      + '  <button class="eta-set-btn primary" id="etaTypeBtn" style="margin-top:14px" onclick="window.__etaCheckType()">Prüfen</button>'
+      + '</div>';
+    var inp = document.getElementById('etaTypeInput');
+    if (inp) { inp.focus(); inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); window.__etaCheckType(); } }); }
+  }
+
+  window.__etaCheckType = function() {
+    var w = typeDeck[typeIdx]; if (!w) return;
+    var inp = document.getElementById('etaTypeInput');
+    var btn = document.getElementById('etaTypeBtn');
+    var fb = document.getElementById('etaTypeFeedback');
+    if (!typeChecked) {
+      var ans = normAnswer(inp.value);
+      var target = normAnswer(w.word);
+      var dist = levenshtein(ans, target);
+      var ok = ans.length > 0 && dist <= (target.length > 6 ? 2 : 1);
+      typeChecked = true;
+      if (ok) {
+        typeCorrect++; inp.classList.add('ok');
+        fb.className = 'eta-type-feedback ok'; fb.innerHTML = svg('check',16,2.5) + ' Richtig! ' + (dist>0?'(kleiner Tippfehler verziehen)':'');
+        try { if (typeof SRS!=='undefined') SRS.markCorrect(w.id); } catch(e){}
+      } else {
+        typeWrong++; inp.classList.add('err');
+        fb.className = 'eta-type-feedback err'; fb.innerHTML = svg('x',16,2.5) + ' Lösung: <strong>'+w.word+'</strong>';
+        try { if (typeof SRS!=='undefined') SRS.markWrong(w.id); } catch(e){}
+      }
+      inp.disabled = true;
+      btn.textContent = (typeIdx+1 >= typeDeck.length) ? 'Ergebnis' : 'Weiter';
+    } else {
+      typeIdx++; typeChecked = false; renderType();
+    }
+  };
+  window.__etaStartType = startType;
+
+  // ═══ FEATURE: Schwierige Wörter ═══
+  function getHardWords() {
+    if (typeof WORDS === 'undefined') return [];
+    return WORDS.map(function(w){
+      var e = (typeof SRS!=='undefined' && SRS.entry) ? SRS.entry(w.id) : {ok:0,wrong:0};
+      var total = (e.ok||0)+(e.wrong||0);
+      var rate = total>0 ? (e.wrong||0)/total : 0;
+      return { w:w, rate:rate, total:total, wrong:e.wrong||0 };
+    }).filter(function(x){ return x.total>=2 && x.rate>0.4; }).sort(function(a,b){ return b.rate-a.rate; });
+  }
+
+  function renderHardList() {
+    var app = document.getElementById('app'); if (!app) return;
+    window.mode = 'hardlist'; setActiveTab(null);
+    var hard = getHardWords();
+    var html = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
+      + '<button class="eta-set-btn" style="width:auto;padding:8px 12px;margin:0" onclick="setMode(\'today\')">'+svg('chevronRight',14)+'</button>'
+      + '<div><div style="font-size:20px;font-weight:700;letter-spacing:-0.4px">Schwierige Wörter</div><div style="font-size:12px;color:var(--muted)">'+hard.length+' Wörter mit hoher Fehlerquote</div></div></div>';
+    if (!hard.length) {
+      html += '<div class="eta-type-card"><div style="font-size:40px;margin-bottom:10px">🎯</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Noch keine Problemwörter</div><div style="color:var(--muted);font-size:13.5px">Übe ein paar Runden — Wörter mit Fehlerquote über 40% erscheinen hier automatisch.</div></div>';
+    } else {
+      html += '<button class="eta-set-btn primary" style="margin-bottom:14px" onclick="window.__etaDrillHard()">'+svg('train',16)+' Diese Wörter gezielt üben</button>';
+      html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden">';
+      hard.forEach(function(x,i){
+        html += '<div style="padding:12px 14px;border-top:'+(i>0?'1px solid var(--border)':'none')+';display:flex;align-items:center;gap:12px">'
+          + '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--text)">'+x.w.word+'</div><div style="font-size:12.5px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+x.w.translation+'</div></div>'
+          + '<div style="text-align:right"><div style="font-size:14px;font-weight:700;color:var(--err)">'+Math.round(x.rate*100)+'%</div><div style="font-size:10px;color:var(--muted)">'+x.wrong+'× falsch</div></div></div>';
+      });
+      html += '</div>';
+    }
+    app.innerHTML = html;
+  }
+  window.renderHardList = renderHardList;
+  window.__etaDrillHard = function() {
+    var hard = getHardWords().map(function(x){ return x.w; });
+    if (!hard.length) return;
+    typeDeck = hard.slice(0,10); typeIdx=0; typeChecked=false; typeCorrect=0; typeWrong=0;
+    window.mode = 'type'; setActiveTab(null); renderType();
+  };
+
+  // ═══ Mode-Routing erweitern ═══
+  function setActiveTab(m) {
+    var nt = document.querySelector('.nav-tabs'); if (!nt) return;
+    nt.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', m && t.dataset.mode===m); });
+  }
+  var prevRender = window.render;
+  window.render = function() {
+    if (window.mode === 'type') { renderType(); return; }
+    if (window.mode === 'hardlist') { renderHardList(); return; }
+    if (typeof prevRender === 'function') return prevRender.apply(this, arguments);
+  };
+  var prevSetMode = window.setMode;
+  window.setMode = function(m, btn) {
+    if (m === 'type') { startType(); return; }
+    if (m === 'hardlist') { renderHardList(); return; }
+    if (typeof prevSetMode === 'function') return prevSetMode.apply(this, arguments);
+  };
+
+  // ═══ Heute-Screen: Tippmodus + Schwierige Wörter als Mode-Cards ergänzen ═══
+  // (per Injection in decorateApp, da v2.4-setMode die lokale renderToday aufruft)
+  function injectExtraModeCards() {
+    var modes = document.querySelector('.eta-modes');
+    if (!modes || modes.querySelector('[data-eta-extra]')) return;
+    var hardCount = getHardWords().length;
+    var typeRow = document.createElement('div');
+    typeRow.className = 'eta-mode-row'; typeRow.setAttribute('data-eta-extra','1');
+    typeRow.setAttribute('onclick', "setMode('type')");
+    typeRow.innerHTML = '<div class="eta-mode-ico">'+svg('fill',16)+'</div><div class="eta-mode-body"><div class="eta-mode-name">Tippmodus</div><div class="eta-mode-sub">Aktiv erinnern · selbst tippen</div></div>'+svg('chevronRight',15);
+    modes.appendChild(typeRow);
+    if (hardCount > 0) {
+      var hardRow = document.createElement('div');
+      hardRow.className = 'eta-mode-row'; hardRow.setAttribute('data-eta-extra','1');
+      hardRow.setAttribute('onclick', "setMode('hardlist')");
+      hardRow.innerHTML = '<div class="eta-mode-ico" style="color:var(--err)">'+svg('trending',16)+'</div><div class="eta-mode-body"><div class="eta-mode-name">Schwierige Wörter</div><div class="eta-mode-sub">'+hardCount+' Wörter mit hoher Fehlerquote</div></div>'+svg('chevronRight',15);
+      modes.appendChild(hardRow);
+    }
+  }
+
+  // ═══ FEATURE: Einstellungs-Sheet (Zahnrad) ═══
+  function buildSettingsButton() {
+    var bar = document.getElementById('eta-floating-bar'); if (!bar) return;
+    if (document.getElementById('eta-settings-btn')) return;
+    var btn = document.createElement('button');
+    btn.id = 'eta-settings-btn'; btn.className = 'eta-theme';
+    btn.setAttribute('aria-label','Einstellungen');
+    btn.innerHTML = svg('settings',15);
+    btn.onclick = openSettings;
+    bar.appendChild(btn);
+  }
+  function openSettings() {
+    var sheet = document.getElementById('eta-settings-sheet');
+    if (!sheet) { sheet = document.createElement('div'); sheet.id='eta-settings-sheet'; sheet.onclick=function(e){ if(e.target===sheet) closeSettings(); }; document.body.appendChild(sheet); }
+    var goal = (typeof Stats!=='undefined' && Stats.state) ? (Stats.state.dailyGoal||20) : 20;
+    var goals = [10,20,30,50];
+    sheet.innerHTML = '<div class="eta-sheet-inner"><span class="eta-sheet-handle"></span><h3>Einstellungen</h3>'
+      + '<div class="eta-set-section"><div class="eta-set-label">Tagesziel (Wörter pro Tag)</div><div class="eta-goal-opts">'
+      + goals.map(function(g){ return '<button class="eta-goal-opt'+(g===goal?' active':'')+'" onclick="window.__etaSetGoal('+g+')">'+g+'</button>'; }).join('')
+      + '</div></div>'
+      + '<div class="eta-set-section"><div class="eta-set-label">Synchronisation</div><button class="eta-set-btn" onclick="closeSettings();if(typeof openSyncModal===\'function\')openSyncModal()">'+svg('cloud',16)+' Geräte-Sync einrichten</button></div>'
+      + '<div class="eta-set-section"><div class="eta-set-label">Fortschritt</div><button class="eta-set-btn danger" onclick="window.__etaReset()">'+svg('x',16)+' Lernfortschritt zurücksetzen</button></div>'
+      + '<button class="eta-set-btn" onclick="closeSettings()">Schließen</button></div>';
+    sheet.classList.add('open');
+  }
+  window.closeSettings = function(){ var s=document.getElementById('eta-settings-sheet'); if(s) s.classList.remove('open'); };
+  window.__etaSetGoal = function(g){ try { if(typeof Stats!=='undefined'){ Stats.state.dailyGoal=g; Stats.save(); } } catch(e){} openSettings(); if(window.mode==='today') renderToday(); };
+  window.__etaReset = function(){ if(confirm('Wirklich den gesamten Lernfortschritt zurücksetzen? Das kann nicht rückgängig gemacht werden.')){ try { if(typeof SRS!=='undefined' && SRS.reset) SRS.reset(); else { localStorage.removeItem('srs_state'); } } catch(e){} location.reload(); } };
+
+  // ═══ FEATURE: Zielwort in Beispielen hervorheben + Flaggen→Text + Sessions kürzen ═══
+  function decorateApp() {
+    var app = document.getElementById('app'); if (!app) return;
+    // Zielwort hervorheben
+    var w = null;
+    try { if (window.mode==='train' && typeof trainDeck!=='undefined') w = trainDeck[typeof trainIdx!=='undefined'?trainIdx:0]; } catch(e){}
+    app.querySelectorAll('.back-ex, .fc-front-example, .quiz-example').forEach(function(el){
+      if (el.dataset.etaHl) return; el.dataset.etaHl = '1';
+      var word = w && w.word ? w.word.replace(/^to\s+/,'') : null;
+      if (!word) return;
+      var stem = word.length>4 ? word.slice(0, word.length-2) : word;
+      try {
+        var re = new RegExp('\\b('+stem.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\w*)\\b','gi');
+        el.querySelectorAll('*').length===0 && (el.innerHTML = el.innerHTML.replace(re, '<span class="eta-hl">$1</span>'));
+      } catch(e){}
+    });
+    // Flaggen → Text
+    app.querySelectorAll('.qdt-btn').forEach(function(btn){
+      if (btn.dataset.etaDir) return;
+      var txt = btn.textContent || '';
+      if (txt.indexOf('🇬🇧')>-1 || /GB|🇬🇧/.test(txt)) {
+        var enFirst = txt.indexOf('🇬🇧') < txt.indexOf('🇩🇪') || /^[^D]*EN/.test(txt);
+        // Heuristik: Reihenfolge aus Originaltext
+      }
+    });
+    // Sessions kürzen
+    var hist = app.querySelector('.history-box');
+    if (hist && !hist.dataset.etaCollapsed) {
+      hist.dataset.etaCollapsed = '1';
+      var rows = hist.querySelectorAll('.history-row');
+      if (rows.length > 2) {
+        hist.classList.add('eta-collapsed');
+        var toggle = document.createElement('button');
+        toggle.className = 'eta-history-toggle';
+        toggle.textContent = 'Alle ' + rows.length + ' Sessions anzeigen';
+        toggle.onclick = function(){ hist.classList.toggle('eta-collapsed'); toggle.textContent = hist.classList.contains('eta-collapsed') ? ('Alle '+rows.length+' Sessions anzeigen') : 'Weniger anzeigen'; };
+        hist.appendChild(toggle);
+      }
+    }
+  }
+  // Flaggen-Umschalter robust zu Text machen (separater, sicherer Durchlauf)
+  function fixDirButtons() {
+    document.querySelectorAll('.qdt-btn').forEach(function(btn){
+      if (btn.dataset.etaFixed) return; btn.dataset.etaFixed='1';
+      var raw = btn.textContent.trim();
+      // Originaltext enthält Flaggen + Pfeil. Wir leiten Richtung aus Position ab.
+      var gb = raw.indexOf('🇬🇧'), de = raw.indexOf('🇩🇪');
+      if (gb===-1 && de===-1) return;
+      var enToDe = (gb>-1 && de>-1) ? gb < de : /en.?de/i.test(btn.getAttribute('onclick')||'');
+      btn.innerHTML = '<span class="eta-dir-label">'+(enToDe ? 'EN → DE' : 'DE → EN')+'</span>';
+    });
+  }
+
+  var appEl2 = document.getElementById('app');
+  if (appEl2) {
+    new MutationObserver(function(){ try { decorateApp(); fixDirButtons(); injectExtraModeCards(); } catch(e){} }).observe(appEl2, { childList:true, subtree:true });
+  }
+
+  // ═══ FEATURE: Level-up Mikro-Animation ═══
+  if (typeof SRS !== 'undefined' && SRS.markCorrect) {
+    var origMC = SRS.markCorrect.bind(SRS);
+    SRS.markCorrect = function(id) {
+      var before = 0; try { before = (SRS.entry(id).level)||0; } catch(e){}
+      var r = origMC(id);
+      try {
+        var after = (SRS.entry(id).level)||0;
+        if (after > before) {
+          var el = document.createElement('div'); el.className='eta-levelup';
+          el.innerHTML = svg('trending',16) + '<span class="lvl-from">Stufe '+before+'</span>'+svg('chevronRight',12)+'<span class="lvl-to">'+after+'</span>';
+          document.body.appendChild(el);
+          setTimeout(function(){ el.remove(); }, 1400);
+        }
+      } catch(e){}
+      return r;
+    };
+  }
+
+  // ═══ FEATURE: Onboarding (Erststart) ═══
+  function maybeOnboard() {
+    try { if (localStorage.getItem('eta_onboarded')==='1') return; } catch(e){ return; }
+    var slides = [
+      { icon:'today', title:'Willkommen bei ETA', text:'Dein persönlicher Englisch-Vokabeltrainer. Lerne effizient mit wissenschaftlich fundierter Wiederholung.' },
+      { icon:'train', title:'Spaced Repetition', text:'Jedes Wort durchläuft 7 Stufen. Was du kannst, kommt seltener — was schwerfällt, öfter. So lernst du nachhaltig.' },
+      { icon:'flame', title:'Bleib dran', text:'Erreiche dein Tagesziel und baue eine Streak auf. Tippmodus und Quiz fordern dein aktives Erinnern.' },
+    ];
+    var idx = 0;
+    var ob = document.createElement('div'); ob.id='eta-onboard';
+    document.body.appendChild(ob);
+    function paint() {
+      var s = slides[idx];
+      ob.innerHTML = '<div class="eta-ob-inner"><div class="eta-ob-icon">'+svg(s.icon,28)+'</div>'
+        + '<div class="eta-ob-title">'+s.title+'</div><div class="eta-ob-text">'+s.text+'</div>'
+        + '<div class="eta-ob-dots">'+slides.map(function(_,i){ return '<div class="eta-ob-dot'+(i===idx?' active':'')+'"></div>'; }).join('')+'</div>'
+        + '<button class="eta-ob-btn" onclick="window.__etaObNext()">'+(idx<slides.length-1?'Weiter':'Los geht\'s')+'</button>'
+        + (idx<slides.length-1?'<button class="eta-ob-skip" onclick="window.__etaObDone()">Überspringen</button>':'')
+        + '</div>';
+    }
+    window.__etaObNext = function(){ if(idx<slides.length-1){ idx++; paint(); } else { window.__etaObDone(); } };
+    window.__etaObDone = function(){ try { localStorage.setItem('eta_onboarded','1'); } catch(e){} ob.classList.remove('open'); setTimeout(function(){ ob.remove(); }, 200); };
+    paint(); ob.classList.add('open');
+  }
+
+  // ═══ FEATURE: Wortliste gruppiert als Default ═══
+  try {
+    var savedGroup = localStorage.getItem('eta_list_grouped');
+    if (savedGroup === null) { localStorage.setItem('eta_list_grouped','1'); }
+  } catch(e){}
+
+  // Init
+  setTimeout(function(){ try { buildSettingsButton(); } catch(e){} }, 100);
+  setTimeout(function(){ try { maybeOnboard(); } catch(e){} }, 600);
+
+  console.log('[ETA v2.5] Lernwirkung + UX Pack aktiv');
+})();
+</script>
 <!-- ETA-PATCH-END -->
+
 
 
 <<<<<<< HEAD

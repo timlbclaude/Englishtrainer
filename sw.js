@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-auto-1781531043';
+const CACHE = 'et-auto-1781533220';
 const OFFLINE_URLS = [
   './',
   './index.html',
