@@ -1,0 +1,652 @@
+<!-- ETA-PATCH-START · v2.4 · 10 UX-Verbesserungen -->
+<style id="eta-v2-overrides">
+/* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
+:root, body, body.dark {
+  --primary:        #7C8CFF;
+  --primary2:       #5965F0;
+  --primary-soft:   #5EE3D6;
+  --primary-bg:     rgba(124,140,255,0.13);
+  --ok:             #42E3A4;
+  --ok-bg:          rgba(66,227,164,0.13);
+  --ok-text:        #B6F3D8;
+  --err:            #FF8A6B;
+  --err-bg:         rgba(255,138,107,0.13);
+  --err-text:       #FFCEC0;
+  --warn:           #FBBF24;
+  --warn-bg:        rgba(251,191,36,0.13);
+  --warn-text:      #FDE68A;
+  --bg:             #0B0F17;
+  --card:           #141926;
+  --card-hover:     #1B2233;
+  --border:         #222B3E;
+  --border-strong:  #2E3956;
+  --text:           #F1F4FB;
+  --text-soft:      #C9D0E0;
+  --muted:          #8A93AC;
+  --nav-bg:         rgba(20,25,38,0.92);
+  --sh-sm:          0 1px 2px rgba(0,0,0,0.4);
+  --sh:             0 4px 14px rgba(0,0,0,0.35);
+  --sh-lg:          0 16px 40px rgba(0,0,0,0.55);
+  color-scheme: dark;
+}
+html, body { background: var(--bg) !important; color: var(--text) !important; margin: 0 !important; padding: 0 !important; }
+
+/* ━━━━━ 2. Original hd-stats komplett verstecken ━━━━━ */
+.hd-stats { display: none !important; }
+
+/* Eigener schwebender Top-Right-Floater */
+#eta-floating-bar {
+  position: fixed !important;
+  top: max(10px, env(safe-area-inset-top)) !important;
+  right: 10px !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  gap: 6px;
+  align-items: center;
+}
+#eta-floating-bar .eta-streak {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--primary-soft); font-size: 11.5px; font-weight: 600;
+  cursor: pointer; user-select: none;
+  transition: border-color .15s;
+}
+#eta-floating-bar .eta-streak:hover { border-color: var(--primary); }
+#eta-floating-bar .eta-theme {
+  width: 30px; height: 30px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; transition: border-color .15s;
+}
+#eta-floating-bar .eta-theme:hover { border-color: var(--primary); }
+
+/* ━━━━━ 3. Tab-Bar nach UNTEN (alle Touch-Geräte) — kein backdrop-filter ━━━━━ */
+@media (max-width: 900px), (pointer: coarse) {
+  nav {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0; right: 0;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    border-bottom: none !important;
+    border-top: 1px solid var(--border) !important;
+    background: var(--nav-bg) !important;
+    /* KEIN backdrop-filter — erzeugt Containing-Block-Bug für position:fixed Kinder */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    z-index: 40 !important;
+    box-shadow: 0 -8px 28px rgba(0,0,0,0.3);
+  }
+  .nav-tabs {
+    display: flex !important; flex: 1 !important;
+    padding: 4px !important; overflow: visible !important; width: 100% !important;
+  }
+  .tab {
+    flex: 1 !important; padding: 7px 2px !important;
+    display: flex !important; flex-direction: column !important;
+    align-items: center !important; gap: 2px !important;
+    border-bottom: none !important; margin-bottom: 0 !important;
+    border-radius: 12px !important; font-size: 10px !important;
+    color: var(--muted) !important; background: transparent !important;
+  }
+  .tab.active { background: var(--card-hover) !important; color: var(--text) !important; border-bottom: none !important; }
+  .tab .tab-label { display: inline !important; font-size: 10px !important; font-weight: 500 !important; }
+  .tab.active .tab-label { font-weight: 600 !important; }
+
+  /* FIX 1: Top-Rand minimal halten */
+  main {
+    padding-bottom: 110px !important;
+    padding-top: max(8px, env(safe-area-inset-top)) !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  main > *:first-child { margin-top: 0 !important; }
+  .srs-compact-bar { margin-bottom: 8px !important; padding: 8px 12px !important; }
+}
+
+/* Desktop */
+@media (min-width: 901px) and (pointer: fine) {
+  .tab .eta-tab-icon { display: inline-flex !important; vertical-align: middle; margin-right: 8px; }
+  .tab { border-radius: 10px !important; }
+  .tab.active { background: var(--card-hover) !important; border-bottom-color: transparent !important; }
+}
+.tab .eta-tab-emoji { display: none !important; }
+
+/* ━━━━━ FIX 2: FAB-Button korrekte Position ━━━━━ */
+#fabAdd {
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
+  box-shadow: 0 10px 28px rgba(89,101,240,0.5), 0 2px 6px rgba(0,0,0,0.3) !important;
+  width: 54px !important; height: 54px !important; font-size: 28px !important;
+}
+
+/* ━━━━━ FIX 4: Sync-Row nur sichtbar wenn konfiguriert ━━━━━ */
+.sync-row { display: none !important; }
+body.eta-sync-on .sync-row { display: flex !important; }
+
+/* ━━━━━ FIX 5: Karteikarten-Rückseite — Übersetzung oben, nur 1 Beispiel ━━━━━ */
+.back-ex:not(:first-of-type) { display: none !important; }
+.back-ex { padding: 8px 12px !important; font-size: 13px !important; }
+.face-back { display: flex !important; flex-direction: column !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; }
+/* Übersetzung (back-translation-small) nach oben sortieren */
+.back-translation-small {
+  order: -1 !important;
+  font-size: 22px !important; font-weight: 700 !important;
+  color: var(--text) !important;
+  border-top: none !important; margin-top: 0 !important; padding-top: 0 !important;
+  margin-bottom: 12px !important;
+}
+
+/* ━━━━━ FIX 7: Quiz-Bilder nur wenn echt vorhanden ━━━━━ */
+.quiz-img-ph { display: none !important; }
+.quiz-img-wrap:not(:has(.quiz-img-hd[src]:not([src=""]))) { display: none !important; }
+
+/* ━━━━━ FIX 8: Lautschrift in Monospace ━━━━━ */
+.fc-pronunciation,
+.quiz-pron,
+.back-translation-small .pron,
+[class*="pronunciation"],
+[class*="pron"] {
+  font-family: ui-monospace, "SF Mono", "Fira Mono", Menlo, monospace !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* ━━━━━ FIX 9: Streak-Sheet ━━━━━ */
+#eta-streak-sheet {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none; align-items: flex-end; justify-content: center;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+#eta-streak-sheet.open { display: flex; }
+#eta-streak-sheet .eta-sheet-inner {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0; width: 100%; max-width: 540px;
+  padding: 24px 24px max(24px, env(safe-area-inset-bottom)) 24px;
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.5);
+}
+#eta-streak-sheet .eta-sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--border-strong); margin: 0 auto 20px; display: block;
+}
+#eta-streak-sheet h3 { font-size: 18px; font-weight: 700; color: var(--text); margin: 0 0 18px; letter-spacing: -0.3px; }
+.eta-stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.eta-stat-cell { background: var(--card-hover); border: 1px solid var(--border); border-radius: 14px; padding: 14px 12px; text-align: center; }
+.eta-stat-cell .v { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; display: block; }
+.eta-stat-cell .l { font-size: 10.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; display: block; }
+.eta-week-strip { display: flex; gap: 6px; margin-bottom: 20px; }
+.eta-day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.eta-day-dot { width: 100%; height: 36px; border-radius: 10px; background: var(--card-hover); display: flex; align-items: center; justify-content: center; }
+.eta-day-dot.done { background: var(--primary); }
+.eta-day-dot.today { outline: 2px dashed var(--primary-soft); outline-offset: 2px; }
+.eta-day-lbl { font-size: 10px; color: var(--muted); font-weight: 500; }
+.eta-sheet-close { width: 100%; padding: 13px; background: var(--card-hover); border: 1px solid var(--border); border-radius: 14px; color: var(--text); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+/* ━━━━━ FIX 6: Wortliste-Gruppierung ━━━━━ */
+.eta-list-group-btn {
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--card); cursor: pointer; font-family: inherit;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  transition: all .15s; display: inline-flex; align-items: center; gap: 5px;
+}
+.eta-list-group-btn.active {
+  border-color: var(--primary); color: var(--primary); background: var(--primary-bg);
+}
+.eta-group-header {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--muted);
+  padding: 14px 4px 8px; display: flex; align-items: center; gap: 8px;
+}
+.eta-group-pill {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px;
+  background: var(--card-hover); color: var(--muted);
+}
+.eta-group-pill.due { background: rgba(124,140,255,0.18); color: var(--primary); }
+.eta-group-pill.learn { background: rgba(251,191,36,0.18); color: var(--warn); }
+.eta-group-pill.master { background: rgba(66,227,164,0.18); color: var(--ok); }
+.eta-group-pill.new { background: rgba(138,147,172,0.18); color: var(--muted); }
+
+/* ━━━━━ FIX 10: Add-Word-Modal Dark-Mode ━━━━━ */
+#addWordModal .modal-overlay,
+#addWordModal.modal-overlay { background: rgba(0,0,0,0.65) !important; backdrop-filter: blur(6px) !important; -webkit-backdrop-filter: blur(6px) !important; }
+#addWordModal .modal,
+#addWordModal > div { background: var(--card) !important; border: 1px solid var(--border) !important; color: var(--text) !important; border-radius: 18px !important; }
+#addWordModal h3, #addWordModal h2 { color: var(--text) !important; }
+#addWordModal label { color: var(--text-soft) !important; }
+#addWordModal input, #addWordModal textarea, #addWordModal select {
+  background: var(--bg) !important; color: var(--text) !important;
+  border: 1px solid var(--border) !important; border-radius: 10px !important;
+}
+#addWordModal input:focus, #addWordModal textarea:focus {
+  border-color: var(--primary) !important; outline: none !important;
+  box-shadow: 0 0 0 2px rgba(124,140,255,0.2) !important;
+}
+#addWordModal button { font-family: inherit !important; }
+#addWordModal .btn-primary { background: linear-gradient(135deg, var(--primary2), var(--primary)) !important; color: #fff !important; border: none !important; }
+#addWordModal .btn-ghost, #addWordModal .btn-outline { background: var(--card-hover) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+/* ━━━━━ Cards & Buttons polieren ━━━━━ */
+.face, .quiz-question, .fill-card, .word-card, .summary-card,
+.srs-empty, .srs-dash-item, .flash-picker, .round-result, .history-box,
+.goal-row, .srs-compact-bar, .modal { border-radius: 18px !important; }
+
+.btn-primary, .btn-ok, .btn-srs-ok {
+  background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
+  border: none !important; color: #fff !important;
+  box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important;
+}
+.btn-srs-err { background: var(--card) !important; color: var(--text) !important; border: 1.5px solid var(--border) !important; }
+.btn-srs-err:hover { border-color: var(--err) !important; }
+.choice { background: var(--card) !important; border: 1.5px solid var(--border) !important; border-radius: 14px !important; color: var(--text) !important; }
+.choice:hover:not(:disabled) { border-color: var(--primary) !important; background: var(--card-hover) !important; }
+.choice.correct { background: var(--ok-bg) !important; border-color: var(--ok) !important; color: var(--ok-text) !important; }
+
+@media (max-width: 900px), (pointer: coarse) {
+  .quiz-choices { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .choice { padding: 14px 16px !important; font-size: 14.5px !important; display: flex !important; }
+}
+
+/* Level-Badges */
+.lvl-1, .lvl-2 { background: rgba(94,227,214,0.13) !important; color: #A7F0E5 !important; }
+.lvl-3, .lvl-4 { background: rgba(124,140,255,0.16) !important; color: #C7CEFF !important; }
+.lvl-5, .lvl-6 { background: rgba(124,140,255,0.22) !important; color: #DDE2FF !important; }
+
+/* Suchleiste Icon */
+.search-bar::before { content: none !important; }
+.search-bar input { padding-left: 38px !important; }
+.search-bar .eta-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; display: inline-flex; }
+
+/* Subtiler Glow im Hintergrund */
+body::before {
+  content: ''; position: fixed; top: -120px; right: -80px;
+  width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,140,255,0.18) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+nav, main, #mobileNextBar { position: relative; z-index: 1; }
+body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+.fc-word, .quiz-word { letter-spacing: -0.04em !important; }
+#mobileNextBar { background: var(--card) !important; border-top: 1px solid var(--border) !important; }
+#mobileNextBar .mnb-btn { background: linear-gradient(135deg, var(--primary2), var(--primary)) !important; box-shadow: 0 6px 18px rgba(89,101,240,0.35) !important; }
+
+@media (max-width: 540px) {
+  .srs-rate-row, .fc-actions {
+    bottom: 76px !important; background: var(--card) !important;
+    border-top: 1px solid var(--border) !important; padding-bottom: 10px !important;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .flashcard { transition: opacity .25s ease !important; }
+}
+
+/* ━━━━━ Heute-Screen ━━━━━ */
+.eta-today { display: flex; flex-direction: column; gap: 12px; padding-top: 0; }
+.eta-today-hero { background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 16px 18px; position: relative; overflow: hidden; }
+.eta-today-greet { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+.eta-today-name { font-size: 21px; color: var(--text); font-weight: 700; letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 14px; }
+.eta-today-row { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+.eta-ring-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+.eta-ring-wrap svg { transform: rotate(-90deg); }
+.eta-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.eta-ring-num { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.8px; line-height: 1; }
+.eta-ring-of { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.eta-today-meta { flex: 1; min-width: 0; }
+.eta-today-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(94,227,214,0.13); color: var(--primary-soft); font-size: 10.5px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 8px; }
+.eta-today-pill::before { content: ''; width: 5px; height: 5px; border-radius: 3px; background: var(--primary-soft); }
+.eta-today-headline { font-size: 17px; color: var(--text); font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; margin-bottom: 10px; }
+.eta-today-stats { display: flex; gap: 12px; font-size: 11.5px; color: var(--muted); align-items: center; }
+.eta-today-stats strong { color: var(--text); font-weight: 700; font-size: 13px; margin-right: 2px; }
+.eta-today-stats .sep { width: 1px; height: 14px; background: var(--border); }
+.eta-cta-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, var(--primary2), var(--primary)); color: #fff; border: none; border-radius: 14px; padding: 15px 18px; width: 100%; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 14.5px; box-shadow: 0 8px 22px rgba(89,101,240,0.4); transition: filter .15s, transform .1s; }
+.eta-cta-btn:hover { filter: brightness(1.05); }
+.eta-cta-btn:active { transform: translateY(1px); }
+.eta-cta-btn .eta-cta-text { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.eta-cta-btn .eta-cta-sub { font-size: 12.5px; opacity: 0.85; font-weight: 500; }
+.eta-cta-btn .eta-cta-arrow { width: 36px; height: 36px; border-radius: 999px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; }
+.eta-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.eta-stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 14px 12px; }
+.eta-stat-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 10.5px; color: var(--muted); font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; }
+.eta-stat-num { display: flex; align-items: baseline; gap: 4px; }
+.eta-stat-num .v { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.eta-stat-num .u { font-size: 12px; color: var(--muted); }
+.eta-week-dots { display: flex; gap: 3px; margin-top: 8px; }
+.eta-week-dots > div { flex: 1; height: 4px; border-radius: 2px; background: var(--card-hover); }
+.eta-week-dots > div.done { background: var(--primary); }
+.eta-week-dots > div.today { background: var(--primary-soft); }
+.eta-modes { background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+.eta-mode-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; cursor: pointer; border-top: 1px solid var(--border); transition: background .15s; }
+.eta-mode-row:first-child { border-top: none; }
+.eta-mode-row:hover { background: var(--card-hover); }
+.eta-mode-ico { width: 34px; height: 34px; border-radius: 10px; background: var(--card-hover); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.eta-mode-body { flex: 1; }
+.eta-mode-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
+.eta-mode-sub { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+/* Modal polish */
+.modal { background: var(--card) !important; border: 1px solid var(--border) !important; }
+.modal-overlay { background: rgba(0,0,0,0.65) !important; backdrop-filter: blur(6px); }
+.modal .input { background: var(--bg) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.modal .hint { background: var(--card-hover) !important; border-left-color: var(--primary) !important; color: var(--text-soft) !important; }
+.modal-actions .btn-primary { background: linear-gradient(135deg, var(--primary2), var(--primary)) !important; }
+</style>
+
+<script id="eta-v2-script">
+(function(){
+  // ── 1. Dark mode erzwingen ─────────────────────────────
+  document.body.classList.add('dark');
+  try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+  var tc = document.querySelector('meta[name="theme-color"]');
+  if (tc) tc.setAttribute('content', '#0B0F17');
+
+  // ── 2. SVG-Icons ──────────────────────────────────────
+  var ICON = {
+    today:   '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    train:   '<path d="M9.5 3a3 3 0 0 0-3 3v.5A3 3 0 0 0 4 9.5v1a3 3 0 0 0 1 5.7V18a3 3 0 0 0 5.5 1.7M14.5 3a3 3 0 0 1 3 3v.5A3 3 0 0 1 20 9.5v1a3 3 0 0 1-1 5.7V18a3 3 0 0 1-5.5 1.7M12 4v17"/>',
+    flash:   '<path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/>',
+    quiz:    '<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+    fill:    '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/>',
+    list:    '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    search:  '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
+    flame:   '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.4 0 2.6-1 2.9-2.4.4-2-1.4-3.6-1.4-3.6S15 12 15 9.5c0-3-3-5.5-3-5.5s.5 4-3 6c-1.7 1-2.5 2.8-2.5 4.5Z"/>',
+    moon:    '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
+    sun:     '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>',
+    play:    '<path d="M5 3v18l15-9L5 3Z" fill="currentColor"/>',
+    cloud:   '<path d="M18 10h-1.3A7 7 0 1 0 5 16.7"/><path d="M21 14a3 3 0 0 0-3-3h-3.5A5 5 0 1 0 8 17h10a3 3 0 0 0 3-3Z"/>',
+    chevronRight: '<path d="M9 18l6-6-6-6"/>',
+    layers:  '<path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/>',
+    check:   '<path d="M20 6 9 17l-5-5"/>',
+    x:       '<path d="M18 6 6 18M6 6l12 12"/>',
+    trending:'<path d="M23 6 13.5 15.5l-5-5L1 18M17 6h6v6"/>',
+  };
+  function svg(name, size, w) {
+    return '<svg width="'+(size||20)+'" height="'+(size||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">'+(ICON[name]||'')+'</svg>';
+  }
+  window.__etaSvg = svg;
+
+  // ── 3. Sync-Modal rekonstruieren ─────────────────────
+  function rebuildSyncModal() {
+    var modal = document.getElementById('syncModal');
+    if (!modal) return;
+    modal.innerHTML = ''
+      + '<div class="modal" role="dialog" aria-labelledby="syncModalTitle">'
+      + '  <h2 id="syncModalTitle" style="display:flex;align-items:center;gap:8px">'
+      +    svg('cloud', 18) + ' Geräte-Synchronisation</h2>'
+      + '  <p class="modal-sub">Synchronisiere deinen Lernfortschritt zwischen Handy und Laptop über einen privaten GitHub-Gist. Einmal pro Gerät einrichten.</p>'
+      + '  <div class="hint" id="syncModalHint">Erstelle einen GitHub Personal Access Token mit <code>gist</code>-Berechtigung.</div>'
+      + '  <label for="syncTokenInput">GitHub Personal Access Token</label>'
+      + '  <input id="syncTokenInput" class="input mono" type="password" autocomplete="off" spellcheck="false" placeholder="ghp_..." />'
+      + '  <label for="syncGistInput">Gist-ID <span style="color:var(--muted);font-weight:400">(nur auf dem 2. Gerät nötig)</span></label>'
+      + '  <div style="display:flex;gap:6px">'
+      + '    <input id="syncGistInput" class="input mono" type="text" autocomplete="off" spellcheck="false" placeholder="z.B. 7a1b8c..." style="flex:1;margin-bottom:0" />'
+      + '    <button type="button" class="btn btn-ghost" onclick="copyGistIdToClipboard()" title="Gist-ID kopieren" style="padding:8px 12px">📋</button>'
+      + '  </div>'
+      + '  <div id="syncModalMsg" class="modal-msg"></div>'
+      + '  <div class="modal-actions">'
+      + '    <button type="button" class="btn btn-ghost" onclick="closeSyncModal()">Abbrechen</button>'
+      + '    <button type="button" class="btn btn-primary" onclick="saveSyncSettings()">Speichern & verbinden</button>'
+      + '  </div>'
+      + '</div>';
+  }
+  rebuildSyncModal();
+
+  // ── 4. Sync-Row-Sichtbarkeit ─────────────────────────
+  function updateSyncClass() {
+    try {
+      var on = typeof Sync !== 'undefined' && Sync.isConfigured && Sync.isConfigured();
+      document.body.classList.toggle('eta-sync-on', !!on);
+    } catch(e) {}
+  }
+  updateSyncClass();
+
+  // ── 5. Tab-Icons + Heute-Tab ─────────────────────────
+  var TAB_ICONS = ['today','train','flash','quiz','fill','list'];
+  var TAB_MODES = ['today','train','flash','quiz','fill','list'];
+  var navTabs = document.querySelector('.nav-tabs');
+
+  if (navTabs) {
+    var existing = navTabs.querySelectorAll('.tab');
+    var modeOrder = ['train','flash','quiz','fill','list'];
+    existing.forEach(function(btn, i){
+      btn.dataset.mode = modeOrder[i] || 'train';
+      var firstNode = btn.firstChild;
+      while (firstNode && firstNode.nodeType === 3 && !firstNode.textContent.trim()) { firstNode = firstNode.nextSibling; }
+      if (firstNode && firstNode.nodeType === 3) {
+        var em = document.createElement('span'); em.className = 'eta-tab-emoji'; em.textContent = firstNode.textContent;
+        btn.replaceChild(em, firstNode);
+      }
+      var iconWrap = document.createElement('span'); iconWrap.className = 'eta-tab-icon';
+      iconWrap.innerHTML = svg(TAB_ICONS[i+1] || 'train', 22);
+      btn.insertBefore(iconWrap, btn.firstChild);
+    });
+
+    // Heute-Tab einfügen
+    var todayBtn = document.createElement('button');
+    todayBtn.className = 'tab'; todayBtn.dataset.mode = 'today';
+    todayBtn.onclick = function(){ setMode('today', todayBtn); };
+    todayBtn.innerHTML = '<span class="eta-tab-icon">' + svg('today', 22) + '</span><span class="tab-label">Heute</span>';
+    navTabs.insertBefore(todayBtn, navTabs.firstChild);
+
+    // setMode überschreiben
+    var origSetMode = window.setMode;
+    window.setMode = function(m, btn) {
+      window.mode = m;
+      window.idx = 0; window.flipped = false; window.quizAnswered = false; window.fillChecked = false;
+      navTabs.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      var match = [...navTabs.querySelectorAll('.tab')].find(function(t){ return t.dataset.mode === m; });
+      if (match) match.classList.add('active');
+      if (m === 'today') { try { window.scrollTo(0,0); } catch(e){} renderToday(); return; }
+      if (typeof origSetMode === 'function') return origSetMode(m, btn || match);
+      try { render(); } catch(e){}
+    };
+  }
+
+  // ── 6. HEUTE-Screen ─────────────────────────────────
+  function getStats() {
+    var stats = (typeof SRS !== 'undefined' && SRS.stats && typeof WORDS !== 'undefined') ? SRS.stats(WORDS) : { due:0, fresh:0, learning:0, mastered:0 };
+    var goal = (typeof Stats !== 'undefined' && Stats.state) ? (Stats.state.dailyGoal || 20) : 20;
+    var doneToday = 0;
+    try { var today = SRS.todayISO(); var hist = Stats.state.history || []; doneToday = hist.filter(function(s){ return s.date === today; }).reduce(function(a,s){ return a+(s.correct||0); }, 0); } catch(e) {}
+    var streak = (typeof Stats !== 'undefined' && Stats.state && Stats.state.streak) || 0;
+    return { due: stats.due||0, newW: stats.fresh||stats.new||0, learn: stats.learning||0, mast: stats.mastered||0, goal: goal, doneToday: doneToday, streak: streak };
+  }
+  function getGreeting(){ var h=new Date().getHours(); if(h<5)return'Gute Nacht'; if(h<11)return'Guten Morgen'; if(h<17)return'Hallo'; return'Guten Abend'; }
+  function todayDE(){ var d=new Date(); var days=['So','Mo','Di','Mi','Do','Fr','Sa']; var months=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez']; return days[d.getDay()]+', '+d.getDate()+'. '+months[d.getMonth()]; }
+  function weekActivity(){ var out=[]; try{ var hist=Stats.state.history||[]; var byDate={}; hist.forEach(function(s){ byDate[s.date]=(byDate[s.date]||0)+(s.correct||0); }); var today=new Date(); for(var i=6;i>=0;i--){ var dd=new Date(today); dd.setDate(today.getDate()-i); var iso=dd.toISOString().slice(0,10); out.push({done:(byDate[iso]||0)>0,today:i===0}); } } catch(e){ for(var j=0;j<7;j++) out.push({done:false,today:j===6}); } return out; }
+  function makeRing(done, goal){ var size=110,stroke=9,r=(size-stroke)/2,c=2*Math.PI*r,pct=goal>0?Math.min(1,done/goal):0,dash=c*(1-pct); return '<div class="eta-ring-wrap"><svg width="'+size+'" height="'+size+'"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7C8CFF"/><stop offset="100%" stop-color="#5EE3D6"/></linearGradient></defs><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="#1B2233" stroke-width="'+stroke+'"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="url(#rg)" stroke-width="'+stroke+'" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+dash+'"/></svg><div class="eta-ring-text"><div class="eta-ring-num">'+done+'</div><div class="eta-ring-of">von '+goal+' heute</div></div></div>'; }
+
+  function renderToday() {
+    var app = document.getElementById('app'); if (!app) return;
+    var s = getStats();
+    var week = weekActivity();
+    var ctaText = s.due>0?'Training fortsetzen':s.newW>0?'Neue Wörter starten':'Freies Üben';
+    var ctaSub = s.due>0?(s.due+' fällige Wiederholungen'):s.newW>0?(s.newW+' neue Wörter'):'Karteikarten-Modus';
+    var ctaAction = (s.due>0||s.newW>0)?'train':'flash';
+    app.innerHTML = '<div class="eta-today">'
+      + '<div class="eta-today-hero">'
+      + '  <div class="eta-today-greet">'+todayDE()+'</div>'
+      + '  <div class="eta-today-name">'+getGreeting()+'</div>'
+      + '  <div class="eta-today-row">'+makeRing(s.doneToday,s.goal)
+      + '    <div class="eta-today-meta">'
+      + '      <div class="eta-today-pill">'+((s.due+s.newW)>0?'Bereit zum Lernen':'Tagesziel erreicht')+'</div>'
+      + '      <div class="eta-today-headline">'+((s.due+s.newW)>0?(s.due+s.newW)+' Wörter warten':'Alle Wörter gelernt 🎉')+'</div>'
+      + '      <div class="eta-today-stats"><div><strong>'+s.due+'</strong> fällig</div><span class="sep"></span><div><strong>'+s.newW+'</strong> neu</div><span class="sep"></span><div><strong>'+s.mast+'</strong> gem.</div></div>'
+      + '    </div>'
+      + '  </div>'
+      + '  <button class="eta-cta-btn" onclick="setMode(\''+ctaAction+'\')">'
+      + '    <span class="eta-cta-text"><span class="eta-cta-sub">Weiter mit</span><span>'+ctaText+'</span></span>'
+      + '    <span class="eta-cta-arrow">'+svg('play',14,2)+'</span>'
+      + '  </button>'
+      + '</div>'
+      + '<div class="eta-stats-grid">'
+      + '  <div class="eta-stat-card"><div class="eta-stat-head">'+svg('flame',13)+' Streak</div><div class="eta-stat-num"><span class="v">'+s.streak+'</span><span class="u">Tag'+(s.streak===1?'':'e')+'</span></div><div class="eta-week-dots">'+week.map(function(d){ return '<div class="'+(d.today?'today':'')+(d.done?' done':'')+'"></div>'; }).join('')+'</div></div>'
+      + '  <div class="eta-stat-card"><div class="eta-stat-head">'+svg('list',13)+' Wortschatz</div><div class="eta-stat-num"><span class="v">'+(typeof WORDS!=='undefined'?WORDS.length:0)+'</span><span class="u">Wörter</span></div><div style="font-size:11px;color:var(--muted);margin-top:8px"><span style="color:var(--primary-soft);font-weight:600">'+s.mast+'</span> gemeistert</div></div>'
+      + '</div>'
+      + '<div class="eta-modes">'
+      + [
+          {mode:'flash',name:'Karteikarten',sub:'Freie Übung',icon:'flash'},
+          {mode:'quiz', name:'Quiz',         sub:'Multiple Choice',icon:'quiz'},
+          {mode:'fill', name:'Lückentext',   sub:'Selber tippen',icon:'fill'},
+          {mode:'list', name:'Wortliste',    sub:(typeof WORDS!=='undefined'?WORDS.length:0)+' Wörter',icon:'list'},
+        ].map(function(m){ return '<div class="eta-mode-row" onclick="setMode(\''+m.mode+'\')">'+'<div class="eta-mode-ico">'+svg(m.icon,16)+'</div><div class="eta-mode-body"><div class="eta-mode-name">'+m.name+'</div><div class="eta-mode-sub">'+m.sub+'</div></div>'+svg('chevronRight',15)+'</div>'; }).join('')
+      + '</div></div>';
+  }
+  window.renderToday = renderToday;
+
+  // ── 7. Wortliste-Gruppierung ─────────────────────────
+  var listGrouped = false;
+
+  function renderListGrouped() {
+    var app = document.getElementById('app'); if (!app) return;
+    var groups = [
+      { key:'due',    label:'Fällig heute',    pill:'due',    words:[] },
+      { key:'learn',  label:'In Bearbeitung',  pill:'learn',  words:[] },
+      { key:'new',    label:'Neu',             pill:'new',    words:[] },
+      { key:'master', label:'Gemeistert',      pill:'master', words:[] },
+    ];
+    var today = (typeof SRS !== 'undefined') ? SRS.todayISO() : '';
+    (typeof WORDS !== 'undefined' ? WORDS : []).forEach(function(w) {
+      var e = (typeof SRS !== 'undefined') ? SRS.entry(w.id) : { level:0, nextDue:'' };
+      var lvl = e.level || 0;
+      if (lvl >= 7) { groups[3].words.push(w); }
+      else if (lvl === 0) { groups[2].words.push(w); }
+      else if (e.nextDue <= today) { groups[0].words.push(w); }
+      else { groups[1].words.push(w); }
+    });
+    var html = '<div style="padding-bottom:8px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+      + '  <div><span style="font-size:22px;font-weight:700;letter-spacing:-0.5px;color:var(--text)">Wortliste</span><span style="font-size:12px;color:var(--muted);margin-left:8px">'+(typeof WORDS!=='undefined'?WORDS.length:0)+' Wörter</span></div>'
+      + '  <button class="eta-list-group-btn active" onclick="window.__etaToggleGroup()">'+svg('layers',13)+' Gruppiert</button>'
+      + '</div>';
+    groups.forEach(function(g) {
+      if (!g.words.length) return;
+      html += '<div class="eta-group-header"><span class="eta-group-pill '+g.pill+'">'+g.words.length+'</span>'+g.label+'</div>';
+      html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px">';
+      g.words.forEach(function(w, i) {
+        var e = (typeof SRS !== 'undefined') ? SRS.entry(w.id) : { level:0 };
+        var dotsHtml = '<div style="display:flex;gap:2px">';
+        for (var d=0; d<7; d++) dotsHtml += '<div style="width:5px;height:5px;border-radius:1.5px;background:'+(d<(e.level||0)?'var(--primary)':'var(--card-hover)')+'"></div>';
+        dotsHtml += '</div>';
+        html += '<div style="padding:12px 14px;border-top:'+(i>0?'1px solid var(--border)':'none')+';display:flex;align-items:center;gap:12px">'
+          + '  <div style="flex:1;min-width:0">'
+          + '    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px">'
+          + '      <div style="font-size:15px;font-weight:600;color:var(--text)">'+w.word+'</div>'
+          + '      <div style="font-size:11px;color:var(--muted);font-family:ui-monospace,monospace">'+w.pronunciation+'</div>'
+          + '    </div>'
+          + '    <div style="font-size:12.5px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+w.translation+'</div>'
+          + '  </div>'
+          + dotsHtml + '</div>';
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+    app.innerHTML = html;
+  }
+  window.renderListGrouped = renderListGrouped;
+
+  window.__etaToggleGroup = function() {
+    listGrouped = !listGrouped;
+    if (listGrouped) renderListGrouped();
+    else { try { renderList(); } catch(e) {} }
+  };
+
+  // Gruppier-Button in normale Wortliste injizieren (MutationObserver)
+  var appEl = document.getElementById('app');
+  if (appEl) {
+    new MutationObserver(function() {
+      if (window.mode !== 'list') return;
+      if (listGrouped) return;
+      var hdr = appEl.querySelector('.list-header');
+      if (hdr && !hdr.querySelector('.eta-list-group-btn')) {
+        var btn = document.createElement('button');
+        btn.className = 'eta-list-group-btn';
+        btn.innerHTML = svg('layers',13) + ' Gruppieren';
+        btn.onclick = function(){ listGrouped = true; renderListGrouped(); };
+        hdr.appendChild(btn);
+      }
+      // Such-Icon
+      appEl.querySelectorAll('.search-bar').forEach(function(bar){
+        if (bar.querySelector('.eta-search-icon')) return;
+        var icon = document.createElement('span'); icon.className = 'eta-search-icon';
+        icon.innerHTML = svg('search',15); bar.appendChild(icon);
+      });
+    }).observe(appEl, { childList: true, subtree: false });
+  }
+
+  // ── 8. Floating Stats-Bar aufbauen ───────────────────
+  function buildFloatingBar() {
+    var ex = document.getElementById('eta-floating-bar'); if (ex) ex.remove();
+    var bar = document.createElement('div'); bar.id = 'eta-floating-bar';
+    // Streak
+    var streakEl = document.createElement('div'); streakEl.className = 'eta-streak'; streakEl.id = 'eta-streak-display';
+    var ss = (typeof Stats !== 'undefined' && Stats.state && Stats.state.streak) || 0;
+    streakEl.innerHTML = svg('flame',12) + ' <span>' + ss + '</span>';
+    streakEl.onclick = function(){ openStreakSheet(); };
+    bar.appendChild(streakEl);
+    // Theme toggle
+    var themeBtn = document.createElement('button'); themeBtn.className = 'eta-theme'; themeBtn.setAttribute('aria-label','Theme');
+    var setThemeIcon = function(){ themeBtn.innerHTML = svg(document.body.classList.contains('dark')?'sun':'moon',15); };
+    setThemeIcon();
+    themeBtn.onclick = function(){ if(typeof toggleTheme==='function') toggleTheme(); else document.body.classList.toggle('dark'); setTimeout(setThemeIcon,30); };
+    bar.appendChild(themeBtn);
+    document.body.appendChild(bar);
+  }
+  buildFloatingBar();
+
+  // Streak live updaten
+  if (typeof Stats !== 'undefined' && Stats.save) {
+    var oSave = Stats.save.bind(Stats);
+    Stats.save = function(){ var r=oSave.apply(this,arguments); var el=document.getElementById('eta-streak-display'); if(el){ var s=(Stats.state&&Stats.state.streak)||0; el.innerHTML=svg('flame',12)+' <span>'+s+'</span>'; } updateSyncClass(); return r; };
+  }
+
+  // ── 9. Streak-Sheet ──────────────────────────────────
+  function openStreakSheet() {
+    var sheet = document.getElementById('eta-streak-sheet');
+    if (!sheet) {
+      sheet = document.createElement('div'); sheet.id = 'eta-streak-sheet';
+      sheet.onclick = function(e){ if(e.target===sheet) closeStreakSheet(); };
+      document.body.appendChild(sheet);
+    }
+    var s = getStats(); var week = weekActivity();
+    var days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+    sheet.innerHTML = '<div class="eta-sheet-inner">'
+      + '<span class="eta-sheet-handle"></span>'
+      + '<h3>Dein Fortschritt</h3>'
+      + '<div class="eta-stat-grid">'
+      + '  <div class="eta-stat-cell"><span class="v">'+s.streak+'</span><span class="l">Streak</span></div>'
+      + '  <div class="eta-stat-cell"><span class="v" style="color:var(--ok)">'+s.mast+'</span><span class="l">Gemeistert</span></div>'
+      + '  <div class="eta-stat-cell"><span class="v" style="color:var(--primary)">'+s.due+'</span><span class="l">Fällig</span></div>'
+      + '</div>'
+      + '<div class="eta-week-strip">'
+      + week.map(function(d,i){ return '<div class="eta-day"><div class="eta-day-dot'+(d.done?' done':'')+(d.today?' today':'')+'">'+( d.done ? svg('check',14,2.5) : '')+'</div><div class="eta-day-lbl">'+days[i]+'</div></div>'; }).join('')
+      + '</div>'
+      + '<button class="eta-sheet-close" onclick="closeStreakSheet()">Schließen</button>'
+      + '</div>';
+    sheet.classList.add('open');
+  }
+  window.openStreakSheet = openStreakSheet;
+  window.closeStreakSheet = function(){ var s=document.getElementById('eta-streak-sheet'); if(s) s.classList.remove('open'); };
+
+  // ── 10. Heute direkt starten (kein setTimeout-Flicker) ─
+  window.mode = 'today';
+  if (navTabs) {
+    navTabs.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    var todayTabEl = navTabs.querySelector('[data-mode="today"]');
+    if (todayTabEl) todayTabEl.classList.add('active');
+  }
+  try { renderToday(); } catch(e) { console.warn('[ETA v2.4] renderToday sofort fehlgeschlagen:', e); }
+  // Fallback falls SRS etc. noch nicht bereit
+  setTimeout(function(){ if(window.mode==='today') { try { renderToday(); } catch(e){} } }, 200);
+
+  console.log('[ETA v2.4] 10 UX-Verbesserungen aktiv');
+})();
+</script>
+<!-- ETA-PATCH-END -->
