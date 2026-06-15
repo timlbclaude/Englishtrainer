@@ -1,0 +1,26 @@
+name: Validate index.html
+
+on:
+  push:
+    paths:
+      - 'index.html'
+      - '.github/scripts/validate_app.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v5
+
+      - name: Python einrichten
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: index.html validieren
+        run: python .github/scripts/validate_app.py
