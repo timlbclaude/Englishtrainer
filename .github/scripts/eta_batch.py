@@ -25,7 +25,6 @@ from eta_process import (
     ROOT,
     parse_word_and_category,
     process_word,
-    mirror_html,
 )
 
 WORDS_FILE = ROOT / "neue_woerter.txt"
@@ -77,9 +76,6 @@ def main():
     if remaining:
         new_content += "\n".join(remaining) + "\n"
     WORDS_FILE.write_text(new_content, encoding="utf-8")
-
-    if added:
-        mirror_html()
 
     print(f"Batch fertig: {added} neu, {dup} Dubletten, {len(remaining)} offen (Fehler/Retry).")
 

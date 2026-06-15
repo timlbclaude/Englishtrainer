@@ -1,7 +1,7 @@
 """
 ETA-Prozessor: verarbeitet ein GitHub-Issue mit Titel "ETA: <wort> [#Kategorie]",
 ruft die Claude API auf, ermittelt bei Nomen einen passenden Wikipedia-Artikel und
-schreibt das Ergebnis in index.html (WORDS-Array + WIKI_TITLES-Map) sowie in vokabeln.xlsx.
+schreibt das Ergebnis in index.html (WORDS-Array + WIKI_TITLES-Map)  sowie in vokabeln.xlsx.
 
 Bild-Logik (seit 2026-06-15 an das App-Bildsystem angepasst):
 Die App holt Bilder zur Laufzeit über die Map `const WIKI_TITLES` (Wort -> Wikipedia-Artikel)
@@ -30,7 +30,6 @@ from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parents[2]
 HTML_FILE = ROOT / "index.html"
-MIRROR_FILE = ROOT / "English_Trainer.html"  # exakte Kopie von index.html (lokales Backup)
 XLSX_FILE = ROOT / "vokabeln.xlsx"
 
 CLAUDE_MODEL = "claude-sonnet-4-5"  # schnell & guenstig, gute Qualitaet
@@ -278,16 +277,6 @@ def append_word_to_xlsx(data: dict, category: str):
     print("In vokabeln.xlsx angehaengt.")
 
 
-def mirror_html():
-    """Spiegelt index.html 1:1 nach English_Trainer.html (lokales Backup bleibt synchron)."""
-    try:
-        if HTML_FILE.exists():
-            MIRROR_FILE.write_text(HTML_FILE.read_text(encoding="utf-8"), encoding="utf-8")
-            print("English_Trainer.html gespiegelt.")
-    except Exception as e:
-        print(f"Spiegeln fehlgeschlagen: {e}", file=sys.stderr)
-
-
 # ---------- Zentrale Pipeline ----------
 
 def process_word(word_raw: str, category: str) -> str:
@@ -344,9 +333,7 @@ def main():
         print("Kein Wort im Issue-Titel gefunden.")
         sys.exit(1)
 
-    status = process_word(word_raw, category)
-    if status == "added":
-        mirror_html()
+    process_word(word_raw, category)
     print("Fertig.")
 
 
