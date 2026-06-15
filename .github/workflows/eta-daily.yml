@@ -1,0 +1,45 @@
+name: ETA - Taegliche Sammelverarbeitung
+
+on:
+  schedule:
+    # 17:00 UTC = 19:00 Uhr in der Schweiz/Deutschland im Sommer (CEST, UTC+2),
+    # 18:00 Uhr im Winter (CET, UTC+1). GitHub-Cron kennt keine Sommerzeit.
+    - cron: '0 17 * * *'
+  workflow_dispatch:   # erlaubt manuelles Ausloesen ueber den Actions-Tab
+
+permissions:
+  contents: write
+
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v5
+
+      - name: Python einrichten
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Abhaengigkeiten installieren
+        run: |
+          python -m pip install --upgrade pip
+          pip install anthropic openpyxl requests
+
+      - name: Gesammelte Woerter verarbeiten
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python .github/scripts/eta_batch.py
+
+      - name: Aenderungen committen
+        run: |
+          git config user.name "ETA Bot"
+          git config user.email "eta-bot@users.noreply.github.com"
+          git add index.html English_Trainer.html vokabeln.xlsx neue_woerter.txt || true
+          if ! git diff --cached --quiet; then
+            git commit -m "ETA: Taegliche Sammelverarbeitung neuer Woerter"
+            git push
+          else
+            echo "Keine Aenderungen zum Committen."
+          fi
