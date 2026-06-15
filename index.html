@@ -5120,7 +5120,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- ETA-PATCH-START · v2.1 · Variante B Focus Dark + Heute -->
+<!-- ETA-PATCH-START · v2.3 · Variante B Focus Dark + Heute (fixes 2) -->
 <style id="eta-v2-overrides">
 /* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
 :root, body, body.dark {
@@ -5152,7 +5152,34 @@ if ('serviceWorker' in navigator) {
   --sh-lg:          0 16px 40px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.3);
   color-scheme: dark;
 }
-html, body { background: var(--bg) !important; color: var(--text) !important; }
+html, body { background: var(--bg) !important; color: var(--text) !important; margin: 0 !important; padding: 0 !important; }
+
+/* ML-Header verstecken — gesamte Original-Top-Bar weg */
+.hd-stats { display: none !important; }
+#eta-floating-bar { display: flex !important; }
+
+/* Eigene schwebende Top-Right Pille */
+#eta-floating-bar {
+  position: fixed !important;
+  top: max(10px, env(safe-area-inset-top)) !important;
+  right: 10px !important;
+  z-index: 9999 !important;
+  gap: 6px;
+  align-items: center;
+}
+#eta-floating-bar .eta-streak {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--primary-soft); font-size: 11.5px; font-weight: 600;
+}
+#eta-floating-bar .eta-theme {
+  width: 30px; height: 30px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
 
 /* ━━━━━ 2. Top-Bar entlasten ━━━━━ */
 .hd-stats .stat-xp,
@@ -5176,27 +5203,21 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
     top: auto !important;
     bottom: 0 !important;
     left: 0; right: 0;
-    flex-direction: column !important;
+    flex-direction: row !important;
     align-items: stretch !important;
     border-bottom: none !important;
     border-top: 1px solid var(--border) !important;
     background: var(--nav-bg) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    /* WICHTIG: kein backdrop-filter — das erzeugt Containing-Block-Bug */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
     padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
     z-index: 40 !important;
     box-shadow: 0 -8px 28px rgba(0,0,0,0.3);
   }
-  .hd-stats {
-    position: fixed !important;
-    top: max(10px, env(safe-area-inset-top)) !important;
-    right: 12px !important;
-    z-index: 41 !important;
-    padding: 0 !important;
-    gap: 6px !important;
-    background: transparent !important;
-  }
-  .nav-tabs { display: flex !important; flex: 1 !important; padding: 4px !important; overflow: visible !important; }
+  .hd-stats { display: none !important; }
+  .nav-tabs { display: flex !important; flex: 1 !important; padding: 4px !important; overflow: visible !important; width: 100% !important; }
   .tab {
     flex: 1 !important;
     padding: 7px 2px !important;
@@ -5218,9 +5239,15 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
   }
   .tab .tab-label { display: inline !important; font-size: 10px !important; font-weight: 500 !important; letter-spacing: -0.1px !important; }
   .tab.active .tab-label { font-weight: 600 !important; }
-  main { padding-bottom: 120px !important; padding-top: 50px !important; }
+  main { padding-bottom: 110px !important; padding-top: max(8px, env(safe-area-inset-top)) !important; padding-left: 12px !important; padding-right: 12px !important; max-width: none !important; }
+  /* erste Original-Komponenten oft mit margin-top — reset */
+  main > *:first-child { margin-top: 0 !important; }
+  .sync-row { margin-bottom: 8px !important; margin-top: 0 !important; }
+  .srs-compact-bar { margin-bottom: 8px !important; padding: 8px 12px !important; }
   .hd-stats .stat-streak { padding: 4px 9px !important; font-size: 11px !important; }
 }
+
+/* Original .hd-stats COMPLETELY hidden (egal wo platziert) */
 
 /* Desktop: Icon + Label nebeneinander */
 @media (min-width: 901px) and (pointer: fine) {
@@ -5233,6 +5260,18 @@ html, body { background: var(--bg) !important; color: var(--text) !important; }
 
 /* Emojis IMMER verstecken */
 .tab .eta-tab-emoji { display: none !important; }
+
+/* Stats-Pill schwebt rechts oben — wird per JS ans <body> verschoben */
+body > .hd-stats {
+  display: none !important;
+}
+
+/* Heute-Hero kompakter — weniger Leerraum oben */
+.eta-today { padding-top: 0 !important; gap: 12px; }
+.eta-today-hero { padding: 16px 18px 16px !important; }
+.eta-today-name { margin-bottom: 14px !important; font-size: 21px !important; }
+.eta-today-greet { margin-bottom: 3px !important; }
+.eta-today-row { margin-bottom: 14px !important; }
 
 /* ━━━━━ 4. Cards & Buttons polieren ━━━━━ */
 .face, .quiz-question, .fill-card, .word-card,
@@ -5568,7 +5607,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
 
   // ── 5. HEUTE-Render-Funktion ──────────────────────────────
   function getStats() {
-    var stats = (typeof SRS !== 'undefined' && SRS.stats) ? SRS.stats(WORDS) : null;
+    var stats = (typeof SRS !== 'undefined' && SRS.stats && typeof WORDS !== 'undefined') ? SRS.stats(WORDS) : { due:0, fresh:0, learning:0, mastered:0 };
     var goal  = (typeof Stats !== 'undefined' && Stats.state) ? (Stats.state.dailyGoal || 20) : 20;
     var doneToday = 0;
     try {
@@ -5578,11 +5617,11 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     } catch(e) {}
     var streak = (Stats && Stats.state && Stats.state.streak) || 0;
     return {
-      due:  stats ? stats.due : 0,
-      newW: stats ? stats.new : 0,
-      learn: stats ? stats.learning : 0,
-      mast: stats ? stats.mastered : 0,
-      goal: goal,
+      due:    typeof stats.due      === 'number' ? stats.due : 0,
+      newW:   typeof stats.fresh    === 'number' ? stats.fresh : (stats.new || 0),
+      learn:  typeof stats.learning === 'number' ? stats.learning : 0,
+      mast:   typeof stats.mastered === 'number' ? stats.mastered : 0,
+      goal:   goal,
       doneToday: doneToday,
       streak: streak,
     };
@@ -5723,8 +5762,52 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   }
   window.renderToday = renderToday;
 
-  // ── 6. Streak-Pill / Theme-Toggle: SVG-Icons ──────────────
-  var streak = document.getElementById('statStreak');
+  // ── 6. EIGENE Stats-Bar mit Streak + Theme-Toggle (Original ist hidden) ──
+  function buildFloatingBar() {
+    var existing = document.getElementById('eta-floating-bar');
+    if (existing) existing.remove();
+    var bar = document.createElement('div');
+    bar.id = 'eta-floating-bar';
+    // Streak
+    var streakEl = document.createElement('div');
+    streakEl.className = 'eta-streak';
+    streakEl.id = 'eta-streak-display';
+    var s = (typeof Stats !== 'undefined' && Stats.state && Stats.state.streak) || 0;
+    streakEl.innerHTML = svg('flame', 12) + ' <span>' + s + '</span>';
+    bar.appendChild(streakEl);
+    // Theme Toggle
+    var themeBtn = document.createElement('button');
+    themeBtn.className = 'eta-theme';
+    themeBtn.setAttribute('aria-label', 'Theme wechseln');
+    var setThemeIcon = function(){
+      themeBtn.innerHTML = svg(document.body.classList.contains('dark') ? 'sun' : 'moon', 15);
+    };
+    setThemeIcon();
+    themeBtn.addEventListener('click', function(){
+      if (typeof toggleTheme === 'function') { toggleTheme(); }
+      else { document.body.classList.toggle('dark'); }
+      setTimeout(setThemeIcon, 30);
+    });
+    bar.appendChild(themeBtn);
+    document.body.appendChild(bar);
+  }
+  buildFloatingBar();
+
+  // Streak-Display live updaten wenn Stats sich ändern
+  if (typeof Stats !== 'undefined' && Stats.save) {
+    var origSave = Stats.save.bind(Stats);
+    Stats.save = function(){
+      var r = origSave.apply(this, arguments);
+      var disp = document.getElementById('eta-streak-display');
+      if (disp) {
+        var ss = (Stats.state && Stats.state.streak) || 0;
+        disp.innerHTML = svg('flame', 12) + ' <span>' + ss + '</span>';
+      }
+      return r;
+    };
+  }
+
+  var streak = document.getElementById('statStreak'); // legacy, sollte versteckt sein
   if (streak) {
     var n = (streak.textContent.match(/\d+/) || [0])[0];
     streak.innerHTML = svg('flame', 13) + ' ' + n;
@@ -5768,7 +5851,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     } catch(e) { console.warn('Heute-Start fehlgeschlagen:', e); }
   }, 100);
 
-  console.log('[ETA v2.1] Variante B + Heute-Tab + Sync-Modal aktiviert');
+  console.log('[ETA v2.3] Variante B + Heute-Tab + Sync-Modal aktiviert');
 })();
 </script>
 <!-- ETA-PATCH-END -->
