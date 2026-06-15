@@ -5118,7 +5118,11 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<<<<<<< HEAD
 <!-- ETA-PATCH-START · v2.4 · 10 UX-Verbesserungen -->
+=======
+<!-- ETA-PATCH-START · v2.1 · Variante B Focus Dark + Heute -->
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 <style id="eta-v2-overrides">
 /* ━━━━━ 1. Theme — dark-first, Indigo + Cyan ━━━━━ */
 :root, body, body.dark {
@@ -5149,6 +5153,7 @@ if ('serviceWorker' in navigator) {
   --sh-lg:          0 16px 40px rgba(0,0,0,0.55);
   color-scheme: dark;
 }
+<<<<<<< HEAD
 html, body { background: var(--bg) !important; color: var(--text) !important; margin: 0 !important; padding: 0 !important; }
 
 /* ━━━━━ 2. Original hd-stats komplett verstecken ━━━━━ */
@@ -5181,6 +5186,9 @@ html, body { background: var(--bg) !important; color: var(--text) !important; ma
   padding: 0; transition: border-color .15s;
 }
 #eta-floating-bar .eta-theme:hover { border-color: var(--primary); }
+=======
+html, body { background: var(--bg) !important; color: var(--text) !important; }
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 
 /* ━━━━━ 3. Tab-Bar nach UNTEN (alle Touch-Geräte) — kein backdrop-filter ━━━━━ */
 @media (max-width: 900px), (pointer: coarse) {
@@ -5189,23 +5197,41 @@ html, body { background: var(--bg) !important; color: var(--text) !important; ma
     top: auto !important;
     bottom: 0 !important;
     left: 0; right: 0;
-    flex-direction: row !important;
+    flex-direction: column !important;
     align-items: stretch !important;
     border-bottom: none !important;
     border-top: 1px solid var(--border) !important;
     background: var(--nav-bg) !important;
+<<<<<<< HEAD
     /* KEIN backdrop-filter — erzeugt Containing-Block-Bug für position:fixed Kinder */
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     padding: 0 !important;
+=======
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
     padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
     z-index: 40 !important;
     box-shadow: 0 -8px 28px rgba(0,0,0,0.3);
   }
+<<<<<<< HEAD
   .nav-tabs {
     display: flex !important; flex: 1 !important;
     padding: 4px !important; overflow: visible !important; width: 100% !important;
   }
+=======
+  .hd-stats {
+    position: fixed !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: 12px !important;
+    z-index: 41 !important;
+    padding: 0 !important;
+    gap: 6px !important;
+    background: transparent !important;
+  }
+  .nav-tabs { display: flex !important; flex: 1 !important; padding: 4px !important; overflow: visible !important; }
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
   .tab {
     flex: 1 !important; padding: 7px 2px !important;
     display: flex !important; flex-direction: column !important;
@@ -5217,6 +5243,7 @@ html, body { background: var(--bg) !important; color: var(--text) !important; ma
   .tab.active { background: var(--card-hover) !important; color: var(--text) !important; border-bottom: none !important; }
   .tab .tab-label { display: inline !important; font-size: 10px !important; font-weight: 500 !important; }
   .tab.active .tab-label { font-weight: 600 !important; }
+<<<<<<< HEAD
 
   /* FIX 1: Top-Rand minimal halten */
   main {
@@ -5232,6 +5259,13 @@ html, body { background: var(--bg) !important; color: var(--text) !important; ma
 }
 
 /* Desktop */
+=======
+  main { padding-bottom: 120px !important; padding-top: 50px !important; }
+  .hd-stats .stat-streak { padding: 4px 9px !important; font-size: 11px !important; }
+}
+
+/* Desktop: Icon + Label nebeneinander */
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 @media (min-width: 901px) and (pointer: fine) {
   .tab .eta-tab-icon { display: inline-flex !important; vertical-align: middle; margin-right: 8px; }
   .tab { border-radius: 10px !important; }
@@ -5239,6 +5273,7 @@ html, body { background: var(--bg) !important; color: var(--text) !important; ma
 }
 .tab .eta-tab-emoji { display: none !important; }
 
+<<<<<<< HEAD
 /* ━━━━━ FIX 2: FAB-Button korrekte Position ━━━━━ */
 #fabAdd {
   bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
@@ -5356,6 +5391,13 @@ body.eta-sync-on .sync-row { display: flex !important; }
 .face, .quiz-question, .fill-card, .word-card, .summary-card,
 .srs-empty, .srs-dash-item, .flash-picker, .round-result, .history-box,
 .goal-row, .srs-compact-bar, .modal { border-radius: 18px !important; }
+=======
+/* ━━━━━ 4. Cards & Buttons polieren ━━━━━ */
+.face, .quiz-question, .fill-card, .word-card,
+.summary-card, .srs-empty, .srs-dash-item,
+.flash-picker, .round-result, .history-box, .goal-row,
+.srs-compact-bar, .modal { border-radius: 18px !important; }
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 
 .btn-primary, .btn-ok, .btn-srs-ok {
   background: linear-gradient(135deg, var(--primary2), var(--primary)) !important;
@@ -5571,12 +5613,88 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
 
   // ── 6. HEUTE-Screen ─────────────────────────────────
   function getStats() {
+<<<<<<< HEAD
     var stats = (typeof SRS !== 'undefined' && SRS.stats && typeof WORDS !== 'undefined') ? SRS.stats(WORDS) : { due:0, fresh:0, learning:0, mastered:0 };
     var goal = (typeof Stats !== 'undefined' && Stats.state) ? (Stats.state.dailyGoal || 20) : 20;
     var doneToday = 0;
     try { var today = SRS.todayISO(); var hist = Stats.state.history || []; doneToday = hist.filter(function(s){ return s.date === today; }).reduce(function(a,s){ return a+(s.correct||0); }, 0); } catch(e) {}
     var streak = (typeof Stats !== 'undefined' && Stats.state && Stats.state.streak) || 0;
     return { due: stats.due||0, newW: stats.fresh||stats.new||0, learn: stats.learning||0, mast: stats.mastered||0, goal: goal, doneToday: doneToday, streak: streak };
+=======
+    var stats = (typeof SRS !== 'undefined' && SRS.stats) ? SRS.stats(WORDS) : null;
+    var goal  = (typeof Stats !== 'undefined' && Stats.state) ? (Stats.state.dailyGoal || 20) : 20;
+    var doneToday = 0;
+    try {
+      var today = SRS.todayISO();
+      var hist = Stats.state.history || [];
+      doneToday = hist.filter(function(s){ return s.date === today; }).reduce(function(a,s){ return a + (s.correct||0); }, 0);
+    } catch(e) {}
+    var streak = (Stats && Stats.state && Stats.state.streak) || 0;
+    return {
+      due:  stats ? stats.due : 0,
+      newW: stats ? stats.new : 0,
+      learn: stats ? stats.learning : 0,
+      mast: stats ? stats.mastered : 0,
+      goal: goal,
+      doneToday: doneToday,
+      streak: streak,
+    };
+  }
+
+  function getGreeting() {
+    var h = new Date().getHours();
+    if (h < 5)  return 'Gute Nacht';
+    if (h < 11) return 'Guten Morgen';
+    if (h < 17) return 'Hallo';
+    if (h < 22) return 'Guten Abend';
+    return 'Guten Abend';
+  }
+  function todayDateDE() {
+    var d = new Date();
+    var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+    var months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    return days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()];
+  }
+
+  function weekActivity() {
+    // Letzte 7 Tage abprüfen: hat man da was gemacht?
+    var out = [];
+    try {
+      var hist = Stats.state.history || [];
+      var byDate = {};
+      hist.forEach(function(s){ byDate[s.date] = (byDate[s.date] || 0) + (s.correct || 0); });
+      var today = new Date();
+      var todayDow = (today.getDay() + 6) % 7; // 0 = Mo, 6 = So
+      for (var i = 6; i >= 0; i--) {
+        var d = new Date(today); d.setDate(today.getDate() - i);
+        var iso = d.toISOString().slice(0,10);
+        var count = byDate[iso] || 0;
+        out.push({ done: count > 0, today: i === 0, count: count });
+      }
+    } catch(e) {
+      for (var j = 0; j < 7; j++) out.push({ done: false, today: j === 6, count: 0 });
+    }
+    return out;
+  }
+
+  function makeRing(done, goal) {
+    var size = 110, stroke = 9;
+    var r = (size - stroke) / 2;
+    var c = 2 * Math.PI * r;
+    var pct = goal > 0 ? Math.min(1, done / goal) : 0;
+    var dashOff = c * (1 - pct);
+    return ''
+      + '<div class="eta-ring-wrap">'
+      +   '<svg width="'+size+'" height="'+size+'">'
+      +     '<defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">'
+      +       '<stop offset="0%" stop-color="#7C8CFF"/><stop offset="100%" stop-color="#5EE3D6"/>'
+      +     '</linearGradient></defs>'
+      +     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="#1B2233" stroke-width="'+stroke+'"/>'
+      +     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="url(#ringGrad)" stroke-width="'+stroke+'" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+dashOff+'"/>'
+      +   '</svg>'
+      +   '<div class="eta-ring-text"><div class="eta-ring-num">'+done+'</div><div class="eta-ring-of">von '+goal+' heute</div></div>'
+      + '</div>';
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
   }
   function getGreeting(){ var h=new Date().getHours(); if(h<5)return'Gute Nacht'; if(h<11)return'Guten Morgen'; if(h<17)return'Hallo'; return'Guten Abend'; }
   function todayDE(){ var d=new Date(); var days=['So','Mo','Di','Mi','Do','Fr','Sa']; var months=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez']; return days[d.getDay()]+', '+d.getDate()+'. '+months[d.getMonth()]; }
@@ -5621,6 +5739,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   }
   window.renderToday = renderToday;
 
+<<<<<<< HEAD
   // ── 7. Wortliste-Gruppierung ─────────────────────────
   var listGrouped = false;
 
@@ -5751,6 +5870,19 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
       + '<button class="eta-sheet-close" onclick="closeStreakSheet()">Schließen</button>'
       + '</div>';
     sheet.classList.add('open');
+=======
+  // ── 6. Streak-Pill / Theme-Toggle: SVG-Icons ──────────────
+  var streak = document.getElementById('statStreak');
+  if (streak) {
+    var n = (streak.textContent.match(/\d+/) || [0])[0];
+    streak.innerHTML = svg('flame', 13) + ' ' + n;
+    streak.style.cssText = 'gap:5px;display:inline-flex;align-items:center';
+    new MutationObserver(function(){
+      if (streak.querySelector('svg')) return;
+      var nn = (streak.textContent.replace(/[^\d ]/g,'').match(/\d+/) || [0])[0];
+      streak.innerHTML = svg('flame', 13) + ' ' + nn;
+    }).observe(streak, { childList: true, characterData: true, subtree: true });
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
   }
   window.openStreakSheet = openStreakSheet;
   window.closeStreakSheet = function(){ var s=document.getElementById('eta-streak-sheet'); if(s) s.classList.remove('open'); };
@@ -5766,13 +5898,43 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   // Fallback falls SRS etc. noch nicht bereit
   setTimeout(function(){ if(window.mode==='today') { try { renderToday(); } catch(e){} } }, 200);
 
+<<<<<<< HEAD
   console.log('[ETA v2.4] 10 UX-Verbesserungen aktiv');
+=======
+  // ── 7. Suchleiste-Icon ────────────────────────────────────
+  function decorateSearch() {
+    document.querySelectorAll('.search-bar').forEach(function(bar){
+      if (bar.querySelector('.eta-search-icon')) return;
+      var icon = document.createElement('span');
+      icon.className = 'eta-search-icon';
+      icon.innerHTML = svg('search', 15);
+      bar.appendChild(icon);
+    });
+  }
+  decorateSearch();
+  var app = document.getElementById('app');
+  if (app) {
+    new MutationObserver(decorateSearch).observe(app, { childList: true, subtree: true });
+  }
+
+  // ── 8. Beim Start zu „Heute" springen ─────────────────────
+  setTimeout(function(){
+    try {
+      setMode('today');
+    } catch(e) { console.warn('Heute-Start fehlgeschlagen:', e); }
+  }, 100);
+
+  console.log('[ETA v2.1] Variante B + Heute-Tab + Sync-Modal aktiviert');
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 })();
 </script>
 <!-- ETA-PATCH-END -->
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dddbf7b456f3f37c8256ec2d5c859c038b4fe596
 <!-- ETA-ADDWORD-FAB-START · stellt den FAB + Add-Word-Modal aus v2026-05-10 wieder her -->
 <style>
 #fabAdd{
