@@ -48,6 +48,7 @@ Liefere ein JSON-Objekt mit exakt diesen Feldern:
 - "wordType": Einer von "Nomen", "Verb", "Adjektiv", "Adverb", "Praeposition", "Konjunktion", "Phrase"
 - "definition": Kurze englische Definition (max. 15 Woerter)
 - "examples": Array mit genau 2 einfachen englischen Beispielsaetzen
+- "exampleDE": die deutsche Uebersetzung von examples[0] (ein natuerlicher, korrekter deutscher Satz)
 - "difficulty": 1 (einfach), 2 (mittel) oder 3 (schwer)
 - "imageKeyword": Wenn wordType = "Nomen", der Titel des passendsten englischen Wikipedia-Artikels, der ein generisches Bild des Gegenstands enthaelt (z.B. "Brick", "Frying pan", "Refrigerator"). Bei abstrakten Nomen ohne sinnvolles Bild ein leerer String. Sonst leerer String.
 
@@ -209,6 +210,7 @@ def append_word_to_html(data: dict, category: str):
     examples = data.get("examples", [])
     ex1 = examples[0] if len(examples) > 0 else ""
     ex2 = examples[1] if len(examples) > 1 else ""
+    exde = data.get("exampleDE", "") or ""
 
     entry = (
         "  {"
@@ -219,6 +221,7 @@ def append_word_to_html(data: dict, category: str):
         f'"wordType":"{js_escape(data["wordType"])}",'
         f'"definition":"{js_escape(data["definition"])}",'
         f'"examples":["{js_escape(ex1)}","{js_escape(ex2)}"],'
+        f'"exampleDE":"{js_escape(exde)}",'
         f'"imageUrl":"",'  # bewusst leer: Bild kommt zur Laufzeit ueber WIKI_TITLES
         f'"difficulty":{int(data.get("difficulty",2))},'
         f'"dateAdded":"{today}",'
