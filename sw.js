@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v13-cleanup';
+const CACHE = 'et-v14-fresh';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -18,6 +18,10 @@ self.addEventListener('install', event => {
     caches.open(CACHE).then(cache => cache.addAll(OFFLINE_URLS))
   );
   self.skipWaiting();
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 // Activate: Alte Caches löschen

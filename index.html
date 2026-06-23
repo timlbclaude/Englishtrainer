@@ -293,6 +293,13 @@ body.dark .badge-cat-Reisen{background:rgba(34,211,238,.18);color:#a5f3fc;}
 .fp-btn:hover{border-color:var(--primary);background:var(--primary-bg);color:var(--primary);}
 .fp-btn:hover small{color:var(--primary);}
 .fp-btn.fp-featured{border-color:var(--primary);background:var(--primary-bg);color:var(--primary);}
+.cat-chip-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 auto 14px;max-width:560px;}
+.cat-chip{padding:5px 11px;border:1px solid var(--border);border-radius:var(--radius-full);background:var(--card);color:var(--text-soft);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s ease;}
+.cat-chip:hover{border-color:var(--primary);color:var(--primary);}
+.cat-chip.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.cat-chip-n{font-size:10px;opacity:.7;font-weight:700;}
+.cat-chip.active .cat-chip-n{opacity:.9;}
+.speak-sm{width:22px;height:22px;min-width:22px;font-size:11px;padding:0;margin-right:6px;vertical-align:middle;}
 .fp-btn.fp-featured small{color:var(--primary-soft);}
 .fp-btn-all{width:100%;padding:12px;background:transparent;border:1px dashed var(--border-strong);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--muted);transition:all .18s ease;}
 .fp-btn-all:hover{color:var(--text);border-color:var(--primary);}
@@ -3469,9 +3476,9 @@ const WORDS = [
     dateAdded: "2026-05-27",
     category: "TV"
   },
-  {"id":185,"word":"Lighthouse","translation":"Leuchtturm","pronunciation":"/ˈlaɪthaʊs/","wordType":"Nomen","definition":"A tower with a bright light that guides ships at sea.","examples":["The lighthouse warned ships about the dangerous rocks.","We visited an old lighthouse by the coast."], exampleDE: "Der Leuchtturm warnte Schiffe vor den gefährlichen Felsen.","imageUrl":"","difficulty":2,"dateAdded":"2026-06-15","notes":"","category":"Allgemein"},
-  {"id":186,"word":"Ferris wheel","translation":"Riesenrad","pronunciation":"/ˈferɪs wiːl/","wordType":"Nomen","definition":"A large rotating wheel with passenger cabins attached to its rim.","examples":["We rode the Ferris wheel at the carnival.","The Ferris wheel offers a great view of the city."], exampleDE: "Wir fuhren auf dem Riesenrad auf dem Jahrmarkt.","imageUrl":"","difficulty":1,"dateAdded":"2026-06-21","notes":"","category":"TV"},
-  {"id":187,"word":"to stall","translation":"verzögern","pronunciation":"/stɔːl/","wordType":"Verb","definition":"To delay or stop making progress intentionally","examples":["Stop stalling and answer my question.","The car engine stalled at the traffic light."], exampleDE: "Hör auf hinzuhalten und beantworte meine Frage.","imageUrl":"","difficulty":2,"dateAdded":"2026-06-22","notes":"","category":"TV"},
+  {"id":185,"word":"Lighthouse","translation":"Leuchtturm","pronunciation":"/ˈlaɪthaʊs/","wordType":"Nomen","definition":"A tower with a bright light that guides ships at sea.","examples":["The lighthouse warned ships about the dangerous rocks.","We visited an old lighthouse by the coast."], exampleDE: "Der Leuchtturm warnte Schiffe vor den gefährlichen Felsen.","imageUrl":"","difficulty":"A2","dateAdded":"2026-06-15","notes":"","category":"Allgemein"},
+  {"id":186,"word":"Ferris wheel","translation":"Riesenrad","pronunciation":"/ˈferɪs wiːl/","wordType":"Nomen","definition":"A large rotating wheel with passenger cabins attached to its rim.","examples":["We rode the Ferris wheel at the carnival.","The Ferris wheel offers a great view of the city."], exampleDE: "Wir fuhren auf dem Riesenrad auf dem Jahrmarkt.","imageUrl":"","difficulty":"A2","dateAdded":"2026-06-21","notes":"","category":"TV"},
+  {"id":187,"word":"to stall","translation":"verzögern","pronunciation":"/stɔːl/","wordType":"Verb","definition":"To delay or stop making progress intentionally","examples":["Stop stalling and answer my question.","The car engine stalled at the traffic light."], exampleDE: "Hör auf hinzuhalten und beantworte meine Frage.","imageUrl":"","difficulty":"B1","dateAdded":"2026-06-22","notes":"","category":"TV"},
   {"id": 188, "word": "to reserve", "translation": "reservieren", "pronunciation": "/rɪˈzɜːv/", "wordType": "Verb", "definition": "To arrange for a table or seat to be kept for you.", "examples": ["I'd like to reserve a table for two at eight o'clock.", "You should reserve early because the restaurant gets busy."], "exampleDE": "Ich möchte einen Tisch für zwei Personen um acht Uhr reservieren.", "imageUrl": "", "difficulty": "B1", "dateAdded": "2026-06-23", "notes": "", "category": "Reisen"},
   {"id": 189, "word": "Reservation", "translation": "Reservierung", "pronunciation": "/ˌrezəˈveɪʃn/", "wordType": "Nomen", "definition": "An arrangement to have a table or room kept for you.", "examples": ["We have a reservation under the name Becker.", "The waiter checked our reservation and showed us to our seats."], "exampleDE": "Wir haben eine Reservierung auf den Namen Becker.", "imageUrl": "", "difficulty": "B1", "dateAdded": "2026-06-23", "notes": "", "category": "Reisen"},
   {"id": 190, "word": "Menu", "translation": "Speisekarte", "pronunciation": "/ˈmenjuː/", "wordType": "Nomen", "definition": "A list of the dishes available in a restaurant.", "examples": ["Could we see the menu, please?", "The menu had an English translation for tourists."], "exampleDE": "Könnten wir bitte die Speisekarte sehen?", "imageUrl": "", "difficulty": "A2", "dateAdded": "2026-06-23", "notes": "", "category": "Reisen"},
@@ -3579,6 +3586,27 @@ const WORDS = [
    ═══════════════════════════════════════════════ */
 let mode = 'train';
 let deck = [];
+// ── Kategorie-Filter (2026-06-23): gilt für Karteikarten/Quiz/Lückentext ──
+let catFilter = 'all';
+try { catFilter = localStorage.getItem('etCatFilter') || 'all'; } catch(e){}
+function poolWords(){ return catFilter==='all' ? WORDS : WORDS.filter(w => (w.category||'Allgemein')===catFilter); }
+function catCounts(){ const m={}; WORDS.forEach(w=>{ const c=w.category||'Allgemein'; m[c]=(m[c]||0)+1; }); return m; }
+function catLabel(c){ return c==='all' ? 'Alle' : (c==='—' ? 'Sonstige' : c); }
+function categoryChipsHTML(){
+  const counts=catCounts();
+  const cats=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+  const chip=(c,label,n)=>`<button class="cat-chip${catFilter===c?' active':''}" onclick="setCatFilter('${c}')">${label}<span class="cat-chip-n">${n}</span></button>`;
+  let html=chip('all','Alle',WORDS.length);
+  cats.forEach(c=>{ html+=chip(c,catLabel(c),counts[c]); });
+  return `<div class="cat-chip-row">${html}</div>`;
+}
+function setCatFilter(c){
+  catFilter=c; try{ localStorage.setItem('etCatFilter',c); }catch(e){}
+  idx=0; flipped=false; quizAnswered=false; fillChecked=false;
+  if(mode==='flash'){ flashShowPicker=true; deck=shuffle(poolWords()); }
+  else if(mode==='quiz'||mode==='fill'){ deck=buildRoundDeck(); if(typeof resetRound==='function') resetRound(); }
+  render();
+}
 let idx = 0;
 let flipped = false;
 let correct = 0;
@@ -3755,6 +3783,10 @@ function speakWord(text){
   if(en) u.voice = en;
   window.speechSynthesis.speak(u);
 }
+function speakText(btn){
+  const t = btn.parentElement && btn.parentElement.querySelector('.ex-text');
+  if(t && t.textContent) speakWord(t.textContent.trim());
+}
 
 function updateStats(){
   const $ = id => document.getElementById(id);
@@ -3775,8 +3807,9 @@ function resetRound(){
 
 // Erzeugt einen frischen 10er-Pool aus zufälligen Wörtern
 function buildRoundDeck(){
-  const size = Math.min(ROUND_SIZE, WORDS.length);
-  return shuffle(WORDS).slice(0, size);
+  const pool = poolWords();
+  const size = Math.min(ROUND_SIZE, pool.length);
+  return shuffle(pool).slice(0, size);
 }
 
 function progressHTML(cur,total){
@@ -4328,9 +4361,9 @@ function setMode(m, btn){
     resetRound();
   } else if(m === 'flash'){
     flashShowPicker = true;
-    deck = shuffle(WORDS);
+    deck = shuffle(poolWords());
   } else {
-    deck = shuffle(WORDS);
+    deck = shuffle(poolWords());
   }
   document.querySelectorAll('.nav-tabs .tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -4532,12 +4565,12 @@ function renderTrain(){
     ? `<img class="fc-image" src="${getImg(w)}" alt="${w.word}" referrerpolicy="no-referrer" loading="lazy" onerror="console.warn('Bild fehlgeschlagen:',this.src);this.style.display='none'">`
     : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
   const examplesHTML = w.examples.map(ex =>
-    `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
+    `<div class="back-ex"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button><strong>📝 Beispiel</strong><span class="ex-text">${ex}</span></div>`
   ).join('');
 
   const enDE_t = learnDir === 'en-de';
   const faceFront = enDE_t
-    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
+    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-front-example"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button>📝 „<span class="ex-text">${w.examples[0]}</span>"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
     : `${imgFront}<div class="fc-word" style="font-size:20px;text-align:center;padding:0 12px">${w.translation}</div><div class="fc-badges" style="margin-top:10px"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span><span class="level-badge lvl-${lvl}">Stufe ${lvl}</span></div><div class="fc-front-example">📝 „${w.exampleDE || w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`;
   const faceBack = enDE_t
     ? `<div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}<div class="back-translation-small">🇩🇪 ${w.translation}</div>`
@@ -4604,26 +4637,30 @@ function resetSRS(){
    ═══════════════════════════════════════════════ */
 function renderFlashPicker(){
   const app = document.getElementById('app');
-  const total = WORDS.length;
+  const total = poolWords().length;
   const sizes = [10, 20, 30, 50].filter(n => n <= total);
   const btns = sizes.map(n =>
     `<button class="fp-btn${n===20?' fp-featured':''}" onclick="startFlash(${n})">
       ${n} Karten<small>${n===20?'Empfohlen':'~'+Math.round(n*0.5)+' Min.'}</small>
     </button>`
   ).join('');
+  const allBtn = total>0
+    ? `<button class="fp-btn-all" onclick="startFlash(${total})">Alle ${total} Wörter anzeigen</button>`
+    : `<p style="color:var(--muted);font-size:14px">Keine Wörter in dieser Kategorie.</p>`;
   app.innerHTML = `
     <div class="flash-picker">
       <div class="flash-picker-emoji">🃏</div>
       <h2>Karteikarten</h2>
-      <p>Wie viele Wörter möchtest du üben?</p>
+      <p>Kategorie wählen und Anzahl der Karten:</p>
+      ${categoryChipsHTML()}
       <div class="flash-picker-grid">${btns}</div>
-      <button class="fp-btn-all" onclick="startFlash(${total})">Alle ${total} Wörter anzeigen</button>
+      ${allBtn}
     </div>`;
 }
 
 function startFlash(size){
   flashShowPicker = false;
-  deck = shuffle(WORDS).slice(0, size);
+  deck = shuffle(poolWords()).slice(0, size);
   idx = 0; flipped = false;
   scrollToTop();
   render();
@@ -4645,12 +4682,12 @@ function renderFlash(){
     : `<div class="fc-img-placeholder" style="background:var(--primary-bg)">${icon(w)}</div>`;
 
   const examplesHTML = w.examples.map(ex =>
-    `<div class="back-ex"><strong>📝 Beispiel</strong>${ex}</div>`
+    `<div class="back-ex"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button><strong>📝 Beispiel</strong><span class="ex-text">${ex}</span></div>`
   ).join('');
 
   const enDE_f = learnDir === 'en-de';
   const flashFront = enDE_f
-    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-front-example">📝 „${w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
+    ? `${imgFront}<div class="fc-word">${w.word}</div><div class="speak-row"><button class="speak-btn" onclick="speakWord('${w.word}')">🔊</button><span class="fc-pronunciation">${w.pronunciation}</span></div><div class="fc-badges"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-front-example"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button>📝 „<span class="ex-text">${w.examples[0]}</span>"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`
     : `${imgFront}<div class="fc-word" style="font-size:20px;text-align:center;padding:0 12px">${w.translation}</div><div class="fc-badges" style="margin-top:10px"><span class="badge badge-type">${w.wordType}</span><span class="badge ${diffColor(w.difficulty)}">${w.difficulty}</span></div><div class="fc-front-example">📝 „${w.exampleDE || w.examples[0]}"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>`;
   const flashBack = enDE_f
     ? `<div class="back-section-label">📖 Definition</div><div class="back-def">${w.definition}</div><div class="back-section-label">📝 Beispiele</div>${examplesHTML}<div class="back-translation-small">🇩🇪 ${w.translation}</div>`
@@ -4716,7 +4753,7 @@ function renderQuiz(){
   const enDE = learnDir === 'en-de';
 
   // Build choices: 1 correct + up to 3 wrong
-  const wrong = shuffle(WORDS.filter(x=>x.id!==w.id)).slice(0,3);
+  const wrong = shuffle(poolWords().filter(x=>x.id!==w.id)).slice(0,3);
   quizChoices = shuffle([w, ...wrong]);
   quizCorrectIdx = quizChoices.findIndex(c=>c.id===w.id);
   quizAnswered = false;
@@ -4738,6 +4775,7 @@ function renderQuiz(){
 
   app.innerHTML = `
     ${progressHTML(idx+1, deck.length)}
+    ${categoryChipsHTML()}
     <div class="quiz-dir-row">
       <button class="qdt-btn${enDE?' active':''}" onclick="setLearnDir('en-de')">🇬🇧 → 🇩🇪</button>
       <button class="qdt-btn${!enDE?' active':''}" onclick="setLearnDir('de-en')">🇩🇪 → 🇬🇧</button>
@@ -5241,8 +5279,20 @@ try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
 // Service Worker registrieren (PWA / Offline-Support)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function(){
+    // Bei einem Update (neuer SW übernimmt) genau einmal neu laden,
+    // damit neue Wörter/Änderungen sofort erscheinen – aber NICHT beim Erstbesuch.
+    if (navigator.serviceWorker.controller) {
+      var __etaReloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function(){
+        if (__etaReloaded) return; __etaReloaded = true;
+        window.location.reload();
+      });
+    }
     navigator.serviceWorker.register('./sw.js')
-      .then(function(reg){ console.log('SW registriert:', reg.scope); })
+      .then(function(reg){
+        console.log('SW registriert:', reg.scope);
+        reg.update();
+      })
       .catch(function(err){ console.warn('SW Fehler:', err); });
   });
 }
