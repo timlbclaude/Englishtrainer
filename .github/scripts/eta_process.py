@@ -275,6 +275,7 @@ def append_word_to_xlsx(data: dict, category: str):
         date.today().isoformat(),
         "",
         category,
+        data.get("exampleDE", "") or "",
     ])
     wb.save(XLSX_FILE)
     print("In vokabeln.xlsx angehaengt.")
