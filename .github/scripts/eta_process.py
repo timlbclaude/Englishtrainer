@@ -49,7 +49,7 @@ Liefere ein JSON-Objekt mit exakt diesen Feldern:
 - "definition": Kurze englische Definition (max. 15 Woerter)
 - "examples": Array mit genau 2 einfachen englischen Beispielsaetzen
 - "exampleDE": die deutsche Uebersetzung von examples[0] (ein natuerlicher, korrekter deutscher Satz)
-- "difficulty": 1 (einfach), 2 (mittel) oder 3 (schwer)
+- "difficulty": CEFR-Stufe als String, einer von "A1", "A2", "B1", "B2", "C1", "C2"
 - "imageKeyword": Wenn wordType = "Nomen", der Titel des passendsten englischen Wikipedia-Artikels, der ein generisches Bild des Gegenstands enthaelt (z.B. "Brick", "Frying pan", "Refrigerator"). Bei abstrakten Nomen ohne sinnvolles Bild ein leerer String. Sonst leerer String.
 
 Antworte NUR mit dem JSON-Objekt, ohne Code-Fence, ohne Erklaerung."""
@@ -92,37 +92,36 @@ def ask_claude(word: str) -> dict:
 def resolve_wikipedia(keyword: str):
     """Sucht den passenden Wikipedia-Artikel zum Stichwort.
 
-    Liefert (canonical_title, image_url):
+    Liefert (canonical_title, image_url, thumb_url):
     - canonical_title: Artikeltitel in Unterstrich-Form (z.B. 'Kitchen_stove') fuer WIKI_TITLES,
       oder None wenn kein brauchbarer, bebildeter Artikel gefunden wurde.
-    - image_url: direkte Bild-URL (nur fuer die xlsx-Referenzspalte), sonst "".
+    - image_url: direkte Bild-URL in Originalgroesse (xlsx-Referenzspalte), sonst "".
+    - thumb_url: Thumbnail-URL (~320px) fuer die fest eingebaute IMG_URLS-Map, sonst "".
     Disambiguierungsseiten und bildlose Artikel werden verworfen.
     """
     if not keyword:
-        return (None, "")
+        return (None, "", "")
     try:
         title = urllib.parse.quote(keyword.strip().replace(" ", "_"))
         url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
         r = requests.get(url, headers=UA, timeout=15)
         if r.status_code != 200:
-            return (None, "")
+            return (None, "", "")
         d = r.json()
         if d.get("type") == "disambiguation":
-            return (None, "")
-        img = (
-            d.get("originalimage", {}).get("source")
-            or d.get("thumbnail", {}).get("source", "")
-        )
+            return (None, "", "")
+        thumb = d.get("thumbnail", {}).get("source", "")
+        img = d.get("originalimage", {}).get("source") or thumb
         if not img:
-            return (None, "")
+            return (None, "", "")
         canonical = (
             d.get("titles", {}).get("canonical")
             or d.get("title", "").replace(" ", "_")
         )
-        return (canonical, img)
+        return (canonical, img, thumb or img)
     except Exception as e:
         print(f"Wikipedia-Lookup fehlgeschlagen ({keyword}): {e}", file=sys.stderr)
-        return (None, "")
+        return (None, "", "")
 
 
 # ---------- Dubletten / Helfer ----------
@@ -171,6 +170,22 @@ def js_escape_single(s: str) -> str:
     return s.replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ").strip()
 
 
+CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
+LEGACY_DIFFICULTY = {1: "A2", 2: "B1", 3: "C1", "1": "A2", "2": "B1", "3": "C1"}
+
+
+def cefr_difficulty(value) -> str:
+    """Normalisiert difficulty auf eine CEFR-Stufe (die App faerbt Badges danach).
+
+    Frueher schrieb der Bot 1/2/3 - das erzeugte falsche Badges ("2" statt "B1").
+    """
+    if isinstance(value, str):
+        v = value.strip().upper()
+        if v in CEFR_LEVELS:
+            return v
+    return LEGACY_DIFFICULTY.get(value, "B1")
+
+
 # ---------- index.html schreiben ----------
 
 def add_wiki_title_to_html(word: str, title: str):
@@ -202,6 +217,41 @@ def add_wiki_title_to_html(word: str, title: str):
     print(f"WIKI_TITLES-Eintrag ergaenzt: {word} -> {title}")
 
 
+def add_img_url_to_html(word: str, img_url: str):
+    """Ergaenzt eine fest eingebaute Bild-URL in der IMG_URLS-Map (Key kleingeschrieben).
+
+    Damit erscheint das Bild sofort beim ersten App-Start, ohne API-Wartezeit.
+    """
+    if not img_url:
+        return
+    html = HTML_FILE.read_text(encoding="utf-8")
+    m = re.search(r"const\s+IMG_URLS\s*=\s*\{", html)
+    if not m:
+        print("IMG_URLS-Map nicht gefunden - ueberspringe feste Bild-URL.")
+        return
+    start = m.end()
+    key = word.strip().lower()
+    depth = 1
+    i = start
+    while i < len(html) and depth > 0:
+        c = html[i]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    block = html[start:i]
+    if re.search(r"""['"]""" + re.escape(key) + r"""['"]\s*:""", block):
+        print(f"IMG_URLS enthaelt '{key}' bereits.")
+        return
+    entry = f"\n  '{js_escape_single(key)}':'{js_escape_single(img_url)}',"
+    new_html = html[:start] + entry + html[start:]
+    HTML_FILE.write_text(new_html, encoding="utf-8")
+    print(f"IMG_URLS-Eintrag ergaenzt: {key} -> {img_url[:80]}")
+
+
 def append_word_to_html(data: dict, category: str):
     html = HTML_FILE.read_text(encoding="utf-8")
     wid = next_word_id(html)
@@ -222,8 +272,8 @@ def append_word_to_html(data: dict, category: str):
         f'"definition":"{js_escape(data["definition"])}",'
         f'"examples":["{js_escape(ex1)}","{js_escape(ex2)}"],'
         f'"exampleDE":"{js_escape(exde)}",'
-        f'"imageUrl":"",'  # bewusst leer: Bild kommt zur Laufzeit ueber WIKI_TITLES
-        f'"difficulty":{int(data.get("difficulty",2))},'
+        f'"imageUrl":"",'  # bewusst leer: Bild kommt ueber IMG_URLS/WIKI_TITLES
+        f'"difficulty":"{cefr_difficulty(data.get("difficulty"))}",'
         f'"dateAdded":"{today}",'
         f'"notes":"",'
         f'"category":"{js_escape(category)}"'
@@ -271,7 +321,7 @@ def append_word_to_xlsx(data: dict, category: str):
         examples[0] if len(examples) > 0 else "",
         examples[1] if len(examples) > 1 else "",
         data.get("_imageRef", ""),  # direkte Bild-URL nur zur Referenz
-        int(data.get("difficulty", 2)),
+        cefr_difficulty(data.get("difficulty")),
         date.today().isoformat(),
         "",
         category,
@@ -305,15 +355,16 @@ def process_word(word_raw: str, category: str) -> str:
         print(f"Dublettenschutz: '{word_raw}' wurde als '{data.get('word')}' normalisiert - bereits vorhanden, ueberspringe.")
         return "dup"
 
-    # Bild-Mapping fuer Nomen: WIKI_TITLES-Eintrag statt fester URL
+    # Bild-Mapping fuer Nomen: WIKI_TITLES-Eintrag + fest eingebaute Thumbnail-URL
     data["_imageRef"] = ""
     if data.get("wordType") == "Nomen":
         keyword = data.get("imageKeyword") or data.get("word", "")
-        title, img = resolve_wikipedia(keyword)
+        title, img, thumb = resolve_wikipedia(keyword)
         if not title:
-            title, img = resolve_wikipedia(data.get("word", ""))
+            title, img, thumb = resolve_wikipedia(data.get("word", ""))
         if title:
             add_wiki_title_to_html(data["word"], title)
+            add_img_url_to_html(data["word"], thumb)
             data["_imageRef"] = img
             print(f"Bild ueber WIKI_TITLES: {data['word']} -> {title}")
         else:
