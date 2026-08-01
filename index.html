@@ -6775,7 +6775,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     try { $id('v3StreakN').textContent = (typeof Stats!=='undefined' && Stats.state && Stats.state.streak) || 0; } catch(e){}
     var mo = window.mode;
     if (mo === 'today'){ window.__v3SetTopbar(dateDE(), greet()); return; }
-    if (mo === 'train') return; // renderTrain setzt „KARTE x/y" selbst
+    if (mo === 'train' || mo === 'flash' || mo === 'fill') return; // diese Renderer setzen den Titel selbst (v3/v3.1)
     var t = TITLES[mo]; if (t) window.__v3SetTopbar(t[0], t[1]);
   }
 
@@ -6919,7 +6919,7 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     var src = getImg(w);
     var imgFront = src
       ? '<img class="fc-image" src="' + src + '" alt="' + w.word + '" referrerpolicy="no-referrer" loading="lazy" onerror="console.warn(\'Bild fehlgeschlagen:\',this.src);this.style.display=\'none\'">'
-      : '<div class="fc-img-placeholder" style="background:var(--primary-bg)">' + icon(w) + '</div>';
+      : (window.__v3Ph ? window.__v3Ph(w, 'lg') : '<div class="fc-img-placeholder" style="background:var(--primary-bg)">' + icon(w) + '</div>');
     var examplesHTML = w.examples.map(function(ex){
       return '<div class="back-ex"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button><strong>📝 Beispiel</strong><span class="ex-text">' + ex + '</span></div>';
     }).join('');
@@ -6983,6 +6983,245 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
 })();
 </script>
 <!-- ETA-PATCH-v3-END -->
+
+<!-- ═══════════════ ETA-PATCH v3.1 · Card-first überall + Wortliste 2.0 (2026-08-01) ═══════════════ -->
+<style id="eta-v31-style">
+/* ── Karteikarten-Picker: kompakt (Titel steht in der Kopfzeile) ── */
+.flash-picker .flash-picker-emoji{ display:none !important; }
+.flash-picker h2{ display:none !important; }
+.flash-picker{ padding-top:2px !important; }
+
+/* ── Illustrations-Platzhalter statt Emoji-Kreis ── */
+.v3-ph{ display:flex; align-items:center; justify-content:center; border-radius:14px; position:relative; overflow:hidden; flex-shrink:0; }
+.v3-ph.lg{ width:100%; height:132px; font-size:46px; margin-bottom:14px; }
+.v3-ph.sm{ width:40px; height:40px; font-size:19px; border-radius:9px; }
+.v3-ph::after{ content:''; position:absolute; inset:0; background:radial-gradient(140px 80px at 78% 18%, rgba(255,255,255,0.15), transparent 60%); }
+.v3-ph[data-cat="Reisen"]{ background:linear-gradient(135deg,#1E3A8A 0%,#0E7490 100%); }
+.v3-ph[data-cat="Kitchen/Cooking"]{ background:linear-gradient(135deg,#78350F 0%,#B45309 100%); }
+.v3-ph[data-cat="TV"]{ background:linear-gradient(135deg,#4C1D95 0%,#9D174D 100%); }
+.v3-ph[data-cat="Allgemein"]{ background:linear-gradient(135deg,#312E81 0%,#334155 100%); }
+.v3-ph[data-cat="_default"]{ background:linear-gradient(135deg,#1F2937 0%,#3F4A5F 100%); }
+body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
+
+/* ── Lückentext: Karte sofort, Tastatur-sicher ── */
+.v31-pos{ font-size:10px; font-weight:800; letter-spacing:0.5px; color:var(--muted); white-space:nowrap; }
+
+/* ── Wortliste 2.0 ── */
+.v31-sticky{ position:sticky; top:calc(50px + env(safe-area-inset-top,0px)); z-index:20; background:var(--bg); padding:2px 0 8px; }
+@media (min-width:901px) and (pointer:fine){ .v31-sticky{ top:0; } }
+.v31-filterrow{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.v31-fbtn{ display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:999px; background:var(--card); border:1px solid var(--border); color:var(--text-soft); font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+.v31-fbtn.active{ border-color:var(--primary); color:var(--primary); background:var(--primary-bg); }
+.v31-group-head{ display:flex; align-items:center; gap:8px; padding:12px 4px 8px; cursor:pointer; user-select:none; font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-soft); }
+.v31-group-head .cnt{ font-size:10.5px; font-weight:800; border-radius:999px; padding:1px 9px; background:var(--card-hover); color:var(--text-soft); }
+.v31-group-head .cnt.due{ background:var(--err-bg); color:var(--err); }
+.v31-group-head .cnt.learn{ background:var(--warn-bg); color:var(--warn); }
+.v31-group-head .cnt.fresh{ background:var(--primary-bg); color:var(--primary); }
+.v31-group-head .cnt.master{ background:var(--ok-bg); color:var(--ok-text); }
+.v31-group-head .chev{ margin-left:auto; transition:transform .15s; color:var(--muted); }
+.v31-group-head.open .chev{ transform:rotate(90deg); }
+.v31-empty{ text-align:center; padding:36px 16px; color:var(--muted); font-size:13.5px; }
+</style>
+<script id="eta-v31-script">
+(function(){
+  var svg = window.__etaSvg || function(){ return ''; };
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+  /* ── Illustrations-Platzhalter (Kategorie-Farbverlauf + Symbol) ── */
+  var CATEMOJI  = { 'Reisen':'✈️', 'Kitchen/Cooking':'🍳', 'TV':'🎬', 'Allgemein':'💭' };
+  var TYPEEMOJI = { 'Verb':'⚡', 'Adjektiv':'🎨', 'Adverb':'💨', 'Phrase':'💬', 'Praeposition':'🧭', 'Präposition':'🧭', 'Konjunktion':'🔗' };
+  var KNOWNCAT  = { 'Reisen':1, 'Kitchen/Cooking':1, 'TV':1, 'Allgemein':1 };
+  window.__v3Ph = function(w, size){
+    var cat = (w && w.category) || '_default';
+    var emoji = (w && w.wordType !== 'Nomen' && TYPEEMOJI[w.wordType]) || CATEMOJI[cat] || '📝';
+    return '<div class="v3-ph ' + (size||'lg') + '" data-cat="' + (KNOWNCAT[cat] ? cat : '_default') + '">' + emoji + '</div>';
+  };
+
+  function headRow(pos, total, extra){
+    var pct = total ? Math.round((pos/total)*100) : 0;
+    return '<div class="v3tr-head">'
+      + '<span class="v31-pos">' + pos + ' / ' + total + '</span>'
+      + '<div class="v3tr-prog"><i style="width:' + pct + '%"></i></div>'
+      + (extra || '')
+      + '</div>';
+  }
+  function dirBtn(){
+    return '<button class="v3tr-btn" onclick="window.__v3ToggleDir()" aria-label="Lernrichtung wechseln">' + (learnDir === 'en-de' ? 'EN→DE' : 'DE→EN') + ' ⇄</button>';
+  }
+
+  /* ── KARTEIKARTEN: Card-first ── */
+  var prevRenderFlash = window.renderFlash;
+  window.renderFlash = function(){
+    if (!deck.length || flashShowPicker || idx >= deck.length){
+      if (window.__v3SetTopbar) window.__v3SetTopbar('FREIE ÜBUNG', 'Karteikarten');
+      return prevRenderFlash.apply(this, arguments);
+    }
+    var app = document.getElementById('app'); if (!app) return;
+    var w = deck[idx];
+    var src = getImg(w);
+    var imgFront = src
+      ? '<img class="fc-image" src="' + src + '" alt="' + esc(w.word) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display=\'none\'">'
+      : window.__v3Ph(w, 'lg');
+    var examplesHTML = w.examples.map(function(ex){
+      return '<div class="back-ex"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button><strong>📝 Beispiel</strong><span class="ex-text">' + ex + '</span></div>';
+    }).join('');
+    var enDE_f = learnDir === 'en-de';
+    var front = enDE_f
+      ? imgFront + '<div class="fc-word">' + w.word + '</div><div class="speak-row"><button class="speak-btn" onclick="speakWord(\'' + w.word.replace(/'/g, "\\'") + '\')">🔊</button><span class="fc-pronunciation">' + w.pronunciation + '</span></div><div class="fc-badges"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span></div><div class="fc-front-example"><button class="speak-btn speak-sm" onclick="event.stopPropagation();speakText(this)" title="Satz vorlesen">🔊</button>📝 „<span class="ex-text">' + w.examples[0] + '</span>"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>'
+      : imgFront + '<div class="fc-word" style="font-size:20px;text-align:center;padding:0 12px">' + w.translation + '</div><div class="fc-badges" style="margin-top:10px"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span></div><div class="fc-front-example">📝 „' + (w.exampleDE || w.examples[0]) + '"</div><div class="fc-hint">Tippe, um umzudrehen ↕</div>';
+    var back = enDE_f
+      ? '<div class="back-section-label">📖 Definition</div><div class="back-def">' + w.definition + '</div><div class="back-section-label">📝 Beispiele</div>' + examplesHTML + '<div class="back-translation-small">🇩🇪 ' + w.translation + '</div>'
+      : '<div class="fc-word" style="font-size:28px;margin-bottom:6px">' + w.word + '</div><div class="speak-row" style="margin-bottom:12px"><button class="speak-btn" onclick="speakWord(\'' + w.word.replace(/'/g, "\\'") + '\')">🔊</button><span class="fc-pronunciation">' + w.pronunciation + '</span></div><div class="back-section-label">📖 Definition</div><div class="back-def">' + w.definition + '</div><div class="back-section-label">📝 Beispiele</div>' + examplesHTML;
+    var backBtn = '<button class="v3tr-btn icon" onclick="prevCard()" ' + (idx === 0 ? 'disabled style="opacity:.4"' : '') + ' aria-label="Vorherige Karte">←</button>';
+    app.innerHTML = headRow(idx+1, deck.length, backBtn + dirBtn())
+      + '<div class="v3-scene"><div class="scene">'
+      + '<div class="flashcard' + (flipped ? ' flipped' : '') + '" id="fc" onclick="flipCard()">'
+      + '<div class="face">' + front + '</div>'
+      + '<div class="face face-back">' + back + '</div>'
+      + '</div></div></div>'
+      + '<div class="fc-actions" id="fcActions" style="display:' + (flipped ? 'flex' : 'none') + '">'
+      + '<button class="btn btn-err" onclick="markCard(false)">✗ Nochmal</button>'
+      + '<button class="btn btn-ok" onclick="markCard(true)">✓ Gewusst!</button>'
+      + '</div>';
+    if (window.__v3SetTopbar) window.__v3SetTopbar('KARTE ' + (idx+1) + ' / ' + deck.length, 'Karteikarten');
+  };
+
+  /* ── LÜCKENTEXT: Aufgabe sofort, Tastatur-sicher ── */
+  var prevRenderFill = window.renderFill;
+  window.renderFill = function(){
+    if (!deck.length || idx >= deck.length){
+      if (window.__v3SetTopbar) window.__v3SetTopbar('SELBER TIPPEN', 'Lückentext');
+      return prevRenderFill.apply(this, arguments);
+    }
+    var app = document.getElementById('app'); if (!app) return;
+    var w = deck[idx];
+    var enDE_fill = learnDir === 'en-de';
+    var cardHTML;
+    if (enDE_fill){
+      var ex = w.examples[Math.floor(Math.random() * w.examples.length)];
+      var blanked = ex.replace(new RegExp(w.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '<span class="blank">_____</span>');
+      cardHTML = '<div class="fill-label">🇩🇪 Übersetzung: <strong>' + w.translation + '</strong> &nbsp;|&nbsp; ' + w.wordType + ' &nbsp;<span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span></div>'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><button class="speak-btn" onclick="speakWord(\'' + w.word.replace(/'/g, "\\'") + '\')">🔊</button><span style="font-size:13px;color:var(--muted)">' + w.pronunciation + '</span></div>'
+        + '<div class="fill-label">Ergänze den Satz:</div><div class="fill-sentence">' + blanked + '</div>';
+    } else {
+      cardHTML = '<div class="fill-label">🇬🇧 Englisch: <strong>' + w.word + '</strong> &nbsp;|&nbsp; ' + w.wordType + ' &nbsp;<span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span></div>'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><button class="speak-btn" onclick="speakWord(\'' + w.word.replace(/'/g, "\\'") + '\')">🔊</button><span style="font-size:13px;color:var(--muted)">' + w.pronunciation + '</span></div>'
+        + '<div class="fill-label">Was ist die deutsche Übersetzung?</div><div class="fill-sentence" style="font-size:15px;color:var(--muted)">📝 „' + w.examples[0] + '"</div>';
+    }
+    fillChecked = false;
+    var skipBtn = '<button class="v3tr-btn" onclick="skipFill()" id="skipBtn">Überspringen →</button>';
+    app.innerHTML = headRow(idx+1, deck.length, dirBtn() + skipBtn)
+      + '<div class="fill-card">' + cardHTML
+      + '<div class="fill-input-row" style="margin-top:14px">'
+      + '<input class="fill-input" id="fillInput" type="text" placeholder="' + (enDE_fill ? 'Englisches Wort…' : 'Deutsche Übersetzung…') + '" onkeydown="if(event.key===\'Enter\')checkFill()" oninput="onFillInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">'
+      + '<button class="btn btn-primary" onclick="checkFill()">Prüfen</button>'
+      + '</div><div id="fillResult"></div></div>';
+    if (window.__v3SetTopbar) window.__v3SetTopbar('AUFGABE ' + (idx+1) + ' / ' + deck.length, 'Lückentext');
+    setTimeout(function(){ var i = document.getElementById('fillInput'); if (i){ i.focus(); i.scrollIntoView({ behavior:'smooth', block:'center' }); } }, 150);
+  };
+
+  /* ── WORTLISTE 2.0: Status-Gruppen, Sticky-Suche, Bild-Filter ── */
+  var groupsOpen = { due:true, learn:false, fresh:false, master:false };
+  var onlyImg = false, filtersOpen = false;
+  window.__v31ToggleGroup  = function(k){ groupsOpen[k] = !groupsOpen[k]; renderList(); };
+  window.__v31ToggleImg    = function(){ onlyImg = !onlyImg; renderList(); };
+  window.__v31ToggleFilter = function(){ filtersOpen = !filtersOpen; renderList(); };
+
+  function wordCard(w){
+    var src = getImg(w);
+    var thumb = src
+      ? '<img class="wc-thumb" src="' + src + '" alt="' + esc(w.word) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.outerHTML=window.__v3Ph(WORDS.find(function(x){return x.id===' + w.id + '}),\'sm\')">'
+      : window.__v3Ph(w, 'sm');
+    var detailImg = src ? '<img class="wc-detail-img" src="' + src + '" alt="' + esc(w.word) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display=\'none\'">' : '';
+    var e = SRS.state[w.id];
+    var lvl = e ? (e.level || 0) : 0;
+    var isDue = e ? (e.nextDue <= SRS.todayISO() && lvl < 7) : false;
+    var exHTML = w.examples.map(function(x){ return '<div class="wc-ex">📝 ' + esc(x) + '</div>'; }).join('');
+    return '<div class="word-card' + (listOpen[w.id] ? ' open' : '') + '" onclick="toggleCard(event,' + w.id + ')">'
+      + '<div class="wc-top">' + thumb
+      + '<div class="wc-body"><div class="wc-title-row"><span class="wc-word">' + esc(w.word) + '</span><span class="wc-pron">' + esc(w.pronunciation) + '</span>' + (isDue ? '<span class="due-pill">Fällig</span>' : '') + '</div>'
+      + '<div class="wc-translation">' + esc(w.translation) + '</div></div>'
+      + '<div class="wc-meta"><span class="level-badge lvl-' + lvl + '">L' + lvl + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span><span class="wc-chev">▾</span></div>'
+      + '</div>'
+      + '<div class="wc-detail' + (listOpen[w.id] ? ' open' : '') + '" id="detail' + w.id + '">' + detailImg
+      + '<p><strong>📖 Definition:</strong> ' + esc(w.definition) + '</p>' + exHTML
+      + '<p style="font-size:11px;color:var(--muted);margin-top:6px">' + esc(w.wordType) + ' · ' + esc(w.category) + ' · Hinzugefügt: ' + esc(w.dateAdded) + '</p>'
+      + '</div></div>';
+  }
+
+  window.renderList = function(){
+    var app = document.getElementById('app'); if (!app) return;
+    var q = listSearch.trim().toLowerCase();
+    var filtered = WORDS.filter(function(w){
+      if (listFilterType !== 'Alle' && w.wordType !== listFilterType) return false;
+      if (listFilterCat !== 'Alle' && w.category !== listFilterCat) return false;
+      if (onlyImg && !getImg(w)) return false;
+      if (!q) return true;
+      return [w.word, w.translation, w.definition].concat(w.examples || []).join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    var flat = !!(q || onlyImg || listFilterType !== 'Alle' || listFilterCat !== 'Alle');
+
+    var types = ['Alle'].concat(Array.from(new Set(WORDS.map(function(w){ return w.wordType; }))));
+    var cats = ['Alle'].concat(typeof CATEGORIES !== 'undefined' ? CATEGORIES : []);
+    var filterHTML = '';
+    if (filtersOpen){
+      filterHTML = '<div class="v31-filterrow">' + types.map(function(t){
+          return '<button class="v31-fbtn' + (listFilterType === t ? ' active' : '') + '" onclick="setFilterType(\'' + t + '\')">' + t + '</button>';
+        }).join('') + '</div>'
+        + '<div class="v31-filterrow">' + cats.map(function(c){
+          return '<button class="v31-fbtn' + (listFilterCat === c ? ' active' : '') + '" onclick="setFilterCat(\'' + c.replace(/'/g, "\\'") + '\')">' + c + '</button>';
+        }).join('') + '</div>';
+    }
+
+    var html = '<div class="v31-sticky">'
+      + '<div class="search-bar' + (listSearch ? ' has-value' : '') + '">'
+      + '<input id="listSearchInput" type="text" placeholder="Suche in ' + WORDS.length + ' Wörtern…" value="' + esc(listSearch) + '" oninput="onSearchInput(this.value)" autocomplete="off" spellcheck="false">'
+      + '<button class="search-clear" onclick="clearSearch(event)" aria-label="Suche leeren">✕</button>'
+      + '</div>'
+      + '<div class="v31-filterrow">'
+      + '<button class="v31-fbtn' + (filtersOpen ? ' active' : '') + '" onclick="window.__v31ToggleFilter()">' + svg('layers',13) + ' Filter' + ((listFilterType !== 'Alle' || listFilterCat !== 'Alle') ? ' ●' : '') + '</button>'
+      + '<button class="v31-fbtn' + (onlyImg ? ' active' : '') + '" onclick="window.__v31ToggleImg()">📷 Nur mit Bild</button>'
+      + '<span style="margin-left:auto;font-size:11px;color:var(--muted);align-self:center">' + filtered.length + ' / ' + WORDS.length + '</span>'
+      + '</div>' + filterHTML + '</div>';
+
+    if (!filtered.length){
+      html += '<div class="v31-empty">Keine Wörter gefunden.</div>';
+    } else if (flat){
+      html += filtered.map(wordCard).join('');
+    } else {
+      var today = SRS.todayISO();
+      var groups = [
+        { k:'due',    label:'Fällig heute',   words:[] },
+        { k:'learn',  label:'In Bearbeitung', words:[] },
+        { k:'fresh',  label:'Neu',            words:[] },
+        { k:'master', label:'Gemeistert',     words:[] }
+      ];
+      filtered.forEach(function(w){
+        var e = SRS.state[w.id];
+        if (!e || ((e.level||0) === 0 && ((e.ok||0)+(e.wrong||0)) === 0)) groups[2].words.push(w);
+        else if ((e.level||0) >= 7) groups[3].words.push(w);
+        else if (e.nextDue <= today) groups[0].words.push(w);
+        else groups[1].words.push(w);
+      });
+      groups.forEach(function(g){
+        if (!g.words.length) return;
+        var open = groupsOpen[g.k];
+        html += '<div class="v31-group-head' + (open ? ' open' : '') + '" onclick="window.__v31ToggleGroup(\'' + g.k + '\')">'
+          + g.label + '<span class="cnt ' + g.k + '">' + g.words.length + '</span><span class="chev">' + svg('chevronRight',14) + '</span></div>';
+        if (open) html += g.words.map(wordCard).join('');
+      });
+    }
+    app.innerHTML = html;
+    if (document.activeElement && document.activeElement.id !== 'listSearchInput'){
+      var si = document.getElementById('listSearchInput');
+      if (si && listSearch){ si.focus(); si.setSelectionRange(listSearch.length, listSearch.length); }
+    }
+  };
+
+  console.log('[ETA v3.1] Card-first überall + Wortliste 2.0 aktiv');
+})();
+</script>
+<!-- ETA-PATCH-v3.1-END -->
 
 </body>
 </html>
