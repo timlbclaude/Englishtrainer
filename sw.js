@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v14-fresh';
+const CACHE = 'et-v15-focus-first';
 const OFFLINE_URLS = [
   './',
   './index.html',
