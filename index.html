@@ -3940,16 +3940,18 @@ async function prefetchImages(){
 }
 
 
-function speakWord(text){
+function speakWord(text, lang){
   if(!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1;
-  // Bevorzuge eine natürliche englische Stimme
+  // v3.3: Deutsche Wörter (z. B. Fragen in DE→EN) mit deutscher Stimme sprechen
+  const wantDE = lang === 'de';
+  u.lang = wantDE ? 'de-DE' : 'en-US'; u.rate = 0.85; u.pitch = 1;
   const voices = window.speechSynthesis.getVoices();
-  const en = voices.find(v => v.lang.startsWith('en') && v.localService) ||
-             voices.find(v => v.lang.startsWith('en'));
-  if(en) u.voice = en;
+  const prefix = wantDE ? 'de' : 'en';
+  const v = voices.find(v => v.lang.startsWith(prefix) && v.localService) ||
+            voices.find(v => v.lang.startsWith(prefix));
+  if(v) u.voice = v;
   window.speechSynthesis.speak(u);
 }
 function speakText(btn){
@@ -4989,6 +4991,7 @@ function renderQuiz(){
 function setLearnDir(dir){
   if(quizAutoTimer){ clearTimeout(quizAutoTimer); quizAutoTimer = null; }
   learnDir = dir;
+  try { localStorage.setItem('etLearnDir', dir); } catch(e) {}  // Richtung überlebt App-Neustart
   quizAnswered = false;
   flipped = false;
   trainFlipped = false;
@@ -6889,7 +6892,10 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     sh.classList.add('open');
   };
   window.__v3ToggleDir = function(){
-    if (typeof setLearnDir === 'function') setLearnDir(window.learnDir === 'en-de' ? 'de-en' : 'en-de');
+    // FIX (v3.3): learnDir ist eine top-level let-Variable und existiert NICHT als
+    // window.learnDir — der alte Zugriff war immer undefined, dadurch setzte der
+    // Umschalter stets 'en-de' und DE→EN war unerreichbar. Lexikalischer Zugriff:
+    if (typeof setLearnDir === 'function') setLearnDir(learnDir === 'en-de' ? 'de-en' : 'en-de');
   };
 
   window.renderTrain = function(){
@@ -7310,7 +7316,7 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
       + '<div class="v32-q"><div class="v32-q-row">' + photo
       + '<div class="v32-main"><div class="v32-sub">' + qSub + '</div><div class="v32-word">' + qWord + '</div>'
       + '<div class="v32-meta"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span>'
-      + '<button class="speak-btn" onclick="speakWord(\'' + (enDE ? w.word : w.translation).replace(/'/g, "\\'") + '\')">🔊</button>'
+      + '<button class="speak-btn" onclick="speakWord(\'' + (enDE ? w.word : w.translation).replace(/'/g, "\\'") + '\',\'' + (enDE ? 'en' : 'de') + '\')">🔊</button>'
       + (enDE ? '<span class="v32-pron">' + w.pronunciation + '</span>' : '')
       + '</div></div></div>'
       + '<div class="v32-ex">' + ex + '</div></div>'
@@ -7333,6 +7339,198 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
 })();
 </script>
 <!-- ETA-PATCH-v3.2-END -->
+
+<!-- ═══════════════ ETA-PATCH v3.3 · Beide Lernrichtungen überall (2026-08-01) ═══════════════
+     Tims Befund: Richtungswechsel wirkte nur scheinbar. Ursachen & Fixes:
+     F1  ⇄-Umschalter las window.learnDir (existiert nicht) → setzte immer EN→DE.
+         Fix direkt im v3-Block (lexikalischer Zugriff).
+     F2  Tippmodus konnte NUR Deutsch→Englisch → hier komplett neue, richtungs-
+         fähige Engine (ersetzt die v2.5-Version, die in ihrer Closure gefangen ist).
+     F3  speakWord sprach Deutsch mit englischer Stimme → Sprachparameter (Basis-Fix).
+     F4  Richtung ging bei App-Neustart verloren → localStorage-Persistenz.        -->
+<style id="eta-v33-style">
+.t33-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px 16px; text-align:center; box-shadow:var(--sh-sm); }
+.t33-prompt{ font-size:9.5px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:var(--muted); }
+.t33-word{ font-size:clamp(20px, 6.5vw, 26px); font-weight:800; letter-spacing:-0.4px; color:var(--text); margin:6px 0 8px; line-height:1.15; overflow-wrap:break-word; }
+.t33-badges{ display:flex; gap:6px; justify-content:center; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+.t33-input{ width:100%; padding:13px 14px; border-radius:12px; background:var(--bg); border:1.5px solid var(--border); color:var(--text); font-family:inherit; font-size:16px; text-align:center; outline:none; }
+.t33-input:focus{ border-color:var(--primary); }
+.t33-input.ok{ border-color:var(--ok); background:var(--ok-bg); }
+.t33-input.err{ border-color:var(--err); background:var(--err-bg); }
+.t33-fb{ min-height:24px; margin-top:10px; font-size:13.5px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; }
+.t33-fb.ok{ color:var(--ok); } .t33-fb.err{ color:var(--err); }
+.t33-btn{ width:100%; margin-top:12px; padding:13px; border-radius:12px; border:none; cursor:pointer; font-family:inherit; font-size:14.5px; font-weight:700; background:linear-gradient(135deg,var(--primary2),var(--primary)); color:#fff; }
+.t33-result{ text-align:center; padding:26px 16px; }
+.t33-result .big{ font-size:44px; font-weight:800; color:var(--primary); letter-spacing:-1px; margin:8px 0; }
+</style>
+<script id="eta-v33-script">
+(function(){
+  var svg = window.__etaSvg || function(){ return ''; };
+
+  /* ── F4: Gespeicherte Lernrichtung beim Start wiederherstellen ── */
+  try {
+    var saved = localStorage.getItem('etLearnDir');
+    if (saved === 'de-en' || saved === 'en-de') learnDir = saved;
+  } catch(e){}
+
+  /* ── Werkzeuge (eigene Kopien — die v2.5-Versionen sind in ihrer Closure gefangen) ── */
+  function norm(s){ return String(s||'').toLowerCase().replace(/^to\s+/, '').replace(/[.,!?"„“]/g, '').trim(); }
+  function lev(a, b){
+    a = norm(a); b = norm(b);
+    var m = a.length, n = b.length;
+    if (!m) return n; if (!n) return m;
+    var prev = [], cur, i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++){
+      cur = [i];
+      for (j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function tolerant(dist, target){ return dist <= (norm(target).length > 6 ? 2 : 1); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+  /* ── F2: Tippmodus mit BEIDEN Richtungen ──
+     EN→DE: englisches Wort sehen (+🔊) → deutsche Übersetzung tippen
+            (jede Komma-Variante zählt, Tippfehler-Toleranz via Levenshtein)
+     DE→EN: deutsches Wort sehen → englisches Wort tippen ('to ' optional)     */
+  var deck33 = [], idx33 = 0, checked33 = false, ok33 = 0, wrong33 = 0, label33 = 'Tippmodus';
+
+  function buildDeck(){
+    var d = [];
+    try { d = SRS.dueQueue(WORDS).slice(0, 10); } catch(e){}
+    if (!d.length){ try { d = shuffle(WORDS.slice()).slice(0, 10); } catch(e){ d = WORDS.slice(0, 10); } }
+    return d;
+  }
+
+  window.__v33StartType = function(customDeck, label){
+    deck33 = (customDeck && customDeck.length) ? customDeck.slice(0, 10) : buildDeck();
+    idx33 = 0; checked33 = false; ok33 = 0; wrong33 = 0;
+    label33 = label || 'Tippmodus';
+    window.mode = 'type';
+    var nt = document.querySelector('.nav-tabs');
+    if (nt) nt.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    try { window.scrollTo(0, 0); } catch(e){}
+    renderType33();
+  };
+  // Alte Einstiege auf die neue Engine umleiten:
+  window.__etaStartType = function(){ window.__v33StartType(); };
+  window.__etaDrillHard = function(){
+    var hard = [];
+    try {
+      WORDS.forEach(function(w){
+        var e = SRS.state[w.id]; if (!e) return;
+        var t = (e.ok||0) + (e.wrong||0);
+        if (t >= 2 && (e.wrong||0)/t > 0.4) hard.push(w);
+      });
+    } catch(e){}
+    if (!hard.length) return;
+    window.__v33StartType(hard, 'Schwierige Wörter');
+  };
+
+  function renderType33(){
+    var app = document.getElementById('app'); if (!app) return;
+    var enDE = learnDir === 'en-de';
+
+    if (idx33 >= deck33.length){
+      if (window.__v3SetTopbar) window.__v3SetTopbar('RUNDE BEENDET', label33);
+      app.innerHTML = '<div class="t33-card t33-result"><div class="t33-prompt">Runde beendet</div>'
+        + '<div class="big">' + ok33 + '/' + deck33.length + '</div>'
+        + '<div style="color:var(--muted);font-size:14px;margin-bottom:18px">richtig getippt</div>'
+        + '<button class="t33-btn" onclick="window.__v33StartType()">Neue Runde</button>'
+        + '<button class="eta-set-btn" style="margin-top:8px" onclick="setMode(\'today\')">Zurück zur Übersicht</button></div>';
+      return;
+    }
+
+    var w = deck33[idx33];
+    var pct = Math.round((idx33 / deck33.length) * 100);
+    var shown  = enDE ? w.word : w.translation;
+    var prompt = enDE ? 'Was heißt das auf Deutsch?' : 'Wie heißt das auf Englisch?';
+    var ph     = enDE ? 'deutsche Übersetzung tippen…' : 'englisches Wort tippen…';
+    var speak  = enDE ? '<button class="speak-btn" onclick="speakWord(\'' + w.word.replace(/'/g, "\\'") + '\')">🔊</button>' : '';
+
+    app.innerHTML =
+      '<div class="v3tr-head"><span class="v31-pos">' + (idx33 + 1) + ' / ' + deck33.length + '</span>'
+      + '<div class="v3tr-prog"><i style="width:' + pct + '%"></i></div>'
+      + '<span class="v31-pos" style="color:var(--ok)">✓ ' + ok33 + '</span><span class="v31-pos" style="color:var(--err)">✗ ' + wrong33 + '</span>'
+      + '<button class="v3tr-btn" onclick="window.__v33ToggleDir()" aria-label="Lernrichtung wechseln">' + (enDE ? 'EN→DE' : 'DE→EN') + ' ⇄</button>'
+      + '</div>'
+      + '<div class="t33-card">'
+      + '<div class="t33-prompt">' + prompt + '</div>'
+      + '<div class="t33-word">' + esc(shown) + '</div>'
+      + '<div class="t33-badges"><span class="badge badge-type">' + (w.wordType||'') + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + (w.difficulty||'') + '</span>' + speak + '</div>'
+      + '<input class="t33-input" id="t33Input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="' + ph + '">'
+      + '<div class="t33-fb" id="t33Fb"></div>'
+      + '<button class="t33-btn" id="t33Btn" onclick="window.__v33Check()">Prüfen</button>'
+      + '</div>';
+    if (window.__v3SetTopbar) window.__v3SetTopbar('TIPPEN ' + (idx33 + 1) + ' / ' + deck33.length, label33);
+    var inp = document.getElementById('t33Input');
+    if (inp){
+      inp.addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); window.__v33Check(); } });
+      setTimeout(function(){ inp.focus(); }, 120);
+    }
+  }
+  window.__v33ToggleDir = function(){
+    checked33 = false;  // aktuelle Frage wird in der neuen Richtung frisch gestellt
+    if (typeof setLearnDir === 'function') setLearnDir(learnDir === 'en-de' ? 'de-en' : 'en-de');
+  };
+
+  window.__v33Check = function(){
+    var w = deck33[idx33]; if (!w) return;
+    var inp = document.getElementById('t33Input');
+    var btn = document.getElementById('t33Btn');
+    var fb  = document.getElementById('t33Fb');
+    if (!inp || !btn || !fb) return;
+
+    if (!checked33){
+      var enDE = learnDir === 'en-de';
+      var answer = inp.value;
+      var isOk = false, solution = '';
+      if (enDE){
+        // deutsche Übersetzung: jede Komma-Variante zählt, beste per Levenshtein
+        var variants = String(w.translation).split(',').map(function(t){ return t.trim(); }).filter(Boolean);
+        solution = w.translation;
+        isOk = norm(answer).length > 0 && variants.some(function(v){ return tolerant(lev(answer, v), v); });
+      } else {
+        solution = w.word;
+        isOk = norm(answer).length > 0 && tolerant(lev(answer, w.word), w.word);
+      }
+      checked33 = true;
+      if (isOk){
+        ok33++; inp.classList.add('ok');
+        fb.className = 't33-fb ok'; fb.innerHTML = svg('check', 15, 2.5) + ' Richtig!' + (lev(answer, enDE ? w.translation.split(',')[0] : w.word) > 0 ? ' <span style="font-weight:500;color:var(--muted)">(kleiner Tippfehler verziehen)</span>' : '');
+        try { SRS.markCorrect(w.id); } catch(e){}
+      } else {
+        wrong33++; inp.classList.add('err');
+        fb.className = 't33-fb err'; fb.innerHTML = svg('x', 15, 2.5) + ' Lösung: <strong>&nbsp;' + esc(solution) + '</strong>';
+        try { SRS.markWrong(w.id); } catch(e){}
+      }
+      try { Stats.recordAnswer(isOk, 'type'); updateStats(); } catch(e){}
+      inp.disabled = true;
+      btn.textContent = (idx33 + 1 >= deck33.length) ? 'Ergebnis' : 'Weiter';
+    } else {
+      idx33++; checked33 = false;
+      renderType33();
+    }
+  };
+
+  /* ── Mode-Routing: Tippmodus komplett auf die neue Engine umbiegen ── */
+  var prevSetMode = window.setMode;
+  window.setMode = function(m, btn){
+    if (m === 'type'){ window.__v33StartType(); return; }
+    return prevSetMode.apply(this, arguments);
+  };
+  var prevRender = window.render;
+  window.render = function(){
+    if (window.mode === 'type'){ renderType33(); return; }
+    return prevRender.apply(this, arguments);
+  };
+
+  console.log('[ETA v3.3] Beide Lernrichtungen in allen Modi aktiv');
+})();
+</script>
+<!-- ETA-PATCH-v3.3-END -->
 
 </body>
 </html>
