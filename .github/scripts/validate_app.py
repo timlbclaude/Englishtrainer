@@ -4,6 +4,11 @@ Validiert index.html vor jedem Deploy/Commit:
   2. Das WORDS-Array ist parsebar, nicht leer, jede Zeile hat id/word/translation,
      keine doppelten ids, keine doppelten Woerter (normalisiert, ohne fuehrendes "to ").
   3. Die WIKI_TITLES-Map ist ein parsebares Objekt.
+  4. Bild-Verkabelung (seit v3.1): jeder WIKI_TITLES-Key gehoert (case-insensitiv)
+     zu einem Wort im WORDS-Array; IMG_URLS ist parsebar, Keys kleingeschrieben,
+     jeder Key gehoert zu einem WIKI_TITLES-Eintrag; URLs sind https-Wikimedia-Links.
+     (Genau diese Fehlerklasse hat die Bilder von Juni-August 2026 unsichtbar gemacht.)
+  5. difficulty ist eine CEFR-Stufe (A1-C2) - der Bot schrieb frueher Zahlen.
 Exit-Code != 0 => der aufrufende Workflow bricht ab (kein Commit/Push).
 Laeuft auf ubuntu-latest (node ist vorinstalliert) und lokal.
 """
@@ -44,20 +49,38 @@ def main():
 const fs=require('fs');
 const h=fs.readFileSync(process.argv[2],'utf8');
 function block(name,o,c){let s=h.indexOf(name);if(s<0)throw new Error(name+' nicht gefunden');let i=h.indexOf(o,s),d=0,e=-1;for(let j=i;j<h.length;j++){if(h[j]===o)d++;else if(h[j]===c){d--;if(d===0){e=j;break;}}}if(e<0)throw new Error('Ende von '+name+' nicht gefunden');return h.slice(i,e+1);}
-let W,WT;
+let W,WT,IU;
 try{W=eval(block('const WORDS = [','[',']'));}catch(e){console.error('WORDS unparsebar: '+e.message);process.exit(2);}
 try{WT=eval('('+block('const WIKI_TITLES','{','}')+')');}catch(e){console.error('WIKI_TITLES unparsebar: '+e.message);process.exit(2);}
+try{IU=eval('('+block('const IMG_URLS','{','}')+')');}catch(e){console.error('IMG_URLS unparsebar: '+e.message);process.exit(2);}
 if(!Array.isArray(W)||W.length===0){console.error('WORDS ist kein nicht-leeres Array');process.exit(2);}
 if(typeof WT!=='object'||WT===null||Array.isArray(WT)){console.error('WIKI_TITLES ist kein Objekt');process.exit(2);}
+if(typeof IU!=='object'||IU===null||Array.isArray(IU)){console.error('IMG_URLS ist kein Objekt');process.exit(2);}
 const ids={},words={},probs=[];
+const CEFR={A1:1,A2:1,B1:1,B2:1,C1:1,C2:1};
 for(const w of W){
   for(const f of ['id','word','translation']){ if(w[f]===undefined||w[f]===null||w[f]===''){ probs.push('Eintrag '+JSON.stringify(w.word||w.id||'?')+': Feld "'+f+'" fehlt'); } }
   if(ids[w.id]){ probs.push('Doppelte id: '+w.id); } ids[w.id]=1;
   const key=String(w.word||'').trim().toLowerCase();
   if(words[key]){ probs.push('Doppeltes Wort: '+w.word); } words[key]=1;
+  if(!CEFR[String(w.difficulty||'').toUpperCase()]){ probs.push('Keine CEFR-Stufe bei "'+w.word+'": '+JSON.stringify(w.difficulty)); }
+}
+// Bild-Verkabelung: WIKI_TITLES-Keys muessen (case-insensitiv) zu Woertern gehoeren
+const wtLower={};
+for(const k of Object.keys(WT)){
+  const lk=k.toLowerCase();
+  if(!words[lk]){ probs.push('WIKI_TITLES-Key ohne Wort im WORDS-Array: "'+k+'"'); }
+  wtLower[lk]=1;
+}
+// IMG_URLS: Keys kleingeschrieben + zu WIKI_TITLES gehoerig + saubere URLs
+for(const k of Object.keys(IU)){
+  if(k!==k.toLowerCase()){ probs.push('IMG_URLS-Key nicht kleingeschrieben: "'+k+'"'); }
+  if(!wtLower[k]){ probs.push('IMG_URLS-Key ohne WIKI_TITLES-Eintrag: "'+k+'"'); }
+  const u=String(IU[k]||'');
+  if(!/^https:\/\/upload\.wikimedia\.org\//.test(u)){ probs.push('IMG_URLS["'+k+'"]: keine Wikimedia-https-URL'); }
 }
 if(probs.length){ console.error(probs.slice(0,40).join('\n')); process.exit(2); }
-console.log('OK: '+W.length+' Woerter, '+Object.keys(WT).length+' WIKI_TITLES, keine Dubletten, alle Pflichtfelder vorhanden.');
+console.log('OK: '+W.length+' Woerter, '+Object.keys(WT).length+' WIKI_TITLES, '+Object.keys(IU).length+' feste Bild-URLs, Bild-Verkabelung konsistent, CEFR-Stufen gueltig.');
 """
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as f:
         f.write(checker)
