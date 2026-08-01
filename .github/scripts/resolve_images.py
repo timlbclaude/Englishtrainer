@@ -49,20 +49,29 @@ def parse_map(block: str):
 
 
 def fetch_thumb(title: str) -> str:
-    try:
-        url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(
-            title.strip().replace(" ", "_")
-        )
-        r = requests.get(url, headers=UA, timeout=15)
-        if r.status_code != 200:
-            return ""
-        d = r.json()
-        if d.get("type") == "disambiguation":
-            return ""
-        return d.get("thumbnail", {}).get("source", "")
-    except Exception as e:
-        print(f"  Fehler bei '{title}': {e}", file=sys.stderr)
-        return ""
+    """Holt das Thumbnail mit Retry/Backoff — GitHub-Runner-IPs werden von
+    Wikipedia gelegentlich gedrosselt (429), ein zweiter Versuch reicht meist."""
+    url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(
+        title.strip().replace(" ", "_")
+    )
+    for attempt in range(4):
+        try:
+            r = requests.get(url, headers=UA, timeout=15)
+            if r.status_code == 200:
+                d = r.json()
+                if d.get("type") == "disambiguation":
+                    return ""
+                return d.get("thumbnail", {}).get("source", "")
+            if r.status_code in (429, 500, 502, 503, 504):
+                wait = float(r.headers.get("Retry-After", 0) or 0) or (3.0 * (attempt + 1))
+                print(f"  … {title}: HTTP {r.status_code}, warte {wait:.0f}s (Versuch {attempt+1}/4)")
+                time.sleep(wait)
+                continue
+            return ""  # 404 etc.: Artikel existiert nicht -> kein Retry
+        except Exception as e:
+            print(f"  Fehler bei '{title}': {e} (Versuch {attempt+1}/4)", file=sys.stderr)
+            time.sleep(2.0 * (attempt + 1))
+    return ""
 
 
 def js_escape_single(s: str) -> str:
@@ -94,7 +103,7 @@ def main():
             print(f"  ✓ {word} -> {thumb[:90]}")
         else:
             print(f"  – {word}: kein Thumbnail ({title})")
-        time.sleep(0.15)  # hoefliches Rate-Limiting
+        time.sleep(0.5)  # hoefliches Rate-Limiting
 
     if not new_entries:
         print("Keine neuen URLs aufgeloest.")
