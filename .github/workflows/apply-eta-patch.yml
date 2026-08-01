@@ -1,9 +1,9 @@
 name: Apply ETA Patch to index.html
 
+# STILLGELEGT (2026-08-01, v3.1-Aufräumen): Der automatische push-Trigger ist
+# entfernt, damit ein versehentlich geänderter alter Patch (eta-patch.html)
+# nicht mehr die aktuelle App überschreiben kann. Nur noch manuell auslösbar.
 on:
-  push:
-    paths:
-      - '.github/eta-patch.html'
   workflow_dispatch:
     inputs:
       reason:
