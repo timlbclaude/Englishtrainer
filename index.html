@@ -4358,7 +4358,7 @@ const Sync = {
       this.setStatus('ok');
       if(changed && typeof render === 'function' && typeof WORDS !== 'undefined'){
         if(typeof mode !== 'undefined' && mode === 'train'){
-          trainDeck = SRS.dueQueue(WORDS);
+          trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS));
         }
         try { render(); } catch(e){}
       }
@@ -4535,7 +4535,7 @@ function setMode(m, btn){
   trainIdx = 0; trainFlipped = false;
   hideMobileNext();
   if(m === 'train'){
-    trainDeck = SRS.dueQueue(WORDS);
+    trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS));
   } else if(m === 'quiz' || m === 'fill'){
     // 10er-Runde
     deck = buildRoundDeck();
@@ -4715,7 +4715,7 @@ function renderTrain(){
   const stats = SRS.stats(WORDS);
 
   if(!trainDeck.length){
-    trainDeck = SRS.dueQueue(WORDS);
+    trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS));
   }
 
   if(!trainDeck.length || trainIdx >= trainDeck.length){
@@ -4809,7 +4809,7 @@ function resetSRS(){
   SRS.resetAll();
   trainIdx = 0;
   trainFlipped = false;
-  trainDeck = SRS.dueQueue(WORDS);
+  trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS));
   render();
 }
 
@@ -5448,7 +5448,7 @@ function toggleTheme(){
 const _wcLabel = document.getElementById('wordCountLabel');
 if(_wcLabel) _wcLabel.textContent = `${WORDS.length} Wörter gespeichert`;
 deck = shuffle(WORDS);
-trainDeck = SRS.dueQueue(WORDS);
+trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS));
 try { render(); } catch(e){ console.error('render() failed:', e); document.getElementById('app').innerHTML = '<p style="padding:20px;color:#dc2626">Fehler beim Laden: ' + (e && e.message || e) + ' — bitte Konsole (F12) prüfen.</p>'; }
 try { prefetchImages(); } catch(e){ console.warn('prefetchImages failed:', e); }
 try { Sync.init(); } catch(e){ console.warn('Sync.init failed:', e); }
@@ -6406,9 +6406,18 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     if (!sheet) { sheet = document.createElement('div'); sheet.id='eta-settings-sheet'; sheet.onclick=function(e){ if(e.target===sheet) closeSettings(); }; document.body.appendChild(sheet); }
     var goal = (typeof Stats!=='undefined' && Stats.state) ? (Stats.state.dailyGoal||20) : 20;
     var goals = [10,20,30,50];
+    var nl = (window.__v4GetNewLimit ? window.__v4GetNewLimit() : 10);
+    var autoSp = (window.__v4GetAutoSpeak ? window.__v4GetAutoSpeak() : false);
     sheet.innerHTML = '<div class="eta-sheet-inner"><span class="eta-sheet-handle"></span><h3>Einstellungen</h3>'
       + '<div class="eta-set-section"><div class="eta-set-label">Tagesziel (Wörter pro Tag)</div><div class="eta-goal-opts">'
       + goals.map(function(g){ return '<button class="eta-goal-opt'+(g===goal?' active':'')+'" onclick="window.__etaSetGoal('+g+')">'+g+'</button>'; }).join('')
+      + '</div></div>'
+      + '<div class="eta-set-section"><div class="eta-set-label">Neue Wörter pro Tag (Dosierung)</div><div class="eta-goal-opts">'
+      + [5,10,15,20].map(function(n){ return '<button class="eta-goal-opt'+(n===nl?' active':'')+'" onclick="window.__v4SetNewLimit('+n+')">'+n+'</button>'; }).join('')
+      + '</div></div>'
+      + '<div class="eta-set-section"><div class="eta-set-label">Automatische Aussprache beim Aufdecken</div><div class="eta-goal-opts">'
+      + '<button class="eta-goal-opt'+(autoSp?' active':'')+'" onclick="window.__v4SetAutoSpeak(1)">🔊 An</button>'
+      + '<button class="eta-goal-opt'+(!autoSp?' active':'')+'" onclick="window.__v4SetAutoSpeak(0)">Aus</button>'
       + '</div></div>'
       + '<div class="eta-set-section"><div class="eta-set-label">Synchronisation</div><button class="eta-set-btn" onclick="closeSettings();if(typeof openSyncModal===\'function\')openSyncModal()">'+svg('cloud',16)+' Geräte-Sync einrichten</button></div>'
       + '<div class="eta-set-section"><div class="eta-set-label">Fortschritt</div><button class="eta-set-btn danger" onclick="window.__etaReset()">'+svg('x',16)+' Lernfortschritt zurücksetzen</button></div>'
@@ -6500,9 +6509,9 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   function maybeOnboard() {
     try { if (localStorage.getItem('eta_onboarded')==='1') return; } catch(e){ return; }
     var slides = [
-      { icon:'today', title:'Willkommen bei ETA', text:'Dein persönlicher Englisch-Vokabeltrainer. Lerne effizient mit wissenschaftlich fundierter Wiederholung.' },
-      { icon:'train', title:'Spaced Repetition', text:'Jedes Wort durchläuft 7 Stufen. Was du kannst, kommt seltener — was schwerfällt, öfter. So lernst du nachhaltig.' },
-      { icon:'flame', title:'Bleib dran', text:'Erreiche dein Tagesziel und baue eine Streak auf. Tippmodus und Quiz fordern dein aktives Erinnern.' },
+      { icon:'today', title:'Willkommen bei ETA', text:'Dein persönlicher Englisch-Vokabeltrainer. Kurze Runden, echte Fotos, beide Sprachrichtungen — und wissenschaftlich fundierte Wiederholung.' },
+      { icon:'train', title:'Runden statt Berge', text:'Du lernst in 12er-Runden: erst fällige Wiederholungen, dann dosiert neue Wörter. Was du nicht wusstest, kommt in derselben Runde gleich noch einmal.' },
+      { icon:'flame', title:'Bleib dran', text:'Tagesziel erreichen, Streak aufbauen — dein Fortschritt synchronisiert sich automatisch zwischen Handy und PC. Antippen des 🔥 zeigt deine Statistik.' },
     ];
     var idx = 0;
     var ob = document.createElement('div'); ob.id='eta-onboard';
@@ -6829,8 +6838,8 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
   function weekDots(){
     var out = '';
     try {
-      var hist = Stats.state.history || []; var byDate = {};
-      hist.forEach(function(s){ byDate[s.date] = (byDate[s.date]||0) + (s.correct||0); });
+      // v4-Fix: echte Datenquelle ist Stats.state.dailyProgress (history existiert nicht)
+      var byDate = (Stats.state && Stats.state.dailyProgress) || {};
       var today = new Date();
       for (var i=6; i>=0; i--){
         var dd = new Date(today); dd.setDate(today.getDate()-i);
@@ -6855,19 +6864,21 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
     var c = counts();
     var goal=20, prog=0, xp=0, streak=0;
     try { goal = Stats.state.dailyGoal || 20; prog = Stats.todayProgress(); xp = Stats.state.xp || 0; streak = Stats.state.streak || 0; } catch(e){}
-    var open = c.due + c.fresh;
     var total = (typeof WORDS !== 'undefined') ? WORDS.length : 0;
     var hc = hardCount();
+    // v4: dosierte neue Wörter — Heute zeigt „X wiederholen · Y neue heute · Z im Vorrat"
+    var v4 = window.__v4TodayNums ? window.__v4TodayNums(c) : { newToday: c.fresh, vorrat: 0 };
+    var open = c.due + v4.newToday;
     var ctaMode = open > 0 ? 'train' : 'flash';
-    var ctaMain = c.due > 0 ? 'Training fortsetzen' : (c.fresh > 0 ? 'Neue Wörter lernen' : 'Frei üben');
-    var ctaSub  = open > 0 ? (c.due + ' fällig · ' + c.fresh + ' neu') : 'Alles erledigt — Karteikarten';
+    var ctaMain = c.due > 0 ? 'Training fortsetzen' : (v4.newToday > 0 ? 'Neue Wörter lernen' : 'Frei üben');
+    var ctaSub  = open > 0 ? (c.due + ' fällig · ' + v4.newToday + ' neue heute') : 'Alles erledigt — Karteikarten';
     app.innerHTML = '<div class="v3t">'
       + '<div class="v3t-hero">'
       +   '<div class="v3t-hero-row">' + ringHTML(prog, goal)
       +   '<div style="flex:1;min-width:0">'
       +     '<div class="v3t-pill">' + (open>0 ? 'Bereit zum Lernen' : 'Tagesziel im Blick') + '</div>'
       +     '<div class="v3t-headline">' + total + ' Wörter im Wortschatz</div>'
-      +     '<div class="v3t-counts"><b class="c-due">' + c.due + '</b> wiederholen &nbsp;·&nbsp; <b class="c-new">' + c.fresh + '</b> neu &nbsp;·&nbsp; <b class="c-mast">' + c.mast + '</b> gemeistert</div>'
+      +     '<div class="v3t-counts"><b class="c-due">' + c.due + '</b> wiederholen &nbsp;·&nbsp; <b class="c-new">' + v4.newToday + '</b> neu' + (v4.vorrat > 0 ? ' <span style="opacity:.75">(+' + v4.vorrat + ' Vorrat)</span>' : '') + ' &nbsp;·&nbsp; <b class="c-mast">' + c.mast + '</b> gemeistert</div>'
       +   '</div></div>'
       +   '<button class="v3t-cta" onclick="setMode(\'' + ctaMode + '\')"><span class="l"><small>' + ctaSub + '</small><b>' + ctaMain + '</b></span><span class="arr">' + svg('play',13,2) + '</span></button>'
       + '</div>'
@@ -6910,10 +6921,12 @@ body { -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
 
   window.renderTrain = function(){
     var app = $id('app'); if (!app) return;
-    if (!trainDeck.length){ trainDeck = SRS.dueQueue(WORDS); }
+    if (!trainDeck.length){ trainDeck = (window.__v4Deck ? window.__v4Deck() : SRS.dueQueue(WORDS)); }
 
     if (!trainDeck.length || trainIdx >= trainDeck.length){
       window.__v3SetTopbar('SPACED REPETITION', 'Training');
+      // v4: Runden-Abschluss (Zwischenfazit + Nächste Runde) übernimmt, wenn eine Runde lief
+      if (window.__v4RoundEnd && window.__v4RoundEnd(app)) return;
       app.innerHTML = '<div class="srs-empty">'
         + '<div class="srs-empty-emoji">🎉</div>'
         + '<h2>' + (trainIdx > 0 ? 'Sitzung abgeschlossen!' : 'Heute alles erledigt!') + '</h2>'
@@ -7264,6 +7277,10 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
   .quiz-choices .choice{ padding:12px 14px !important; font-size:14px !important; margin:0 !important; min-height:0 !important; border-radius:12px !important; line-height:1.3 !important; }
   #app > .nav-row{ margin-top:8px !important; }
 }
+/* Hör-Modus */
+.v32-listen-on{ border-color:var(--primary) !important; color:var(--primary) !important; background:var(--primary-bg) !important; }
+.v32-listen-big{ width:92px; height:92px; border-radius:50%; border:1.5px solid var(--primary); background:var(--primary-bg); font-size:38px; cursor:pointer; margin:12px auto; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(89,101,240,0.25); }
+.v32-listen-big:active{ transform:scale(.96); }
 /* Kategorie-Chips: nur auf Wunsch sichtbar, kompakt */
 .v32-chips .cat-chip-row{ margin:0 0 10px !important; gap:5px !important; }
 .v32-chips .cat-chip{ padding:5px 10px !important; font-size:11px !important; }
@@ -7277,6 +7294,9 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
 (function(){
   var chipsOpen = false;
   window.__v32ToggleChips = function(){ chipsOpen = !chipsOpen; try { render(); } catch(e){} };
+  // v4: Hör-Modus — Wort nur hören, Bedeutung wählen (trainiert Hörverstehen)
+  var listenQuiz = false;
+  window.__v32ToggleListen = function(){ listenQuiz = !listenQuiz; try { render(); } catch(e){} };
   // Nach Kategorie-Wahl Chips automatisch einklappen
   var prevSetCat = window.setCatFilter;
   window.setCatFilter = function(c){ chipsOpen = false; return prevSetCat.apply(this, arguments); };
@@ -7319,22 +7339,37 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
     var pct = Math.round(((idx + 1) / deck.length) * 100);
     var catBtn = '<button class="v3tr-btn" onclick="window.__v32ToggleChips()">' + (catFilter === 'all' ? 'Alle' : catLabel(catFilter)) + ' ▾</button>';
     var dirB = '<button class="v3tr-btn" onclick="window.__v3ToggleDir()" aria-label="Lernrichtung wechseln">' + (enDE ? 'EN→DE' : 'DE→EN') + ' ⇄</button>';
+    var listenBtn = '<button class="v3tr-btn icon' + (listenQuiz ? ' v32-listen-on' : '') + '" onclick="window.__v32ToggleListen()" aria-label="Hör-Modus" title="Hör-Modus: Wort nur hören">🎧</button>';
+
+    var speakArg = '\'' + (enDE ? w.word : w.translation).replace(/'/g, "\\'") + '\',\'' + (enDE ? 'en' : 'de') + '\'';
+    var qCard;
+    if (listenQuiz){
+      // Hör-Modus: kein Wort, kein Foto, kein Beispiel — nur Ohr & Auswahl
+      qCard = '<div class="v32-q" style="text-align:center">'
+        + '<div class="v32-sub">Hör zu — welche Bedeutung passt?</div>'
+        + '<button class="v32-listen-big" onclick="speakWord(' + speakArg + ')" aria-label="Wort anhören">🔊</button>'
+        + '<div class="v32-meta" style="justify-content:center"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span></div>'
+        + '</div>';
+    } else {
+      qCard = '<div class="v32-q"><div class="v32-q-row">' + photo
+        + '<div class="v32-main"><div class="v32-sub">' + qSub + '</div><div class="v32-word">' + qWord + '</div>'
+        + '<div class="v32-meta"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span>'
+        + '<button class="speak-btn" onclick="speakWord(' + speakArg + ')">🔊</button>'
+        + (enDE ? '<span class="v32-pron">' + w.pronunciation + '</span>' : '')
+        + '</div></div></div>'
+        + '<div class="v32-ex">' + ex + '</div></div>';
+    }
 
     app.innerHTML =
-      '<div class="v3tr-head"><span class="v31-pos">' + (idx + 1) + ' / ' + deck.length + '</span><div class="v3tr-prog"><i style="width:' + pct + '%"></i></div>' + catBtn + dirB + '</div>'
+      '<div class="v3tr-head"><span class="v31-pos">' + (idx + 1) + ' / ' + deck.length + '</span><div class="v3tr-prog"><i style="width:' + pct + '%"></i></div>' + catBtn + listenBtn + dirB + '</div>'
       + (chipsOpen ? '<div class="v32-chips">' + categoryChipsHTML() + '</div>' : '')
-      + '<div class="v32-q"><div class="v32-q-row">' + photo
-      + '<div class="v32-main"><div class="v32-sub">' + qSub + '</div><div class="v32-word">' + qWord + '</div>'
-      + '<div class="v32-meta"><span class="badge badge-type">' + w.wordType + '</span><span class="badge ' + diffColor(w.difficulty) + '">' + w.difficulty + '</span>'
-      + '<button class="speak-btn" onclick="speakWord(\'' + (enDE ? w.word : w.translation).replace(/'/g, "\\'") + '\',\'' + (enDE ? 'en' : 'de') + '\')">🔊</button>'
-      + (enDE ? '<span class="v32-pron">' + w.pronunciation + '</span>' : '')
-      + '</div></div></div>'
-      + '<div class="v32-ex">' + ex + '</div></div>'
+      + qCard
       + '<div class="quiz-choices">' + choices + '</div>'
       + '<div id="quizFeedback"></div>'
       + '<div class="nav-row"><button class="btn btn-ghost btn-sm" onclick="nextQuiz()" id="nextQuizBtn" style="display:none">Weiter →</button></div>';
 
-    if (window.__v3SetTopbar) window.__v3SetTopbar('FRAGE ' + (idx + 1) + ' / ' + deck.length, 'Quiz');
+    if (window.__v3SetTopbar) window.__v3SetTopbar((listenQuiz ? 'HÖREN ' : 'FRAGE ') + (idx + 1) + ' / ' + deck.length, 'Quiz');
+    if (listenQuiz) setTimeout(function(){ try { speakWord(enDE ? w.word : w.translation, enDE ? 'en' : 'de'); } catch(e){} }, 350);
 
     // Lazy-Load: Bild nachladen, wenn (noch) nicht im Cache
     if (!src && wikiTitleFor(w.word)){
@@ -7541,6 +7576,256 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
 })();
 </script>
 <!-- ETA-PATCH-v3.3-END -->
+
+<!-- ═══════════════ ETA-PATCH v4.0 · Lernwirkungs-Paket (2026-08-03) ═══════════════
+     V1 Neue Wörter dosieren (Tageslimit, Standard 10) · V2 Fehler-Wiedervorlage in
+     der Session · V3 12er-Runden mit Zwischenfazit · V4 Auto-Aussprache (Option) +
+     Hör-Modus im Quiz (in v3.2 integriert) · V5 Fortschritts-Ansicht (ersetzt
+     Streak-Sheet) · V7 Onboarding-Texte (in v2.5 aktualisiert).                  -->
+<style id="eta-v4-style">
+/* Runden-Abschluss */
+.v4-round{ background:var(--card); border:1px solid var(--border); border-radius:18px; padding:26px 20px; text-align:center; margin-top:8px; }
+.v4-round .lbl{ font-size:10px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); }
+.v4-round .big{ font-size:42px; font-weight:800; letter-spacing:-1px; margin:8px 0 2px; color:var(--text); }
+.v4-round .big b{ color:var(--ok); } .v4-round .big span{ color:var(--muted); font-size:22px; font-weight:600; }
+.v4-round .sub{ font-size:13px; color:var(--muted); margin-bottom:6px; }
+.v4-round .perfect{ color:var(--warn); font-weight:700; font-size:13.5px; margin:6px 0; }
+.v4-round .rest{ font-size:12.5px; color:var(--text-soft); background:var(--card-hover); border-radius:10px; padding:8px 12px; display:inline-block; margin:10px 0 4px; }
+.v4-btn{ width:100%; margin-top:12px; padding:14px; border-radius:13px; border:none; cursor:pointer; font-family:inherit; font-size:15px; font-weight:700; background:linear-gradient(135deg,var(--primary2),var(--primary)); color:#fff; box-shadow:0 8px 22px rgba(89,101,240,0.35); }
+.v4-btn.ghost{ background:var(--card-hover); color:var(--text); box-shadow:none; border:1px solid var(--border); }
+/* Fortschritts-Sheet */
+#v4-progress{ position:fixed; inset:0; z-index:10000; background:rgba(5,8,14,0.6); display:none; align-items:flex-end; justify-content:center; }
+#v4-progress.open{ display:flex; }
+#v4-progress .inner{ background:var(--card); border:1px solid var(--border); border-radius:22px 22px 0 0; width:100%; max-width:560px; max-height:86vh; overflow-y:auto; padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px)); }
+#v4-progress h3{ font-size:16px; margin:0 0 14px; }
+.v4p-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+.v4p-cell{ background:var(--card-hover); border-radius:12px; padding:10px 6px; text-align:center; }
+.v4p-cell .v{ font-size:16px; font-weight:800; color:var(--text); }
+.v4p-cell .l{ font-size:8.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+.v4p-label{ font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin:14px 0 8px; }
+.v4p-heat{ display:grid; grid-template-columns:repeat(12,1fr); gap:3px; }
+.v4p-heat i{ aspect-ratio:1; border-radius:3px; background:var(--card-hover); }
+.v4p-heat i.h1{ background:rgba(124,140,255,0.25); } .v4p-heat i.h2{ background:rgba(124,140,255,0.5); }
+.v4p-heat i.h3{ background:rgba(124,140,255,0.75); } .v4p-heat i.h4{ background:var(--primary); }
+.v4p-bar{ display:flex; height:14px; border-radius:7px; overflow:hidden; background:var(--card-hover); }
+.v4p-bar i{ height:100%; }
+.v4p-legend{ display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:8px; font-size:10.5px; color:var(--muted); }
+.v4p-legend b{ color:var(--text-soft); }
+.v4p-mode{ display:flex; align-items:center; gap:10px; padding:7px 0; font-size:12.5px; color:var(--text-soft); }
+.v4p-mode .n{ flex:0 0 96px; }
+.v4p-mode .track{ flex:1; height:6px; border-radius:3px; background:var(--card-hover); overflow:hidden; }
+.v4p-mode .track i{ display:block; height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-soft)); }
+.v4p-mode .pct{ flex:0 0 40px; text-align:right; font-weight:700; color:var(--text); }
+.v4-close{ width:100%; margin-top:16px; padding:12px; border-radius:11px; border:1px solid var(--border); background:var(--card-hover); color:var(--text); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; }
+</style>
+<script id="eta-v4-script">
+(function(){
+  var svg = window.__etaSvg || function(){ return ''; };
+  var ROUND = 12;      // Karten pro Trainings-Runde
+  var REQUEUE = 4;     // falsche Karte kommt nach 4 Karten wieder
+
+  /* ── Einstellungen ── */
+  window.__v4GetNewLimit = function(){
+    try { var n = parseInt(localStorage.getItem('etNewPerDay'), 10); if ([5,10,15,20].indexOf(n) >= 0) return n; } catch(e){}
+    return 10;
+  };
+  window.__v4SetNewLimit = function(n){
+    try { localStorage.setItem('etNewPerDay', String(n)); } catch(e){}
+    if (typeof openSettings === 'function'){} // Sheet neu aufbauen macht der Handler unten
+    var b = document.getElementById('eta-settings-btn'); if (b) b.click();
+    if (window.mode === 'today') try { render(); } catch(e){}
+  };
+  window.__v4GetAutoSpeak = function(){ try { return localStorage.getItem('etAutoSpeak') === '1'; } catch(e){ return false; } };
+  window.__v4SetAutoSpeak = function(on){
+    try { localStorage.setItem('etAutoSpeak', on ? '1' : '0'); } catch(e){}
+    var b = document.getElementById('eta-settings-btn'); if (b) b.click();
+  };
+
+  /* ── V1: Zähler „heute eingeführte neue Wörter" (synct über Stats.state) ── */
+  function introToday(){
+    try {
+      var ni = Stats.state.newIntro;
+      if (ni && ni.date === SRS.todayISO()) return ni.count || 0;
+    } catch(e){}
+    return 0;
+  }
+  function bumpIntro(){
+    try {
+      var today = SRS.todayISO();
+      if (!Stats.state.newIntro || Stats.state.newIntro.date !== today) Stats.state.newIntro = { date: today, count: 0 };
+      Stats.state.newIntro.count++;
+      Stats.save();
+    } catch(e){}
+  }
+  function isFresh(w){
+    var e = SRS.state[w.id];
+    return !e || (((e.level||0) === 0) && (((e.ok||0) + (e.wrong||0)) === 0));
+  }
+
+  /* ── V1+V3: Runden-Deck — erst Wiederholungen, dann dosiert Neues ── */
+  var r4 = { ok: 0, wrong: 0 };
+  window.__v4Deck = function(){
+    var today = SRS.todayISO();
+    var reviews = [], fresh = [];
+    try {
+      WORDS.forEach(function(w){
+        if (isFresh(w)){ fresh.push(w); return; }
+        var e = SRS.state[w.id];
+        if ((e.level||0) < 7 && e.nextDue <= today) reviews.push(w);
+      });
+    } catch(e){ return SRS.dueQueue(WORDS); }
+    reviews.sort(function(a,b){
+      var la = (SRS.state[a.id].level||0), lb = (SRS.state[b.id].level||0);
+      if (la !== lb) return la - lb;
+      return Math.random() - 0.5;
+    });
+    fresh.sort(function(){ return Math.random() - 0.5; });
+    var allow = Math.max(0, window.__v4GetNewLimit() - introToday());
+    var deck = reviews.slice(0, ROUND);
+    if (deck.length < ROUND) deck = deck.concat(fresh.slice(0, Math.min(ROUND - deck.length, allow)));
+    r4 = { ok: 0, wrong: 0 };   // neue Runde, frisches Zwischenfazit
+    return deck;
+  };
+
+  /* ── Heute-Screen-Zahlen (V1) ── */
+  window.__v4TodayNums = function(c){
+    var allow = Math.max(0, window.__v4GetNewLimit() - introToday());
+    var newToday = Math.min(allow, c.fresh);
+    return { newToday: newToday, vorrat: c.fresh - newToday };
+  };
+
+  /* ── V2: rateTrain mit Fehler-Wiedervorlage + Einführungs-Zähler ── */
+  window.rateTrain = function(wasCorrect){
+    if (!trainFlipped) return;
+    var w = trainDeck[trainIdx];
+    if (!w) return;
+    if (isFresh(w)) bumpIntro();                       // erstes Antippen eines neuen Worts = heute eingeführt
+    if (wasCorrect){ SRS.markCorrect(w.id); correct++; r4.ok++; }
+    else {
+      SRS.markWrong(w.id); incorrect++; r4.wrong++;
+      // Wiedervorlage: dieselbe Karte kommt in dieser Runde nach ein paar Karten erneut
+      var pos = Math.min(trainIdx + 1 + REQUEUE, trainDeck.length);
+      trainDeck.splice(pos, 0, w);
+    }
+    Stats.recordAnswer(wasCorrect, 'train');
+    updateStats();
+    trainIdx++;
+    trainFlipped = false;
+    scrollToTop();
+    render();
+  };
+
+  /* ── V3: Runden-Abschluss ── */
+  window.__v4NextRound = function(){
+    trainDeck = window.__v4Deck();
+    trainIdx = 0; trainFlipped = false;
+    try { window.scrollTo(0,0); } catch(e){}
+    render();
+  };
+  window.__v4RoundEnd = function(app){
+    var beantwortet = r4.ok + r4.wrong;
+    if (!beantwortet) return false;   // keine Runde gelaufen → normaler Leer-Zustand
+    var perfect = r4.wrong === 0;
+    if (perfect && r4.ok >= 5) try { Stats.recordPerfectRound(); } catch(e){}
+    // Was wartet noch?
+    var today = SRS.todayISO(), reviewsLeft = 0, freshLeft = 0;
+    try { WORDS.forEach(function(w){ if (isFresh(w)){ freshLeft++; return; } var e = SRS.state[w.id]; if ((e.level||0) < 7 && e.nextDue <= today) reviewsLeft++; }); } catch(e){}
+    var allow = Math.max(0, window.__v4GetNewLimit() - introToday());
+    var next = reviewsLeft + Math.min(allow, freshLeft);
+    var quote = Math.round(100 * r4.ok / beantwortet);
+    app.innerHTML = '<div class="v4-round">'
+      + '<div class="lbl">Runde geschafft</div>'
+      + '<div class="big"><b>' + r4.ok + '</b><span> / ' + beantwortet + ' richtig</span></div>'
+      + '<div class="sub">' + quote + '&nbsp;% Trefferquote · Streak 🔥 ' + ((Stats.state && Stats.state.streak) || 0) + '</div>'
+      + (perfect ? '<div class="perfect">🎉 Perfekte Runde — Bonus-XP!</div>' : '')
+      + (next > 0
+          ? '<div class="rest">Noch übrig heute: <b>' + reviewsLeft + '</b> Wiederholungen · <b>' + Math.min(allow, freshLeft) + '</b> neue Wörter</div>'
+            + '<button class="v4-btn" onclick="window.__v4NextRound()">Nächste Runde →</button>'
+          : '<div class="rest">🎉 Alles erledigt für heute — komm morgen wieder!</div>')
+      + '<button class="v4-btn ghost" onclick="setMode(\'today\')">Zur Übersicht</button>'
+      + '</div>';
+    if (window.__v3SetTopbar) window.__v3SetTopbar('RUNDE BEENDET', 'Training');
+    return true;
+  };
+
+  /* ── V4a: Auto-Aussprache beim Aufdecken (Option, Standard aus) ── */
+  var origFlipTrain = window.flipTrain;
+  window.flipTrain = function(){
+    var r = origFlipTrain.apply(this, arguments);
+    try { if (trainFlipped && window.__v4GetAutoSpeak() && trainDeck[trainIdx]) speakWord(trainDeck[trainIdx].word, 'en'); } catch(e){}
+    return r;
+  };
+  var origFlipCard = window.flipCard;
+  window.flipCard = function(){
+    var r = origFlipCard.apply(this, arguments);
+    try { if (flipped && window.__v4GetAutoSpeak() && deck[idx]) speakWord(deck[idx].word, 'en'); } catch(e){}
+    return r;
+  };
+
+  /* ── V5: Fortschritts-Ansicht (ersetzt das alte Streak-Sheet) ── */
+  window.openStreakSheet = function(){
+    var sh = document.getElementById('v4-progress');
+    if (!sh){
+      sh = document.createElement('div'); sh.id = 'v4-progress';
+      sh.onclick = function(ev){ if (ev.target === sh) sh.classList.remove('open'); };
+      document.body.appendChild(sh);
+    }
+    var st = (typeof Stats !== 'undefined' && Stats.state) || {};
+    var dp = st.dailyProgress || {};
+    var goal = st.dailyGoal || 20;
+    // Heatmap: letzte 12 Wochen (Spalten), Mo–So (Zeilen)
+    var cells = '', d = new Date();
+    var offset = (d.getDay() + 6) % 7;                     // Tage seit Montag
+    var start = new Date(d); start.setDate(d.getDate() - offset - 77); // 11 Wochen + aktuelle
+    for (var row = 0; row < 7; row++){
+      for (var col = 0; col < 12; col++){
+        var cd = new Date(start); cd.setDate(start.getDate() + col*7 + row);
+        var iso = cd.toISOString().slice(0,10);
+        var n = dp[iso] || 0;
+        var cls = n === 0 ? '' : n < goal*0.5 ? 'h1' : n < goal ? 'h2' : n < goal*2 ? 'h3' : 'h4';
+        var future = cd > d;
+        cells += '<i class="' + cls + '"' + (future ? ' style="opacity:.15"' : '') + ' title="' + iso + ': ' + n + '"></i>';
+      }
+    }
+    // Stufen-Verteilung
+    var lv = [0,0,0,0,0,0,0,0];
+    try { WORDS.forEach(function(w){ var e = SRS.state[w.id]; var has = e && (((e.level||0) > 0) || ((e.ok||0)+(e.wrong||0)) > 0); lv[has ? Math.min(7, e.level||0) : 0]++; }); } catch(e){}
+    var lvColors = ['#2E3956','#4A5578','#5965F0','#7C8CFF','#5EE3D6','#42E3A4','#2FBF87','#FBBF24'];
+    var totalW = (typeof WORDS !== 'undefined') ? WORDS.length : 1;
+    var bar = lv.map(function(n,i){ return n ? '<i style="width:' + (100*n/totalW) + '%;background:' + lvColors[i] + '" title="Stufe ' + i + ': ' + n + '"></i>' : ''; }).join('');
+    var legend = lv.map(function(n,i){ return n ? '<span><b style="color:' + lvColors[i] + '">●</b> S' + i + ': <b>' + n + '</b></span>' : ''; }).join('');
+    // Genauigkeit je Modus
+    var modes = { train:'🧠 Training', quiz:'❓ Quiz', fill:'✏️ Lückentext', flash:'🃏 Karten', type:'⌨️ Tippen' };
+    var agg = {};
+    (st.sessions || []).forEach(function(s){ if (!s.total) return; if (!agg[s.mode]) agg[s.mode] = { c:0, t:0 }; agg[s.mode].c += s.correct||0; agg[s.mode].t += s.total; });
+    var modeRows = Object.keys(agg).map(function(m){
+      var p = Math.round(100 * agg[m].c / agg[m].t);
+      return '<div class="v4p-mode"><span class="n">' + (modes[m]||m) + '</span><span class="track"><i style="width:' + p + '%"></i></span><span class="pct">' + p + '%</span></div>';
+    }).join('') || '<p style="font-size:12px;color:var(--muted)">Noch keine abgeschlossenen Runden.</p>';
+    var trend = { curPct: null }; try { trend = Stats.accuracyTrend(); } catch(e){}
+    var mast = lv[7];
+    sh.innerHTML = '<div class="inner"><span class="eta-sheet-handle" style="display:block;width:40px;height:4px;border-radius:2px;background:var(--border-strong);margin:0 auto 14px"></span>'
+      + '<h3>📈 Dein Fortschritt</h3>'
+      + '<div class="v4p-grid">'
+      + '<div class="v4p-cell"><div class="v">🔥 ' + (st.streak||0) + '</div><div class="l">Streak (Rekord ' + (st.longestStreak||0) + ')</div></div>'
+      + '<div class="v4p-cell"><div class="v">⭐ ' + (st.xp||0) + '</div><div class="l">XP</div></div>'
+      + '<div class="v4p-cell"><div class="v" style="color:var(--ok)">' + mast + '</div><div class="l">Gemeistert</div></div>'
+      + '<div class="v4p-cell"><div class="v">' + (trend.curPct === null ? '–' : trend.curPct + '%') + '</div><div class="l">Genauigkeit 7T</div></div>'
+      + '</div>'
+      + '<div class="v4p-label">Aktivität · letzte 12 Wochen</div><div class="v4p-heat">' + cells + '</div>'
+      + '<div class="v4p-label">Wortschatz nach Lernstufe (' + totalW + ' Wörter)</div><div class="v4p-bar">' + bar + '</div><div class="v4p-legend">' + legend + '</div>'
+      + '<div class="v4p-label">Genauigkeit je Modus</div>' + modeRows
+      + '<button class="v4-close" onclick="document.getElementById(\'v4-progress\').classList.remove(\'open\')">Schließen</button>'
+      + '</div>';
+    sh.classList.add('open');
+  };
+
+  /* ── Start: Heute-Screen mit v4-Zahlen neu zeichnen ── */
+  if (window.mode === 'today') try { render(); } catch(e){}
+  console.log('[ETA v4.0] Lernwirkungs-Paket aktiv');
+})();
+</script>
+<!-- ETA-PATCH-v4-END -->
 
 </body>
 </html>
