@@ -1,0 +1,34 @@
+name: App-Tests (Smoke, Handy-Format)
+
+on:
+  push:
+    paths:
+      - 'index.html'
+      - '.github/scripts/app_smoke.js'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v5
+
+      - name: Node einrichten
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Playwright installieren
+        run: |
+          npm init -y > /dev/null
+          npm i --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+
+      - name: Statische Validierung
+        run: |
+          python3 -m pip install --quiet requests || true
+          python3 .github/scripts/validate_app.py
+
+      - name: Smoke-Test (alle Modi, beide Richtungen, v4-Lernmechanik)
+        run: node .github/scripts/app_smoke.js
