@@ -1,7 +1,7 @@
 """
 ETA-Prozessor: verarbeitet ein GitHub-Issue mit Titel "ETA: <wort> [#Kategorie]",
 ruft die Claude API auf, ermittelt bei Nomen einen passenden Wikipedia-Artikel und
-schreibt das Ergebnis in index.html (WORDS-Array + WIKI_TITLES-Map)  sowie in vokabeln.xlsx.
+schreibt das Ergebnis in words.js (WORDS-Array + WIKI_TITLES-Map) sowie in vokabeln.xlsx.
 
 Bild-Logik (seit 2026-06-15 an das App-Bildsystem angepasst):
 Die App holt Bilder zur Laufzeit über die Map `const WIKI_TITLES` (Wort -> Wikipedia-Artikel)
@@ -29,7 +29,7 @@ from openpyxl import load_workbook
 # ---------- Konfiguration ----------
 
 ROOT = Path(__file__).resolve().parents[2]
-HTML_FILE = ROOT / "index.html"
+DATA_FILE = ROOT / "words.js"   # Daten-Datei der App (WORDS / WIKI_TITLES / IMG_URLS)
 XLSX_FILE = ROOT / "vokabeln.xlsx"
 
 CLAUDE_MODEL = "claude-sonnet-4-5"  # schnell & guenstig, gute Qualitaet
@@ -143,11 +143,11 @@ def normalize_word(w: str) -> str:
 
 
 def word_already_exists(word_raw: str) -> bool:
-    """Prueft, ob das Wort schon im WORDS-Array von index.html steht."""
-    if not HTML_FILE.exists():
+    """Prueft, ob das Wort schon im WORDS-Array von words.js steht."""
+    if not DATA_FILE.exists():
         return False
     try:
-        html = HTML_FILE.read_text(encoding="utf-8")
+        html = DATA_FILE.read_text(encoding="utf-8")
     except Exception:
         return False
     # nur den WORDS-Bereich betrachten, damit WIKI_TITLES-Keys keine Falschtreffer ausloesen
@@ -188,9 +188,9 @@ def cefr_difficulty(value) -> str:
 
 # ---------- index.html schreiben ----------
 
-def add_wiki_title_to_html(word: str, title: str):
+def add_wiki_title_to_data(word: str, title: str):
     """Ergaenzt einen Eintrag 'Word':'Article_Title' am Anfang der WIKI_TITLES-Map."""
-    html = HTML_FILE.read_text(encoding="utf-8")
+    html = DATA_FILE.read_text(encoding="utf-8")
     m = re.search(r"const\s+WIKI_TITLES\s*=\s*\{", html)
     if not m:
         print("WIKI_TITLES-Map nicht gefunden - ueberspringe Bild-Mapping.")
@@ -213,18 +213,18 @@ def add_wiki_title_to_html(word: str, title: str):
         return
     entry = f"\n  '{js_escape_single(word)}':'{js_escape_single(title)}',"
     new_html = html[:start] + entry + html[start:]
-    HTML_FILE.write_text(new_html, encoding="utf-8")
+    DATA_FILE.write_text(new_html, encoding="utf-8")
     print(f"WIKI_TITLES-Eintrag ergaenzt: {word} -> {title}")
 
 
-def add_img_url_to_html(word: str, img_url: str):
+def add_img_url_to_data(word: str, img_url: str):
     """Ergaenzt eine fest eingebaute Bild-URL in der IMG_URLS-Map (Key kleingeschrieben).
 
     Damit erscheint das Bild sofort beim ersten App-Start, ohne API-Wartezeit.
     """
     if not img_url:
         return
-    html = HTML_FILE.read_text(encoding="utf-8")
+    html = DATA_FILE.read_text(encoding="utf-8")
     m = re.search(r"const\s+IMG_URLS\s*=\s*\{", html)
     if not m:
         print("IMG_URLS-Map nicht gefunden - ueberspringe feste Bild-URL.")
@@ -248,12 +248,12 @@ def add_img_url_to_html(word: str, img_url: str):
         return
     entry = f"\n  '{js_escape_single(key)}':'{js_escape_single(img_url)}',"
     new_html = html[:start] + entry + html[start:]
-    HTML_FILE.write_text(new_html, encoding="utf-8")
+    DATA_FILE.write_text(new_html, encoding="utf-8")
     print(f"IMG_URLS-Eintrag ergaenzt: {key} -> {img_url[:80]}")
 
 
-def append_word_to_html(data: dict, category: str):
-    html = HTML_FILE.read_text(encoding="utf-8")
+def append_word_to_data(data: dict, category: str):
+    html = DATA_FILE.read_text(encoding="utf-8")
     wid = next_word_id(html)
     today = date.today().isoformat()
 
@@ -282,7 +282,7 @@ def append_word_to_html(data: dict, category: str):
 
     m = re.search(r"const\s+WORDS\s*=\s*\[", html)
     if not m:
-        raise RuntimeError("WORDS-Array nicht in index.html gefunden.")
+        raise RuntimeError("WORDS-Array nicht in words.js gefunden.")
     start = m.end()
     depth = 1
     i = start
@@ -301,8 +301,8 @@ def append_word_to_html(data: dict, category: str):
     after = html[i:]
     separator = ",\n" if before.endswith("}") else "\n"
     new_html = before + separator + entry + "\n" + after
-    HTML_FILE.write_text(new_html, encoding="utf-8")
-    print(f"In index.html eingefuegt (id={wid}).")
+    DATA_FILE.write_text(new_html, encoding="utf-8")
+    print(f"In words.js eingefuegt (id={wid}).")
 
 
 def append_word_to_xlsx(data: dict, category: str):
@@ -363,14 +363,14 @@ def process_word(word_raw: str, category: str) -> str:
         if not title:
             title, img, thumb = resolve_wikipedia(data.get("word", ""))
         if title:
-            add_wiki_title_to_html(data["word"], title)
-            add_img_url_to_html(data["word"], thumb)
+            add_wiki_title_to_data(data["word"], title)
+            add_img_url_to_data(data["word"], thumb)
             data["_imageRef"] = img
             print(f"Bild ueber WIKI_TITLES: {data['word']} -> {title}")
         else:
             print(f"Kein bebilderter Wikipedia-Artikel fuer '{data['word']}' - Emoji-Fallback.")
 
-    append_word_to_html(data, category)
+    append_word_to_data(data, category)
     append_word_to_xlsx(data, category)
     return "added"
 

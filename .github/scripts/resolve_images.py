@@ -1,5 +1,5 @@
 """Bild-Resolver: loest Wikipedia-Thumbnails fuer alle WIKI_TITLES-Eintraege auf
-und schreibt sie fest in die IMG_URLS-Map von index.html.
+und schreibt sie fest in die IMG_URLS-Map von words.js.
 
 Warum: Fest eingebaute URLs erscheinen sofort beim App-Start (kein API-Warten),
 funktionieren offline ueber den Browser-Cache und sind unabhaengig von
@@ -19,7 +19,7 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-HTML_FILE = ROOT / "index.html"
+DATA_FILE = ROOT / "words.js"
 UA = {"User-Agent": "ETA-Bot/1.0 (English Trainer; image resolver)"}
 
 
@@ -79,7 +79,7 @@ def js_escape_single(s: str) -> str:
 
 
 def main():
-    html = HTML_FILE.read_text(encoding="utf-8")
+    html = DATA_FILE.read_text(encoding="utf-8")
 
     wiki = extract_block(html, r"const\s+WIKI_TITLES\s*=\s*\{", "{", "}")
     imgs = extract_block(html, r"const\s+IMG_URLS\s*=\s*\{", "{", "}")
@@ -115,7 +115,7 @@ def main():
     )
     pos = imgs[0]
     html = html[:pos] + insert + html[pos:]
-    HTML_FILE.write_text(html, encoding="utf-8")
+    DATA_FILE.write_text(html, encoding="utf-8")
     print(f"{len(new_entries)} Bild-URLs fest eingebaut.")
 
 

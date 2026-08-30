@@ -1,4 +1,4 @@
-/* App-Smoke-Test: laeuft in GitHub Actions vor/nach jedem index.html-Commit.
+/* App-Smoke-Test: laeuft in GitHub Actions bei jedem Commit an index.html/app.js/words.js/styles.css.
    Prueft die Kern-UX im Handy-Format (412x892) mit echtem Chromium:
    Layout aller Modi, beide Lernrichtungen, Bild-System, v4-Lernmechanik
    (Dosierung, Fehler-Wiedervorlage, Runden). Exit-Code != 0 => Workflow rot.  */
@@ -12,11 +12,14 @@ const path = require('path');
   const srv = http.createServer((req, res) => {
     let p = req.url.split('?')[0]; if (p === '/') p = '/index.html';
     const f = path.join(root, decodeURIComponent(p));
-    if (fs.existsSync(f) && fs.statSync(f).isFile()){ res.setHeader('Content-Type', 'text/html'); res.end(fs.readFileSync(f)); }
+    if (fs.existsSync(f) && fs.statSync(f).isFile()){
+      const mime = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.json':'application/json', '.png':'image/png' };
+      res.setHeader('Content-Type', mime[path.extname(f)] || 'application/octet-stream');
+      res.end(fs.readFileSync(f)); }
     else { res.writeHead(404); res.end(); }
   }).listen(8799);
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.PW_EXEC ? { executablePath: process.env.PW_EXEC } : {});
   const page = await browser.newPage({ viewport: { width: 412, height: 892 }, isMobile: true, hasTouch: true });
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
   await page.route(/upload\.wikimedia\.org/, r => r.fulfill({ status: 200, contentType: 'image/png', body: png }));
@@ -67,8 +70,8 @@ const path = require('path');
 
   // Richtungswechsel beidseitig
   const dirs = await page.evaluate(async () => {
-    const a = learnDir; window.__v3ToggleDir(); await new Promise(r => setTimeout(r, 200));
-    const b = learnDir; window.__v3ToggleDir(); await new Promise(r => setTimeout(r, 200));
+    const a = learnDir; toggleDir(); await new Promise(r => setTimeout(r, 200));
+    const b = learnDir; toggleDir(); await new Promise(r => setTimeout(r, 200));
     return [a, b, learnDir].join('>');
   });
   check('Richtungswechsel beidseitig (' + dirs + ')', dirs === 'en-de>de-en>en-de');
@@ -83,10 +86,10 @@ const path = require('path');
   });
   check('Quiz: 4 Antworten ohne Scrollen', quiz.n === 4 && quiz.fits);
   const listen = await page.evaluate(async () => {
-    window.__v32ToggleListen(); await new Promise(r => setTimeout(r, 300));
+    toggleListenQuiz(); await new Promise(r => setTimeout(r, 300));
     const big = !!document.querySelector('.v32-listen-big');
     const wordHidden = !document.querySelector('.v32-word');
-    window.__v32ToggleListen();
+    toggleListenQuiz();
     return big && wordHidden;
   });
   check('Quiz-Hoermodus blendet Wort aus, zeigt Lautsprecher', listen);
@@ -98,7 +101,7 @@ const path = require('path');
   await page.evaluate(() => setMode('list'));
   await page.waitForTimeout(500);
   check('Wortliste: Sticky-Suche + Gruppen', await page.evaluate(() => !!document.querySelector('.v31-sticky') && document.querySelectorAll('.v31-group-head').length > 0));
-  const prog = await page.evaluate(() => { openStreakSheet(); const s = document.getElementById('v4-progress'); return s && s.classList.contains('open') && s.querySelectorAll('.v4p-heat i').length === 84; });
+  const prog = await page.evaluate(() => { openProgressSheet(); const s = document.getElementById('v4-progress'); return s && s.classList.contains('open') && s.querySelectorAll('.v4p-heat i').length === 84; });
   check('Fortschritts-Ansicht (Heatmap 84 Zellen)', prog);
 
   check('Keine JavaScript-Fehler', errors.length === 0);

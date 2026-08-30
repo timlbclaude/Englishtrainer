@@ -1,16 +1,17 @@
 """
-Validiert index.html vor jedem Deploy/Commit:
-  1. Alle <script>-Bloecke sind syntaktisch gueltiges JavaScript (node --check).
-  2. Das WORDS-Array ist parsebar, nicht leer, jede Zeile hat id/word/translation,
-     keine doppelten ids, keine doppelten Woerter (normalisiert, ohne fuehrendes "to ").
+Validiert die App-Dateien vor jedem Deploy/Commit:
+  1. words.js und app.js sind syntaktisch gueltiges JavaScript (node --check),
+     ebenso alle etwaigen <script>-Bloecke in index.html.
+  2. Das WORDS-Array (words.js) ist parsebar, nicht leer, jede Zeile hat
+     id/word/translation, keine doppelten ids, keine doppelten Woerter
+     (normalisiert, ohne fuehrendes "to ").
   3. Die WIKI_TITLES-Map ist ein parsebares Objekt.
-  4. Bild-Verkabelung (seit v3.1): jeder WIKI_TITLES-Key gehoert (case-insensitiv)
-     zu einem Wort im WORDS-Array; IMG_URLS ist parsebar, Keys kleingeschrieben,
-     jeder Key gehoert zu einem WIKI_TITLES-Eintrag; URLs sind https-Wikimedia-Links.
-     (Genau diese Fehlerklasse hat die Bilder von Juni-August 2026 unsichtbar gemacht.)
-  5. difficulty ist eine CEFR-Stufe (A1-C2) - der Bot schrieb frueher Zahlen.
+  4. Bild-Verkabelung: jeder WIKI_TITLES-Key gehoert (case-insensitiv) zu einem
+     Wort im WORDS-Array; IMG_URLS ist parsebar, Keys kleingeschrieben, jeder
+     Key gehoert zu einem WIKI_TITLES-Eintrag; URLs sind https-Wikimedia-Links.
+  5. difficulty ist eine CEFR-Stufe (A1-C2).
+  6. index.html referenziert styles.css, words.js und app.js.
 Exit-Code != 0 => der aufrufende Workflow bricht ab (kein Commit/Push).
-Laeuft auf ubuntu-latest (node ist vorinstalliert) und lokal.
 """
 import re
 import subprocess
@@ -20,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 HTML = ROOT / "index.html"
+WORDS_JS = ROOT / "words.js"
+APP_JS = ROOT / "app.js"
 
 
 def fail(msg: str):
@@ -27,12 +30,21 @@ def fail(msg: str):
     sys.exit(1)
 
 
-def main():
-    if not HTML.exists():
-        fail("index.html nicht gefunden.")
-    html = HTML.read_text(encoding="utf-8")
+def node_check(path: Path):
+    r = subprocess.run(["node", "--check", str(path)], capture_output=True, text=True)
+    if r.returncode != 0:
+        fail(f"JS-Syntaxfehler in {path.name}:\n{r.stderr[:700]}")
 
-    # 1) JS-Syntax aller <script>-Bloecke
+
+def main():
+    for f in (HTML, WORDS_JS, APP_JS):
+        if not f.exists():
+            fail(f"{f.name} nicht gefunden.")
+
+    # 1) JS-Syntax
+    node_check(WORDS_JS)
+    node_check(APP_JS)
+    html = HTML.read_text(encoding="utf-8")
     scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S)
     for i, s in enumerate(scripts):
         if not s.strip():
@@ -42,9 +54,14 @@ def main():
             tmp = f.name
         r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
         if r.returncode != 0:
-            fail(f"JS-Syntaxfehler im <script>-Block {i}:\n{r.stderr[:700]}")
+            fail(f"JS-Syntaxfehler im <script>-Block {i} von index.html:\n{r.stderr[:700]}")
 
-    # 2)+3) WORDS / WIKI_TITLES per node parsen und pruefen
+    # 6) Datei-Referenzen
+    for ref in ("styles.css", "words.js", "app.js"):
+        if ref not in html:
+            fail(f"index.html referenziert {ref} nicht.")
+
+    # 2)-5) WORDS / WIKI_TITLES / IMG_URLS per node parsen und pruefen
     checker = r"""
 const fs=require('fs');
 const h=fs.readFileSync(process.argv[2],'utf8');
@@ -65,14 +82,12 @@ for(const w of W){
   if(words[key]){ probs.push('Doppeltes Wort: '+w.word); } words[key]=1;
   if(!CEFR[String(w.difficulty||'').toUpperCase()]){ probs.push('Keine CEFR-Stufe bei "'+w.word+'": '+JSON.stringify(w.difficulty)); }
 }
-// Bild-Verkabelung: WIKI_TITLES-Keys muessen (case-insensitiv) zu Woertern gehoeren
 const wtLower={};
 for(const k of Object.keys(WT)){
   const lk=k.toLowerCase();
   if(!words[lk]){ probs.push('WIKI_TITLES-Key ohne Wort im WORDS-Array: "'+k+'"'); }
   wtLower[lk]=1;
 }
-// IMG_URLS: Keys kleingeschrieben + zu WIKI_TITLES gehoerig + saubere URLs
 for(const k of Object.keys(IU)){
   if(k!==k.toLowerCase()){ probs.push('IMG_URLS-Key nicht kleingeschrieben: "'+k+'"'); }
   if(!wtLower[k]){ probs.push('IMG_URLS-Key ohne WIKI_TITLES-Eintrag: "'+k+'"'); }
@@ -85,12 +100,12 @@ console.log('OK: '+W.length+' Woerter, '+Object.keys(WT).length+' WIKI_TITLES, '
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as f:
         f.write(checker)
         cjs = f.name
-    r = subprocess.run(["node", cjs, str(HTML)], capture_output=True, text=True)
+    r = subprocess.run(["node", cjs, str(WORDS_JS)], capture_output=True, text=True)
     if r.stdout.strip():
         print(r.stdout.strip())
     if r.returncode != 0:
         fail(r.stderr.strip() or "WORDS/WIKI_TITLES-Pruefung fehlgeschlagen.")
-    print("✅ index.html validiert.")
+    print("✅ App-Dateien validiert (index.html, styles.css, words.js, app.js).")
 
 
 if __name__ == "__main__":
