@@ -3584,7 +3584,8 @@ const WORDS = [
   {"id":290,"word":"no casualties","translation":"keine Opfer","pronunciation":"/nəʊ ˈkæʒuəltiz/","wordType":"Phrase","definition":"No people were killed or injured in an incident or accident.","examples":["The building collapsed, but fortunately there were no casualties.","The fire was quickly extinguished with no casualties reported."],"exampleDE":"Das Gebäude stürzte ein, aber glücklicherweise gab es keine Opfer.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-22","notes":"","category":"TV"},
   {"id":291,"word":"Manslaughter","translation":"Totschlag","pronunciation":"/ˈmænˌslɔːtər/","wordType":"Nomen","definition":"The unlawful killing of a person without intent or premeditation.","examples":["He was convicted of manslaughter after the accident.","The jury had to decide between murder and manslaughter."],"exampleDE":"Er wurde nach dem Unfall wegen Totschlags verurteilt.","imageUrl":"","difficulty":"C1","dateAdded":"2026-07-22","notes":"","category":"TV"},
   {"id":292,"word":"to lurk","translation":"lauern","pronunciation":"/lɜːrk/","wordType":"Verb","definition":"To wait hidden, ready to attack or appear suddenly.","examples":["A cat was lurking in the bushes.","Someone is lurking outside our house."],"exampleDE":"Eine Katze lauerte in den Büschen.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-26","notes":"","category":"Allgemein"},
-  {"id":293,"word":"Wholesome","translation":"gesund, heilsam","pronunciation":"/ˈhoʊlsəm/","wordType":"Adjektiv","definition":"Good for your health or character; morally beneficial and pure.","examples":["She enjoys wholesome food like fresh vegetables and fruit.","The movie is wholesome entertainment for the whole family."],"exampleDE":"Sie genießt gesunde Nahrung wie frisches Gemüse und Obst.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-26","notes":"","category":"TV"}
+  {"id":293,"word":"Wholesome","translation":"gesund, heilsam","pronunciation":"/ˈhoʊlsəm/","wordType":"Adjektiv","definition":"Good for your health or character; morally beneficial and pure.","examples":["She enjoys wholesome food like fresh vegetables and fruit.","The movie is wholesome entertainment for the whole family."],"exampleDE":"Sie genießt gesunde Nahrung wie frisches Gemüse und Obst.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-26","notes":"","category":"TV"},
+  {"id":294,"word":"Ambush","translation":"Hinterhalt","pronunciation":"/ˈæmbʊʃ/","wordType":"Nomen","definition":"A surprise attack from a hidden position against an unsuspecting target.","examples":["The soldiers were caught in an ambush on the mountain road.","The rebels set up an ambush near the village entrance."],"exampleDE":"Die Soldaten gerieten auf der Bergstraße in einen Hinterhalt.","imageUrl":"","difficulty":"B2","dateAdded":"2026-08-30","notes":"","category":"TV"}
 ];
 
 /* ═══════════════════════════════════════════════
@@ -3661,6 +3662,7 @@ function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
    geladen und danach im Browser gecacht.
    ═══════════════════════════════════════════════ */
 const WIKI_TITLES = {
+  'Ambush':'Ambush',
   'Physiotherapist':'Physical_therapy',
   // ── Reisen / Urlaub (2026-06-23) ──
   'Menu':'Menu',
@@ -3743,6 +3745,7 @@ function imgKey(word){ return String(word||'').toLowerCase(); }
    automatisch befüllt — Bilder erscheinen dann sofort, ohne API-Wartezeit,
    und funktionieren offline über den Browser-Cache). Keys: Wort in Kleinschreibung. */
 const IMG_URLS = {
+  'ambush':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Embuscade_%28Guerre_de_Vend%C3%A9e%29_-_Evariste_Carpentier_%281%29-.jpg/330px-Embuscade_%28Guerre_de_Vend%C3%A9e%29_-_Evariste_Carpentier_%281%29-.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail',
   'main course':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Wiener-Schnitzel02.jpg/330px-Wiener-Schnitzel02.jpg',
   'souvenir':'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Sterling_Pony%2C_Estes_Park_%282024%29-104A4561.jpg/330px-Sterling_Pony%2C_Estes_Park_%282024%29-104A4561.jpg',
   'jug':'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Ewer_and_basin_MET_DP362783_%28cropped%29.jpg/330px-Ewer_and_basin_MET_DP362783_%28cropped%29.jpg',
