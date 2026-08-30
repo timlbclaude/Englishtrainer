@@ -507,6 +507,8 @@ const Sync = {
     try {
       if(t) localStorage.setItem(this.TOKEN_KEY, t);
       else  localStorage.removeItem(this.TOKEN_KEY);
+      // Ablaufdatum gehoert zum Token: bei Wechsel/Trennung zuruecksetzen
+      localStorage.removeItem('etTokenExpiry');
     } catch(e){}
   },
   setGistId(g){
@@ -551,6 +553,12 @@ const Sync = {
       },
       body: body ? JSON.stringify(body) : undefined
     });
+    // Token-Ablaufdatum merken (GitHub sendet es als Antwort-Header mit) —
+    // der Heute-Screen warnt damit, BEVOR der Token nach 90 Tagen ablaeuft.
+    try {
+      const exp = res.headers.get('github-authentication-token-expiration');
+      if(exp) localStorage.setItem('etTokenExpiry', exp);
+    } catch(e){}
     if(!res.ok){
       const txt = await res.text().catch(()=> '');
       throw new Error(res.status + ' ' + res.statusText + (txt ? ' – ' + txt.slice(0,200) : ''));
@@ -908,6 +916,32 @@ function ringHTML(done, goal){
     + '</svg><div class="rt"><b>' + done + '</b><small>von ' + goal + '</small></div></div>';
 }
 
+/* Token-Ablauf: Tage bis zum Ablauf des GitHub-Tokens (null = unbekannt).
+   Das Datum stammt aus dem Antwort-Header der GitHub-API (Sync.api). */
+function tokenDaysLeft(){
+  try {
+    if(!Sync.isConfigured()) return null;
+    const raw = localStorage.getItem('etTokenExpiry');
+    if(!raw) return null;
+    // GitHub-Format: "2026-11-28 07:29:12 UTC" → ISO
+    const d = new Date(raw.replace(' UTC', 'Z').replace(' ', 'T'));
+    if(isNaN(d)) return null;
+    return Math.floor((d.getTime() - Date.now()) / 86400000);
+  } catch(e){ return null; }
+}
+function tokenWarnHTML(){
+  const days = tokenDaysLeft();
+  if(days === null || days > 14) return '';
+  const expired = days < 0;
+  const txt = expired
+    ? 'Dein GitHub-Token ist abgelaufen — Sync und Wort-Hinzufügen funktionieren nicht mehr.'
+    : 'Dein GitHub-Token läuft in ' + days + ' Tag' + (days === 1 ? '' : 'en') + ' ab. Jetzt erneuern, bevor der Sync stoppt.';
+  return '<div class="v3t-warn' + (expired ? ' expired' : '') + '" onclick="openSyncModal()">'
+    + '<span class="ico">' + (expired ? '⛔' : '⚠️') + '</span>'
+    + '<span class="txt">' + txt + '</span>'
+    + '<span class="act">Token erneuern →</span></div>';
+}
+
 function renderToday(){
   const app = document.getElementById('app'); if(!app) return;
   const c = counts();
@@ -922,6 +956,7 @@ function renderToday(){
   const ctaMain = c.due > 0 ? 'Training fortsetzen' : (v4.newToday > 0 ? 'Neue Wörter lernen' : 'Frei üben');
   const ctaSub  = open > 0 ? (c.due + ' fällig · ' + v4.newToday + ' neue heute') : 'Alles erledigt — Karteikarten';
   app.innerHTML = '<div class="v3t">'
+    + tokenWarnHTML()
     + '<div class="v3t-hero">'
     +   '<div class="v3t-hero-row">' + ringHTML(prog, goal)
     +   '<div style="flex:1;min-width:0">'

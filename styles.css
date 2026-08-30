@@ -920,3 +920,12 @@ body:not(.dark) .v3-ph{ filter:saturate(0.9) brightness(1.35); }
 .v4p-mode .track i{ display:block; height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-soft)); }
 .v4p-mode .pct{ flex:0 0 40px; text-align:right; font-weight:700; color:var(--text); }
 .v4-close{ width:100%; margin-top:16px; padding:12px; border-radius:11px; border:1px solid var(--border); background:var(--card-hover); color:var(--text); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; }
+
+/* ╔═══ TOKEN-ABLAUF-WARNUNG (Heute-Screen) ═══╗ */
+.v3t-warn{ display:flex; align-items:center; gap:10px; background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 45%, transparent); border-radius:13px; padding:11px 13px; cursor:pointer; }
+.v3t-warn .ico{ flex-shrink:0; font-size:16px; }
+.v3t-warn .txt{ flex:1; min-width:0; font-size:12.5px; line-height:1.45; color:var(--warn-text); font-weight:500; }
+.v3t-warn .act{ flex-shrink:0; font-size:11.5px; font-weight:800; color:var(--warn); white-space:nowrap; }
+.v3t-warn.expired{ background:var(--err-bg); border-color:color-mix(in srgb, var(--err) 45%, transparent); }
+.v3t-warn.expired .txt{ color:var(--err-text); }
+.v3t-warn.expired .act{ color:var(--err); }

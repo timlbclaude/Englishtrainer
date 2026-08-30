@@ -14,9 +14,9 @@ Markup werden nie vermischt**:
 | `index.html` | nur Markup (Kopfzeile, Tabs, Modals) | Mensch/Claude |
 | `styles.css` | alles Design, Token-basiert (→ [DESIGN.md](DESIGN.md)) | Mensch/Claude |
 | `app.js` | alle Logik (Abschnitts-Inhaltsverzeichnis im Dateikopf) | Mensch/Claude |
-| `words.js` | nur Daten: `WORDS`, `WIKI_TITLES`, `IMG_URLS` | **der Bot** |
+| `words.js` | nur Daten (striktes JSON in 3 Blöcken) — die **einzige Datenquelle** | **der Bot** |
 | `sw.js` | Service Worker (Offline/PWA, Network-First) | Mensch/Claude |
-| `vokabeln.xlsx` | Excel-Spiegel der Vokabeln | der Bot |
+| `vokabeln.xlsx` | Excel-Export, wird **generiert** (`build_xlsx.py`) — nie von Hand ändern | der Bot |
 
 Vorteil der Trennung: Die Automation muss nur noch die kleine Datendatei
 `words.js` anfassen — Code-Änderungen und Wort-Änderungen kommen sich nicht
@@ -26,8 +26,12 @@ mehr in die Quere.
 
 1. **App-Button (+)** oder GitHub-Issue mit Titel `ETA: <wort> [#Kategorie]`
 2. Workflow `eta.yml` → `.github/scripts/eta_process.py`: fragt die Claude-API,
-   sucht für Nomen ein Wikipedia-Bild, schreibt das Wort in `words.js` und
-   `vokabeln.xlsx`, validiert, committet, schliesst das Issue.
+   sucht für Nomen ein Wikipedia-Bild, schreibt das Wort in `words.js`
+   (JSON-Roundtrip über `words_data.py`, kein Regex), generiert `vokabeln.xlsx`
+   neu, validiert, committet, schliesst das Issue. Deutsche Texte kommen in
+   Schweizer Rechtschreibung (ss statt ß).
+   Alle schreibenden Workflows teilen eine `concurrency`-Gruppe und machen vor
+   dem Push ein `git pull --rebase` — gleichzeitige Läufe kollidieren nicht mehr.
 3. Alternativ täglich gesammelt: Wörter in `neue_woerter.txt` → `eta-daily.yml`.
 4. `resolve-images.yml` löst offene Bild-URLs auf und schreibt sie fest in
    `words.js` (`IMG_URLS`).
@@ -46,8 +50,7 @@ mehr in die Quere.
 2. **Daten** nur in `words.js` (und xlsx) — von Hand nur im Notfall.
 3. **Keine Patch-Blöcke mehr anhängen**: Änderungen direkt in `app.js` /
    `styles.css` einarbeiten, damit keine neuen Override-Schichten entstehen.
-   (Der alte Workflow `apply-eta-patch.yml` hängt Patches ans Ende von
-   `index.html` — nur noch für Notfälle, danach bitte einarbeiten.)
+   (Der alte Patch-Workflow `apply-eta-patch.yml` wurde entfernt.)
 4. Nach jeder Änderung: `python3 .github/scripts/validate_app.py` — der Push
    triggert zusätzlich Validierung + Smoke-Test auf GitHub.
 5. `sw.js`: bei Änderungen an App-Dateien die `CACHE`-Version hochzählen,
@@ -58,4 +61,5 @@ mehr in die Quere.
 Fortschritt (SRS-Stufen, XP, Streak) liegt im `localStorage` und synchronisiert
 über einen privaten GitHub-Gist (Einrichtung: Zahnrad → Geräte-Sync). Der
 Token braucht Gists R/W (Account) + Issues R/W (Repo, für den +-Button) und
-läuft standardmässig nach 90 Tagen ab — bei 401-Fehlern zuerst daran denken.
+läuft standardmässig nach 90 Tagen ab. Die App liest das Ablaufdatum beim
+Sync mit und warnt ab 14 Tagen vor Ablauf auf dem Heute-Screen.

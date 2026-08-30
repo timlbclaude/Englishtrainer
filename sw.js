@@ -3,7 +3,7 @@
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v16-clean-architecture';
+const CACHE = 'et-v17-robust-pipeline';
 const OFFLINE_URLS = [
   './',
   './index.html',
