@@ -1,12 +1,15 @@
 /* English Trainer – Service Worker
-   Strategie: Cache-First für index.html (Offline-Support),
+   Strategie: Network-First für die App-Dateien (Offline-Support),
    Network-First für alle anderen Requests.
 */
 
-const CACHE = 'et-v15-focus-first';
+const CACHE = 'et-v16-clean-architecture';
 const OFFLINE_URLS = [
   './',
   './index.html',
+  './styles.css',
+  './words.js',
+  './app.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
