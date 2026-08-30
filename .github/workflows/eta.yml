@@ -7,6 +7,11 @@ on:
 permissions:
   contents: write
   issues: write
+# Schreibende Laeufe serialisieren: verhindert die Push-Kollision, an der am
+# 30.08.2026 Issue #55 gescheitert ist (zwei Bot-Laeufe pushten gleichzeitig).
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
 
 jobs:
   add-word:
@@ -48,6 +53,8 @@ jobs:
           git add words.js vokabeln.xlsx || true
           if ! git diff --cached --quiet; then
             git commit -m "ETA: Neues Wort aus Issue #${{ github.event.issue.number }}"
+            # Doppelter Boden gegen Push-Kollisionen (siehe concurrency oben)
+            git pull --rebase origin main || true
             git push
             echo "committed=true" >> $GITHUB_OUTPUT
           else

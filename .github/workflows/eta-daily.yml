@@ -9,6 +9,11 @@ on:
 
 permissions:
   contents: write
+# Schreibende Laeufe serialisieren (gemeinsame Gruppe mit eta.yml/resolve-images.yml):
+# verhindert Push-Kollisionen zwischen gleichzeitigen Bot-Laeufen.
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
 
 jobs:
   batch:
@@ -42,6 +47,7 @@ jobs:
           git add words.js vokabeln.xlsx neue_woerter.txt || true
           if ! git diff --cached --quiet; then
             git commit -m "ETA: Taegliche Sammelverarbeitung neuer Woerter"
+            git pull --rebase origin main || true
             git push
           else
             echo "Keine Aenderungen zum Committen."

@@ -14,6 +14,11 @@ on:
 
 permissions:
   contents: write
+# Schreibende Laeufe serialisieren (gemeinsame Gruppe mit eta.yml/eta-daily.yml):
+# verhindert Push-Kollisionen zwischen gleichzeitigen Bot-Laeufen.
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
 
 jobs:
   resolve:
@@ -30,10 +35,13 @@ jobs:
       - name: Abhaengigkeiten installieren
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests openpyxl
 
       - name: Wikipedia-Thumbnails aufloesen
         run: python .github/scripts/resolve_images.py
+
+      - name: vokabeln.xlsx aus words.js generieren
+        run: python .github/scripts/build_xlsx.py
 
       - name: App-Dateien validieren (Abbruch bei Fehler -> kein Commit)
         run: python .github/scripts/validate_app.py
@@ -42,9 +50,10 @@ jobs:
         run: |
           git config user.name "ETA Bot"
           git config user.email "eta-bot@users.noreply.github.com"
-          git add words.js || true
+          git add words.js vokabeln.xlsx || true
           if ! git diff --cached --quiet; then
             git commit -m "Bilder: feste Thumbnail-URLs in IMG_URLS aufgeloest"
+            git pull --rebase origin main || true
             git push
           else
             echo "Keine Aenderungen zum Committen."
