@@ -4440,7 +4440,12 @@ function openSyncModal(){
   document.getElementById('syncGistInput').value  = gid;
   const hint = document.getElementById('syncModalHint');
   if(Sync.status === 'error' && Sync.lastError){
-    hint.innerHTML = '<strong style="color:var(--err)">Letzter Fehler:</strong> ' + Sync.lastError.replace(/</g,'&lt;');
+    // v4.1: 401 verständlich erklären — häufigster Fall: Token abgelaufen (GitHub-Tokens
+    // laufen standardmäßig nach 90 Tagen ab) oder beim Eintragen verändert.
+    const ist401 = /(^|\s)401(\s|$)|Bad credentials/i.test(Sync.lastError);
+    hint.innerHTML = ist401
+      ? '<strong style="color:var(--err)">Token ungültig oder abgelaufen.</strong> Trage denselben gültigen Token ein wie auf deinem anderen Gerät — oder erstelle auf github.com → Settings → Developer settings → Personal access tokens einen neuen (Berechtigungen: Gists lesen/schreiben + Issues lesen/schreiben für das Repo Englishtrainer) und hinterlege ihn auf <b>allen</b> Geräten. Die richtige Gist-ID kannst du am funktionierenden Gerät hier im Fenster kopieren.'
+      : '<strong style="color:var(--err)">Letzter Fehler:</strong> ' + Sync.lastError.replace(/</g,'&lt;');
   } else if(gid){
     hint.innerHTML = 'Gist-ID ist gesetzt. Auf dem zweiten Gerät denselben Token und dieselbe Gist-ID eintragen.';
   } else {
