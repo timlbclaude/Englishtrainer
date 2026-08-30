@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'index.html'
+      - 'words.js'
+      - 'app.js'
+      - 'styles.css'
       - '.github/scripts/app_smoke.js'
   workflow_dispatch:
 

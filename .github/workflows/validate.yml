@@ -1,9 +1,12 @@
-name: Validate index.html
+name: Validate app files
 
 on:
   push:
     paths:
       - 'index.html'
+      - 'words.js'
+      - 'app.js'
+      - 'styles.css'
       - '.github/scripts/validate_app.py'
   workflow_dispatch:
 
@@ -22,5 +25,5 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: index.html validieren
+      - name: App-Dateien validieren
         run: python .github/scripts/validate_app.py

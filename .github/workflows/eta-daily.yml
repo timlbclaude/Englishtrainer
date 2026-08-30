@@ -32,14 +32,14 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python .github/scripts/eta_batch.py
 
-      - name: index.html validieren (Abbruch bei Fehler -> kein Commit)
+      - name: App-Dateien validieren (Abbruch bei Fehler -> kein Commit)
         run: python .github/scripts/validate_app.py
 
       - name: Aenderungen committen
         run: |
           git config user.name "ETA Bot"
           git config user.email "eta-bot@users.noreply.github.com"
-          git add index.html vokabeln.xlsx neue_woerter.txt || true
+          git add words.js vokabeln.xlsx neue_woerter.txt || true
           if ! git diff --cached --quiet; then
             git commit -m "ETA: Taegliche Sammelverarbeitung neuer Woerter"
             git push
