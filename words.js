@@ -313,7 +313,8 @@ const WORDS = [
   {"id":292,"word":"to lurk","translation":"lauern","pronunciation":"/lɜːrk/","wordType":"Verb","definition":"To wait hidden, ready to attack or appear suddenly.","examples":["A cat was lurking in the bushes.","Someone is lurking outside our house."],"exampleDE":"Eine Katze lauerte in den Büschen.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-26","notes":"","category":"Allgemein"},
   {"id":293,"word":"Wholesome","translation":"gesund, heilsam","pronunciation":"/ˈhoʊlsəm/","wordType":"Adjektiv","definition":"Good for your health or character; morally beneficial and pure.","examples":["She enjoys wholesome food like fresh vegetables and fruit.","The movie is wholesome entertainment for the whole family."],"exampleDE":"Sie geniesst gesunde Nahrung wie frisches Gemüse und Obst.","imageUrl":"","difficulty":"B2","dateAdded":"2026-07-26","notes":"","category":"TV"},
   {"id":294,"word":"Ambush","translation":"Hinterhalt","pronunciation":"/ˈæmbʊʃ/","wordType":"Nomen","definition":"A surprise attack from a hidden position against an unsuspecting target.","examples":["The soldiers were caught in an ambush on the mountain road.","The rebels set up an ambush near the village entrance."],"exampleDE":"Die Soldaten gerieten auf der Bergstrasse in einen Hinterhalt.","imageUrl":"","difficulty":"B2","dateAdded":"2026-08-30","notes":"","category":"TV"},
-  {"id":295,"word":"retrieval mission","translation":"Bergungseinsatz","pronunciation":"/rɪˈtriːvəl ˈmɪʃən/","wordType":"Phrase","definition":"An operation to recover or bring back something or someone from a location.","examples":["The team went on a retrieval mission to recover the lost equipment.","The astronauts completed a successful retrieval mission in space."],"exampleDE":"Das Team startete einen Bergungseinsatz, um die verlorene Ausrüstung zu bergen.","imageUrl":"","difficulty":"B2","dateAdded":"2026-08-30","notes":"","category":"TV"}
+  {"id":295,"word":"retrieval mission","translation":"Bergungseinsatz","pronunciation":"/rɪˈtriːvəl ˈmɪʃən/","wordType":"Phrase","definition":"An operation to recover or bring back something or someone from a location.","examples":["The team went on a retrieval mission to recover the lost equipment.","The astronauts completed a successful retrieval mission in space."],"exampleDE":"Das Team startete einen Bergungseinsatz, um die verlorene Ausrüstung zu bergen.","imageUrl":"","difficulty":"B2","dateAdded":"2026-08-30","notes":"","category":"TV"},
+  {"id":296,"word":"Taillight","translation":"Rücklicht","pronunciation":"/ˈteɪllaɪt/","wordType":"Nomen","definition":"A red light at the rear of a vehicle that indicates its presence.","examples":["The broken taillight made the car unsafe to drive at night.","Police officers often stop vehicles with missing taillights."],"exampleDE":"Das kaputte Rücklicht machte das Auto unsicher für nächtliche Fahrten.","imageUrl":"","difficulty":"B1","dateAdded":"2026-09-03","notes":"","category":"TV"}
 ];
 
 const WIKI_TITLES = {
@@ -450,7 +451,8 @@ const WIKI_TITLES = {
   "Emergency": "Emergency",
   "Lost and found": "Lost_and_found",
   "Screenplay": "Screenwriting",
-  "Cliffhanger": "Cliffhanger"
+  "Cliffhanger": "Cliffhanger",
+  "Taillight": "Automotive_lighting"
 };
 
 const IMG_URLS = {
@@ -587,5 +589,6 @@ const IMG_URLS = {
   "heritage": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/World_Heritage_Logo_global.svg/330px-World_Heritage_Logo_global.svg.png",
   "festival": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg/330px-Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg",
   "insurance": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Coast_review_%281910%29_%2814760820941%29.jpg/330px-Coast_review_%281910%29_%2814760820941%29.jpg",
-  "emergency": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Woman_collapses_in_the_East_Village_of_New_York.jpg/330px-Woman_collapses_in_the_East_Village_of_New_York.jpg"
+  "emergency": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Woman_collapses_in_the_East_Village_of_New_York.jpg/330px-Woman_collapses_in_the_East_Village_of_New_York.jpg",
+  "taillight": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Reisebus.Heck.jpg/330px-Reisebus.Heck.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
 };
